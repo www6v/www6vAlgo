@@ -6,21 +6,140 @@
     <description>Recent content in AIGC on LLM 算法</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Tue, 09 Jan 2024 12:22:12 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 04 Apr 2024 17:28:27 +0000</lastBuildDate>
     <atom:link href="https://www6v.github.io/www6vAlgo/categories/AIGC/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>(原理&amp;实战)前向/反向传播</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/gptDeeplearningForwardBackward/</link>
-      <pubDate>Tue, 09 Jan 2024 12:22:12 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/gptDeeplearningForwardBackward/</guid>
-      <description>前向/反向传播 # (原理&amp;amp;实战)前向/反向传播</description>
+      <title>(原理)学习率</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningLearningRate/</link>
+      <pubDate>Mon, 08 Jan 2024 19:28:50 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningLearningRate/</guid>
+      <description>学习率 # (原理)学习率</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)权重衰减</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/gptDeeplearningWeightDecay/</link>
+      <pubDate>Mon, 08 Jan 2024 19:13:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/gptDeeplearningWeightDecay/</guid>
+      <description>权重衰减 WeightDecay # (原理&amp;amp;实战)权重衰减</description>
+    </item>
+    <item>
+      <title>机器学习-数据</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLData/</link>
+      <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLData/</guid>
+      <description>机器学习-数据 # 机器学习-数据</description>
+    </item>
+    <item>
+      <title>(原理)Transformer</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTransformer/</link>
+      <pubDate>Wed, 30 Nov 2022 16:44:11 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTransformer/</guid>
+      <description>(原理)Transformer # (原理)Transformer</description>
     </item>
     <item>
       <title>Deep Learning</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/aiDeepLearning/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/aiDeepLearning/</link>
       <pubDate>Sat, 11 Jun 2022 15:57:10 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/aiDeepLearning/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/aiDeepLearning/</guid>
       <description>Deep Learning # Deep Learning</description>
+    </item>
+    <item>
+      <title>(原理)Batchsize</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningBatchsize/</link>
+      <pubDate>Wed, 17 Jan 2024 18:45:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningBatchsize/</guid>
+      <description>最佳实践 # batchsize # batchsize 下限 [1] 别太小的限制在于，batch size太小，会来不及收敛。&#xA;所以在常见的setting（～100 epochs），batch size一般不会低于16。&#xA;batchsize 上限 [1] batch size别太大的限制在于两个点，&#xA;1）batch size太大，memory容易不够用。这个很显然，就不多说了。&#xA;2）batch size太大，深度学习的优化（training loss降不下去）和泛化（generalization gap很大）都会出问题。&#xA;learning rate &amp;amp; batch size # 总之，可以证明，learning rate/batch size的比值对深度学习是有指数级的影响[3]，所以非常重要，没事别瞎调。[1]&#xA;这也是为什么大的batch_size往往建议可以相应取大点learning_rate, 因为梯度震荡小，大learning_rate可以加速收敛过程，也可以防止陷入到局部最小值，而小batch_size用小learning_rate迭代，防止错过最优点，一直上下震荡没法收敛（这也是一个小trick）。[2]&#xA;参考 # 怎么选取训练神经网络时的Batch size? Summer Clover 训练神经网络时batchsize扩大一倍的同时需要增加epoch数量吗? 新一 7.1 批大小调整实验 百度邱&#xA;7.1 批大小调整实验&#xA;设置BatchSize&#xA;深度学习中的batch的大小对学习效果有何影响？</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)前向/反向传播</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningForwardBackward/</link>
+      <pubDate>Tue, 09 Jan 2024 12:22:12 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningForwardBackward/</guid>
+      <description>前向/反向传播 # (原理&amp;amp;实战)前向/反向传播</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)Dropout</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/gptDeeplearningDropout/</link>
+      <pubDate>Mon, 08 Jan 2024 19:19:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/gptDeeplearningDropout/</guid>
+      <description>Dropout # (原理&amp;amp;实战)Dropout</description>
+    </item>
+    <item>
+      <title>机器学习-模型</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLModel/</link>
+      <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLModel/</guid>
+      <description>机器学习-模型 # 机器学习-模型</description>
+    </item>
+    <item>
+      <title>(原理)Self-Attention</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptSelfAttention/</link>
+      <pubDate>Sun, 19 Nov 2023 14:19:46 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptSelfAttention/</guid>
+      <description>Self-Attention # (原理)Self-Attention</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)交叉熵损失</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningLoss/</link>
+      <pubDate>Fri, 12 Jan 2024 19:06:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningLoss/</guid>
+      <description>交叉熵损失 # (原理&amp;amp;实战)交叉熵损失</description>
+    </item>
+    <item>
+      <title>规范化 Norm</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningNorm/</link>
+      <pubDate>Mon, 08 Jan 2024 19:40:39 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningNorm/</guid>
+      <description>Norm 作用[1] # dnn 的标准组件，稳定和加速训练过程&#xA;Batch Norm[1] # reduce cross batch size mini-batch dimension 一般用于图像，不涉及到padding的问题；&#xA;Layer Norm[1] # reduce cross hidden dim reduce across the feature dimension. 一般用于序列，一个 batch size 内存在 padding；&#xA;RMSNorm: 对 LN 的一种变体，llama 💡 https://spaces.ac.cn/archives/9009 Pre LN: llama Post LN: attention is all you need llama在工程上使用Pre LN&#xA;[pytorch] BN、LN、RMSNorm 及 pre LN vs. post LN 对比，标准化 v *** ​&#x9;normalization.ipynb&#xA;​&#x9;[pytorch] BN、LN、RMSNorm 及 pre LN vs.</description>
+    </item>
+    <item>
+      <title>(原理)GQA</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptModelGQA/</link>
+      <pubDate>Sun, 19 Nov 2023 14:29:40 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptModelGQA/</guid>
+      <description>论文 # GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints&#xA;MHA vs. MQA vs. GQA [1] # MHA # 首先是原始的 MHA(Multi-Head Attention)，QKV 三部分有相同数量的头，且一一对应。每次做 Attention，head1 的 QKV 就做好自己运算就可以，输出时各个头加起来就行。&#xA;MQA # 而 MQA 则是，让 Q 仍然保持原来的头数，但 K 和 V 只有一个头，相当于所有的 Q 头共享一组 K 和 V 头，所以叫做 Multi-Query 了。实现改变了会不会影响效果呢？确实会影响但相对它能带来的收益，性能的些微降低是可以接受的。&#xA;能带来多大的收益呢，实验发现一般能提高 30%-40% 的吞吐。&#xA;收益主要就是由降低了 KV cache 带来的。实际上 MQA 运算量和 MHA 是差不多的，可理解为读取一组 KV 头之后，给所有 Q 头用，但因为之前提到的内存和计算的不对称，所以是有利的。&#xA;GQA # 而 GQA 呢，是 MHA 和 MQA 的折衷方案，既不想损失性能太多，又想获得 MQA 带来的推理加速好处。具体思想是，不是所有 Q 头共享一组 KV，而是分组一定头数 Q 共享一组 KV，比如上面图片就是两组 Q 共享一组 KV。</description>
+    </item>
+    <item>
+      <title>(原理)梯度优化</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningGradOpt/</link>
+      <pubDate>Thu, 04 Apr 2024 17:28:27 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningGradOpt/</guid>
+      <description>梯度优化 # Gradient accumulation # Gradient checkpointing [10] # 显存占用优化算法&#xA;memory usage 与 computation time 之间的 tradeoff ； gradient checkpointing&#xA;In deep neural networks, backpropagation requires storing intermediate activations for computing gradients during the backward pass.&#xA;但是当层数变多时，存储所有的中间层的激活值（intermediate activations）非常地占用显存；&#xA;gradient checkpointing&#xA;选择性地重新计算（recompute）一部分的 intermediate activations 在反向传播过程中来缓解显存的压力；&#xA;Gradient Clipping (梯度裁剪) # 目的[21] # 梯度爆炸问题的常见应对方式为“梯度裁剪”，也就是通过“clip”方式来防止迭代中梯度值过大。&#xA;两种常见形式[20] # 梯度范数裁剪（Gradient Norm Clipping）: 这种方法涉及计算所有参数梯度的范数（例如L2范数），如果这个范数超过了设定的阈值，就将梯度缩放到这个阈值以内。在PyTorch中，这可以通过 torch.nn.utils.clip_grad_norm_ 函数实现。 梯度值裁剪（Gradient Value Clipping）: 这种方法对每个参数的梯度值进行独立裁剪，确保它们不会超过一个设定的最大值或最小值。在PyTorch中，这可以通过 torch.nn.utils.clip_grad_value_ 函数实现。 参考 # overview # Performance and Scalability: How To Fit a Bigger Model and Train It Faster ***</description>
+    </item>
+    <item>
+      <title>(原理)过拟合</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningOverfitting/</link>
+      <pubDate>Mon, 08 Jan 2024 19:40:39 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningOverfitting/</guid>
+      <description>(原理)过拟合 # (原理)过拟合</description>
+    </item>
+    <item>
+      <title>(实战)Transformer</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTransformerCode/</link>
+      <pubDate>Thu, 16 Feb 2023 13:57:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTransformerCode/</guid>
+      <description>参考 # 1xx. transformer.ipynb git Transformer代码实现&#xA;1xx. Transformer transformer.py git&#xA;1xx. [译] Transformer 是如何工作的：600 行 Python 代码实现 self-attention 和两类 Transformer（2019） V, github Transformers from scratch&#xA;1xx. 从零实现Transformer的简易版与强大版：从300多行到3000多行&#xA;1xx. Transformer源码详解（Pytorch版本）</description>
+    </item>
+    <item>
+      <title>(原理)Embedding</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptEmbedding/</link>
+      <pubDate>Tue, 18 Apr 2023 06:29:28 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptEmbedding/</guid>
+      <description>目录 # example [1] # 降维: t-SNE K-Means 聚类 文本搜索 相似度搜索 Embedding 价值 [2] # 降维 将这些高维数据映射到一个低维空间，大大减少了模型的复杂度。 捕捉语义信息 Embedding不仅仅是降维，更重要的是，它能够捕捉到数据的语义信息。 泛化能力 由于Embedding能够捕捉到数据的一些内在规律，因此对于这些未见过的数据，Embedding仍然能够给出合理的表示 应用 [2] # 语义表示和语义相似度 词语关系和类比推理 上下文理解 文本分类和情感分析 机器翻译和生成模型 天梯榜 # mteb/leaderboard&#xA;example[3] # m3e模型 bge模型 参考 # embedding git&#xA;《AI 大模型应用开发实战营》 03-大模型开发基础：Embedding&#xA;一文通透Text Embedding模型：从text2vec、openai-ada-002到m3e、bge&#xA;1xx. 如何选取RAG中的embedding模型 v *** huggingface embedding模型排行榜 Sentence Bert&#xA;Demo Repo git&#xA;1xx. 引入任务Instruction指令的句子向量化方案：Instructor的实现思路及训练数据集构造方案 Repo git&#xA;1xx. 也看利用大模型进行RAG文本嵌入训练数据生成：兼看面向NLP任务的开源指令微调数据集 《Improving Text Embeddings with Large Language Models》</description>
+    </item>
+    <item>
+      <title>Tokenizer</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTrainTokenizer/</link>
+      <pubDate>Sun, 26 Feb 2023 17:28:01 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTrainTokenizer/</guid>
+      <description>tokenizer 分词 # 单词分词法 单字分词法 子词分词法 BPE [GPT系列], WordPiece 参考 # 1xx. 大模型词表扩充必备工具SentencePiece 1xx. NLP（二）：浅谈分词 1xx. https://www.bilibili.com/video/BV1vN411p7t2/ 1xx. 开源大模型如何更好地适应中文场景：LLAMA扩充词表、BLOOM裁剪词表基本原理与开源实现</description>
+    </item>
+    <item>
+      <title>(实战)PyTorch</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptPytorch/</link>
+      <pubDate>Tue, 28 Mar 2023 15:47:08 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptPytorch/</guid>
+      <description>PyTorch 实战 # (实战)PyTorch</description>
     </item>
   </channel>
 </rss>
