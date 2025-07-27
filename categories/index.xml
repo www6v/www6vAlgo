@@ -2,10 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on LLM 算法</title>
-    <link>http://localhost:1313/www6vAlgoHugo/categories/</link>
+    <link>https://www6v.github.io/www6vAlgoHugo/categories/</link>
     <description>Recent content in Categories on LLM 算法</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <atom:link href="http://localhost:1313/www6vAlgoHugo/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 09 Jan 2024 12:22:12 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgoHugo/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AIGC</title>
+      <link>https://www6v.github.io/www6vAlgoHugo/categories/AIGC/</link>
+      <pubDate>Tue, 09 Jan 2024 12:22:12 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgoHugo/categories/AIGC/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>DeepLearning</title>
+      <link>https://www6v.github.io/www6vAlgoHugo/categories/DeepLearning/</link>
+      <pubDate>Tue, 09 Jan 2024 12:22:12 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgoHugo/categories/DeepLearning/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>
