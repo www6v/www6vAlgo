@@ -6,8 +6,15 @@
     <description>Recent content in AIGC on LLM 算法</description>
     <generator>Hugo</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 04 Apr 2024 17:28:27 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 22 Jul 2024 16:14:51 +0000</lastBuildDate>
     <atom:link href="https://www6v.github.io/www6vAlgo/categories/AIGC/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(实战)GRPO</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptDeepseekGRPO/</link>
+      <pubDate>Wed, 28 Feb 2024 01:29:48 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptDeepseekGRPO/</guid>
+      <description>GRPO # (实战)GRPO</description>
+    </item>
     <item>
       <title>(原理)学习率</title>
       <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningLearningRate/</link>
@@ -42,6 +49,13 @@
       <pubDate>Sat, 11 Jun 2022 15:57:10 +0000</pubDate>
       <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/aiDeepLearning/</guid>
       <description>Deep Learning # Deep Learning</description>
+    </item>
+    <item>
+      <title>(原理)PPO</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLPPO/</link>
+      <pubDate>Sat, 01 Jun 2024 22:12:32 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLPPO/</guid>
+      <description>PPO # (原理)PPO</description>
     </item>
     <item>
       <title>(原理)Batchsize</title>
@@ -79,6 +93,13 @@
       <description>Self-Attention # (原理)Self-Attention</description>
     </item>
     <item>
+      <title>(原理|实现)PPO-RewardModel</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLRewardModel/</link>
+      <pubDate>Sat, 01 Jun 2024 22:12:51 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLRewardModel/</guid>
+      <description>PPO-RewardModel # (原理|实现)PPO-RewardModel</description>
+    </item>
+    <item>
       <title>(原理&amp;实战)交叉熵损失</title>
       <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/gptDeeplearningLoss/</link>
       <pubDate>Fri, 12 Jan 2024 19:06:59 +0000</pubDate>
@@ -100,6 +121,13 @@
       <description>论文 # GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints&#xA;MHA vs. MQA vs. GQA [1] # MHA # 首先是原始的 MHA(Multi-Head Attention)，QKV 三部分有相同数量的头，且一一对应。每次做 Attention，head1 的 QKV 就做好自己运算就可以，输出时各个头加起来就行。&#xA;MQA # 而 MQA 则是，让 Q 仍然保持原来的头数，但 K 和 V 只有一个头，相当于所有的 Q 头共享一组 K 和 V 头，所以叫做 Multi-Query 了。实现改变了会不会影响效果呢？确实会影响但相对它能带来的收益，性能的些微降低是可以接受的。&#xA;能带来多大的收益呢，实验发现一般能提高 30%-40% 的吞吐。&#xA;收益主要就是由降低了 KV cache 带来的。实际上 MQA 运算量和 MHA 是差不多的，可理解为读取一组 KV 头之后，给所有 Q 头用，但因为之前提到的内存和计算的不对称，所以是有利的。&#xA;GQA # 而 GQA 呢，是 MHA 和 MQA 的折衷方案，既不想损失性能太多，又想获得 MQA 带来的推理加速好处。具体思想是，不是所有 Q 头共享一组 KV，而是分组一定头数 Q 共享一组 KV，比如上面图片就是两组 Q 共享一组 KV。</description>
     </item>
     <item>
+      <title>(原理|实现)DPO</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLdpo/</link>
+      <pubDate>Mon, 08 Jul 2024 18:49:43 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLdpo/</guid>
+      <description>DPO # (原理|实现)DPO</description>
+    </item>
+    <item>
       <title>(原理)梯度优化</title>
       <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/gptDeeplearningGradOpt/</link>
       <pubDate>Thu, 04 Apr 2024 17:28:27 +0000</pubDate>
@@ -119,6 +147,13 @@
       <pubDate>Thu, 16 Feb 2023 13:57:57 +0000</pubDate>
       <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/gptTransformerCode/</guid>
       <description>参考 # 1xx. transformer.ipynb git Transformer代码实现&#xA;1xx. Transformer transformer.py git&#xA;1xx. [译] Transformer 是如何工作的：600 行 Python 代码实现 self-attention 和两类 Transformer（2019） V, github Transformers from scratch&#xA;1xx. 从零实现Transformer的简易版与强大版：从300多行到3000多行&#xA;1xx. Transformer源码详解（Pytorch版本）</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)veRL Config</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLverlConfig/</link>
+      <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLverlConfig/</guid>
+      <description>veRL Config # (原理&amp;amp;实战)veRL Config</description>
     </item>
     <item>
       <title>(原理)Embedding</title>

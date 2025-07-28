@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>RL on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/tags/RL/</link>
+    <description>Recent content in RL on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 22 Jul 2024 16:14:51 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/tags/RL/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(原理)PPO</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLPPO/</link>
+      <pubDate>Sat, 01 Jun 2024 22:12:32 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLPPO/</guid>
+      <description>PPO # (原理)PPO</description>
+    </item>
+    <item>
+      <title>(原理|实现)PPO-RewardModel</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLRewardModel/</link>
+      <pubDate>Sat, 01 Jun 2024 22:12:51 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLRewardModel/</guid>
+      <description>PPO-RewardModel # (原理|实现)PPO-RewardModel</description>
+    </item>
+    <item>
+      <title>(原理|实现)DPO</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLdpo/</link>
+      <pubDate>Mon, 08 Jul 2024 18:49:43 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLdpo/</guid>
+      <description>DPO # (原理|实现)DPO</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)veRL Config</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLverlConfig/</link>
+      <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLverlConfig/</guid>
+      <description>veRL Config # (原理&amp;amp;实战)veRL Config</description>
+    </item>
+  </channel>
+</rss>
