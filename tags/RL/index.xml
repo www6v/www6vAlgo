@@ -10,30 +10,30 @@
     <atom:link href="https://www6v.github.io/www6vAlgo/tags/RL/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>(原理)PPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLPPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/RLPPO/gptRLPPO/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:32 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLPPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/RLPPO/gptRLPPO/</guid>
       <description>PPO # (原理)PPO</description>
     </item>
     <item>
       <title>(原理|实现)PPO-RewardModel</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLRewardModel/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/RLRewardModel/gptRLRewardModel/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLRewardModel/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/RLRewardModel/gptRLRewardModel/</guid>
       <description>PPO-RewardModel # (原理|实现)PPO-RewardModel</description>
     </item>
     <item>
       <title>(原理|实现)DPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLdpo/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/RLdpo/</link>
       <pubDate>Mon, 08 Jul 2024 18:49:43 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLdpo/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/RLdpo/</guid>
       <description>DPO # (原理|实现)DPO</description>
     </item>
     <item>
       <title>(原理&amp;实战)veRL Config</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/gptRLverlConfig/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/RLverlConfig/</link>
       <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/gptRLverlConfig/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/RLverlConfig/</guid>
       <description>veRL Config # (原理&amp;amp;实战)veRL Config</description>
     </item>
   </channel>

@@ -10,16 +10,16 @@
     <atom:link href="https://www6v.github.io/www6vAlgo/tags/ML/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>机器学习-数据</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLData/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/</link>
       <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLData/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/</guid>
       <description>机器学习-数据 # 机器学习-数据</description>
     </item>
     <item>
       <title>机器学习-模型</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLModel/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/</link>
       <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/gptMLModel/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/</guid>
       <description>机器学习-模型 # 机器学习-模型</description>
     </item>
   </channel>
