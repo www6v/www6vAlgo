@@ -169,5 +169,12 @@
       <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/Pytorch/</guid>
       <description>PyTorch 实战 # (实战)PyTorch</description>
     </item>
+    <item>
+      <title>(原理)BERT</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</link>
+      <pubDate>Fri, 12 Jan 2024 22:16:10 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</guid>
+      <description>BERT # (原理)BERT</description>
+    </item>
   </channel>
 </rss>
