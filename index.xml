@@ -17,9 +17,9 @@
     </item>
     <item>
       <title>(实战)GRPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/DeepseekGRPO/gptDeepseekGRPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPODeepseek/gptDeepseekGRPO/</link>
       <pubDate>Wed, 28 Feb 2024 01:29:48 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/DeepseekGRPO/gptDeepseekGRPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPODeepseek/gptDeepseekGRPO/</guid>
       <description>GRPO # (实战)GRPO</description>
     </item>
     <item>
@@ -45,9 +45,9 @@
     </item>
     <item>
       <title>(原理)PPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/RLPPO/gptRLPPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/gptRLPPO/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:32 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/RLPPO/gptRLPPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/gptRLPPO/</guid>
       <description>PPO # (原理)PPO</description>
     </item>
     <item>
@@ -66,9 +66,9 @@
     </item>
     <item>
       <title>(原理|实现)PPO-RewardModel</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/RLRewardModel/gptRLRewardModel/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/RLRewardModel/gptRLRewardModel/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/</guid>
       <description>PPO-RewardModel # (原理|实现)PPO-RewardModel</description>
     </item>
     <item>
