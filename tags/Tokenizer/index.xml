@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tokenizer on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/tags/Tokenizer/</link>
+    <description>Recent content in Tokenizer on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 26 Feb 2023 17:28:01 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/tags/Tokenizer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tokenizer</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/</link>
+      <pubDate>Sun, 26 Feb 2023 17:28:01 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h3 id=&#34;tokenizer-分词&#34;&gt;&#xA;  tokenizer 分词&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#tokenizer-%e5%88%86%e8%af%8d&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;单词分词法&lt;/li&gt;&#xA;&lt;li&gt;单字分词法&lt;/li&gt;&#xA;&lt;li&gt;子词分词法&#xA;BPE [GPT系列], WordPiece&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h1 id=&#34;参考&#34;&gt;&#xA;  参考&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%8f%82%e8%80%83&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;1xx. &lt;a href=&#34;https://zhuanlan.zhihu.com/p/630696264&#34;&gt;大模型词表扩充必备工具SentencePiece&lt;/a&gt;&#xA;1xx. &lt;a href=&#34;https://zhuanlan.zhihu.com/p/458452872&#34;&gt;NLP（二）：浅谈分词&lt;/a&gt;&#xA;1xx. &lt;a href=&#34;https://www.bilibili.com/video/BV1vN411p7t2/&#34;&gt;https://www.bilibili.com/video/BV1vN411p7t2/&lt;/a&gt;&#xA;1xx. &lt;a href=&#34;https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;amp;mid=2648400849&amp;amp;idx=1&amp;amp;sn=58006756cccde4d06d273df59e2c8dd8&#34;&gt;开源大模型如何更好地适应中文场景：LLAMA扩充词表、BLOOM裁剪词表基本原理与开源实现&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

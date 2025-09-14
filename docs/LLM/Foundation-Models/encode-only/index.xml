@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>encode-only on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/</link>
+    <description>Recent content in encode-only on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 12 Jan 2024 22:16:10 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(原理)BERT</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</link>
+      <pubDate>Fri, 12 Jan 2024 22:16:10 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;bert&#34;&gt;&#xA;  BERT&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#bert&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/BERT-16abfe211084808fb8a3d0769c37c3db?pvs=4&#34;&gt;(原理)BERT&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

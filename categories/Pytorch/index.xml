@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pytorch on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/categories/Pytorch/</link>
+    <description>Recent content in Pytorch on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 28 Mar 2023 15:47:08 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/categories/Pytorch/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(实战)PyTorch</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/Pytorch/</link>
+      <pubDate>Tue, 28 Mar 2023 15:47:08 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/Pytorch/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;pytorch-实战&#34;&gt;&#xA;  PyTorch 实战&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#pytorch-%e5%ae%9e%e6%88%98&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/PyTorch-bae29b5883fd45f7a20c97918382da12?pvs=4&#34;&gt;(实战)PyTorch&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

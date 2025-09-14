@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/categories/</link>
+    <description>Recent content in Categories on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 22 Jul 2024 16:14:51 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>AIGC</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/AIGC/</link>
+      <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/AIGC/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RL</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/RL/</link>
+      <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/RL/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>DeepLearning</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/DeepLearning/</link>
+      <pubDate>Thu, 04 Apr 2024 17:28:27 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/DeepLearning/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Deepresearch</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/Deepresearch/</link>
+      <pubDate>Tue, 26 Mar 2024 12:13:50 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/Deepresearch/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>DeepSeek</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/DeepSeek/</link>
+      <pubDate>Wed, 28 Feb 2024 01:29:48 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/DeepSeek/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Model</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/model/</link>
+      <pubDate>Fri, 12 Jan 2024 22:16:10 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/model/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>ML</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/ML/</link>
+      <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/ML/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Pytorch</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/Pytorch/</link>
+      <pubDate>Tue, 28 Mar 2023 15:47:08 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/Pytorch/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tokenizer</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/Tokenizer/</link>
+      <pubDate>Sun, 26 Feb 2023 17:28:01 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/Tokenizer/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Transformer</title>
+      <link>https://www6v.github.io/www6vAlgo/categories/Transformer/</link>
+      <pubDate>Thu, 16 Feb 2023 13:57:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/categories/Transformer/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

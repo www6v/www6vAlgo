@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  论文
+  #
+
+ToolRL: Reward is All Tool Learning Needs
+为了确定最佳奖励策略，探索了四个关键维度的各种奖励配置：(1) 奖励类型（奖励哪些方面），(2) 奖励尺度（奖励多少），(3) 奖励粒度（奖励信号的详细程度），以及 (4) 奖励动态（奖励如何随时间演变）。通过大量的实验确定了最符合主体工具使用情况的奖励设计，并揭示了奖励对于调用工具的 LLM 而言“有用”的原因。论文得出的核心见解总结如下：
+
+推理轨迹越长并不一定越好，而且过长的奖励可能会降低性能。
+动态奖励尺度有助于模型从简单行为平稳过渡到复杂行为。
+细粒度的奖励分解可实现更稳定、更有效的学习。
+
+
+论文得出的核心见解总结如下：
+
+推理轨迹越长并不一定越好，而且过长的奖励可能会降低性能。
+动态奖励尺度有助于模型从简单行为平稳过渡到复杂行为。
+细粒度的奖励分解可实现更稳定、更有效的学习。
+
+Format Reward 
+Correctness Reward
+
+  参考
+  #
+
+2025年大模型agent rl训练多轮planning技术TORL,ToolRL, RAGEN,OTC,SkyRL-v0, GiGPO,Tool-N1 ,ARTIST, ZeroTIR, GRPO">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/RL/AgentRL/Tool/ToolRL/">
+  <meta property="og:site_name" content="LLM 算法">
+  <meta property="og:title" content="ToolRL">
+  <meta property="og:description" content="论文 # ToolRL: Reward is All Tool Learning Needs
+为了确定最佳奖励策略，探索了四个关键维度的各种奖励配置：(1) 奖励类型（奖励哪些方面），(2) 奖励尺度（奖励多少），(3) 奖励粒度（奖励信号的详细程度），以及 (4) 奖励动态（奖励如何随时间演变）。通过大量的实验确定了最符合主体工具使用情况的奖励设计，并揭示了奖励对于调用工具的 LLM 而言“有用”的原因。论文得出的核心见解总结如下：
+推理轨迹越长并不一定越好，而且过长的奖励可能会降低性能。 动态奖励尺度有助于模型从简单行为平稳过渡到复杂行为。 细粒度的奖励分解可实现更稳定、更有效的学习。 论文得出的核心见解总结如下：
+推理轨迹越长并不一定越好，而且过长的奖励可能会降低性能。 动态奖励尺度有助于模型从简单行为平稳过渡到复杂行为。 细粒度的奖励分解可实现更稳定、更有效的学习。 Format Reward Correctness Reward
+参考 # 2025年大模型agent rl训练多轮planning技术TORL,ToolRL, RAGEN,OTC,SkyRL-v0, GiGPO,Tool-N1 ,ARTIST, ZeroTIR, GRPO">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="website">
+<title>ToolRL | LLM 算法</title>
+<link rel="icon" href="/www6vAlgo/favicon.png" >
+<link rel="manifest" href="/www6vAlgo/manifest.json">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/RL/AgentRL/Tool/ToolRL/">
+<link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
+  <script defer src="/www6vAlgo/fuse.min.js"></script>
+  <script defer src="/www6vAlgo/en.search.min.a2f95be5084866e4e3cd29e4fc713fe29c3ba2bc9d8a2b31c6c5e40c42e81bba.js" integrity="sha256-ovlb5QhIZuTjzSnk/HE/4pw7orydiisxxsXkDELoG7o=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/RL/AgentRL/Tool/ToolRL/index.xml" title="LLM 算法" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/www6vAlgo/"><span>LLM 算法</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="toggle"  />
+    <label for="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="flex justify-between">
+      <a role="button" class="">DeepLearning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca800fece441ac3e580321c74f3e9d49" class="toggle"  />
+    <label for="section-ca800fece441ac3e580321c74f3e9d49" class="flex justify-between">
+      <a role="button" class="">basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeepLearning/" class="">Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/" class="">(原理&amp;实战)前向/反向传播</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/" class="">(原理&amp;实战)交叉熵损失</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/" class="">(原理)过拟合</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/Pytorch/" class="">(实战)PyTorch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="toggle"  />
+    <label for="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="flex justify-between">
+      <a role="button" class="">正则化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/" class="">(原理&amp;实战)权重衰减</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/" class="">(原理&amp;实战)Dropout</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1424866912bd75b061251f3b3e940596" class="toggle"  />
+    <label for="section-1424866912bd75b061251f3b3e940596" class="flex justify-between">
+      <a role="button" class="">网络优化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/" class="">(原理)学习率</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/" class="">(原理)Batchsize</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/" class="">规范化 Norm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/" class="">(原理)梯度优化</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d175a581e6d1d294c2886df9f4e638fd" class="toggle"  />
+    <label for="section-d175a581e6d1d294c2886df9f4e638fd" class="flex justify-between">
+      <a role="button" class="">Transformer</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Transformer/" class="">(原理)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/SelfAttention/" class="">(原理)Self-Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/ModelGQA/" class="">(原理)GQA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/" class="">(实战)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/" class="">Tokenizer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="toggle"  />
+    <label for="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="flex justify-between">
+      <a role="button" class="">Embedding</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/survey/" class="">(Survey)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/Embedding/" class="">(原理)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-47d8239bc563cf0526676851b768f952" class="toggle"  />
+    <label for="section-47d8239bc563cf0526676851b768f952" class="flex justify-between">
+      <a role="button" class="">机器学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/" class="">机器学习-数据</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/" class="">机器学习-模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle" checked />
+    <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
+      <a role="button" class="">强化学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
+    <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPODeepseek/gptDeepseekGRPO/" class="">(实战)GRPO</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO/gptRLPPO/" class="">(原理)PPO</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f3b12ee3a7ed865e5a6a2f2cd66616b3" class="toggle" checked />
+    <label for="section-f3b12ee3a7ed865e5a6a2f2cd66616b3" class="flex justify-between">
+      <a role="button" class="">Agent&amp;RL</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/survey/" class="">(Survey) Agentic RL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e7a8d90c9f4d1530dfd702c793b5ab4f" class="toggle" checked />
+    <label for="section-e7a8d90c9f4d1530dfd702c793b5ab4f" class="flex justify-between">
+      <a role="button" class="">Tool</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Tool/OTC/" class="">OTC</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Tool/ReTool/" class="">ReTool</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Tool/ToolRL/" class="active">ToolRL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Search</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Search/Search-R1/" class="">Search-R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Search/Kimi-Researcher/" class="">Kimi-Researcher</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-74da2f7bc7a3fb6c948028291efa6462" class="toggle"  />
+    <label for="section-74da2f7bc7a3fb6c948028291efa6462" class="flex justify-between">
+      <a role="button" class="">LLM</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a343fe5674a1bd12fab2d6b7694216c1" class="toggle"  />
+    <label for="section-a343fe5674a1bd12fab2d6b7694216c1" class="flex justify-between">
+      <a role="button" class="">Foundation Models</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/gptLargeModelSurvey/gptLargeModelSurvey/" class="">(综述)大模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/gptLargeModel/gptLargeModel/" class="">大模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2cb0545f8eb11e95288da75d3548e4e7" class="toggle"  />
+    <label for="section-2cb0545f8eb11e95288da75d3548e4e7" class="flex justify-between">
+      <a role="button" class="">decode-only</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptFamily/gptFamily/" class="">GPT 系列</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptLlama/gptLlama/" class="">LLaMA</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptLlamaFamily/gptLlamaFamily/" class="">LLaMA 家族</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptLlama3-1/gptLlama3-1/" class="">Llama3.1</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3358f65fb3e2e4e1793b7222334ead0c" class="toggle"  />
+    <label for="section-3358f65fb3e2e4e1793b7222334ead0c" class="flex justify-between">
+      <a role="button" class="">encode-only</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/" class="">(原理)BERT</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/gptLeaderBoard/gptLeaderBoard/" class="">大模型 排行榜</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-87e9d9637395fb89e4a012b1e3ddab96" class="toggle"  />
+    <label for="section-87e9d9637395fb89e4a012b1e3ddab96" class="flex justify-between">
+      <a role="button" class="">MOE</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/gptModelMOE/gptModelMOE/" class="">(原理)Visual  MOE</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/gptModelMOECode/gptModelMOECode/" class="">(代码)MOE</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-264623bf1ceb8caecf9f9992a93d7e71" class="toggle"  />
+    <label for="section-264623bf1ceb8caecf9f9992a93d7e71" class="flex justify-between">
+      <a role="button" class="">core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptScalingLaw/" class="">Scaling Law</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptEmergent/" class="">(原理)涌现现象</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptHallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptImpossibleTriangle/" class="">(原理)不可能三角</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptEval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>ToolRL</h3>
+
+  <label for="toc-control">
+    
+    <img src="/www6vAlgo/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#论文">论文</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="论文">
+  论文
+  <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
+</h1>
+<p><a href="https://arxiv.org/abs/2504.13958"><strong>ToolRL: Reward is All Tool Learning Needs</strong></a></p>
+<p>为了确定最佳奖励策略，探索了四个关键维度的各种奖励配置：(1) 奖励类型（奖励哪些方面），(2) 奖励尺度（奖励多少），(3) 奖励粒度（奖励信号的详细程度），以及 (4) 奖励动态（奖励如何随时间演变）。通过大量的实验确定了最符合主体工具使用情况的奖励设计，并揭示了奖励对于调用工具的 LLM 而言“有用”的原因。论文得出的核心见解总结如下：</p>
+<ul>
+<li>推理轨迹越长并不一定越好，而且过长的奖励可能会降低性能。</li>
+<li>动态奖励尺度有助于模型从简单行为平稳过渡到复杂行为。</li>
+<li>细粒度的奖励分解可实现更稳定、更有效的学习。</li>
+</ul>
+<p><img src="./images/640.webp" alt="method" /></p>
+<p>论文得出的核心见解总结如下：</p>
+<ul>
+<li>推理轨迹越长并不一定越好，而且过长的奖励可能会降低性能。</li>
+<li>动态奖励尺度有助于模型从简单行为平稳过渡到复杂行为。</li>
+<li><strong>细粒度的奖励分解</strong>可实现更稳定、更有效的学习。</li>
+</ul>
+<p><strong>Format Reward</strong> </p>
+<p><strong>Correctness Reward</strong></p>
+<h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<p><a href="https://zhuanlan.zhihu.com/p/1902381952998281700">2025年大模型agent rl训练多轮planning技术TORL,ToolRL, RAGEN,OTC,SkyRL-v0, GiGPO,Tool-N1 ,ARTIST, ZeroTIR, GRPO</a></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#论文">论文</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

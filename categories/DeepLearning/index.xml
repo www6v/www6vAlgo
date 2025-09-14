@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DeepLearning on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/categories/DeepLearning/</link>
+    <description>Recent content in DeepLearning on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 04 Apr 2024 17:28:27 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/categories/DeepLearning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(原理)学习率</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/</link>
+      <pubDate>Mon, 08 Jan 2024 19:28:50 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;学习率&#34;&gt;&#xA;  学习率&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%ad%a6%e4%b9%a0%e7%8e%87&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/172bfe211084806f8de8cdd5a9b249ad?pvs=4&#34;&gt;(原理)学习率&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)权重衰减</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/</link>
+      <pubDate>Mon, 08 Jan 2024 19:13:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;权重衰减-weightdecay&#34;&gt;&#xA;  权重衰减 WeightDecay&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e6%9d%83%e9%87%8d%e8%a1%b0%e5%87%8f-weightdecay&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/16fbfe21108480ea8682d89d64f5b00c?pvs=4&#34;&gt;(原理&amp;amp;实战)权重衰减&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Deep Learning</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeepLearning/</link>
+      <pubDate>Sat, 11 Jun 2022 15:57:10 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeepLearning/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xD;&#xA;&lt;!-- more --&gt;&#xD;&#xA;&lt;h1 id=&#34;deep-learning&#34;&gt;&#xA;  Deep Learning&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#deep-learning&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/Deep-Learning-10dbfe21108480b9affbf52a3b5bb13e?pvs=4&#34;&gt;Deep Learning&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理)Batchsize</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/</link>
+      <pubDate>Wed, 17 Jan 2024 18:45:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;最佳实践&#34;&gt;&#xA;  最佳实践&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e6%9c%80%e4%bd%b3%e5%ae%9e%e8%b7%b5&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h3 id=&#34;batchsize&#34;&gt;&#xA;  batchsize&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#batchsize&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;batchsize  下限 [1]&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;别太小的限制在于，&lt;strong&gt;batch size太小，会来不及收敛。&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;p&gt;所以在常见的setting（～100 epochs），batch size一般不会低于16。&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;batchsize 上限   [1]&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;batch size别太大的限制在于两个点，&lt;/p&gt;&#xA;&lt;p&gt;1）batch size太大，memory容易不够用。这个很显然，就不多说了。&lt;/p&gt;&#xA;&lt;p&gt;2）&lt;strong&gt;batch size太大，深度学习的优化（training loss降不下去）和泛化（generalization gap很大）都会出问题。&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;h3 id=&#34;learning-rate--batch-size&#34;&gt;&#xA;  &lt;strong&gt;learning rate &amp;amp; batch size&lt;/strong&gt;&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#learning-rate--batch-size&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;p&gt;总之，可以证明，&lt;strong&gt;learning rate/batch size的比值对深度学习是有指数级的影响&lt;/strong&gt;[3]，所以非常重要，没事别瞎调。[1]&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;这也是为什么大的batch_size往往建议可以相应取大点&lt;a href=&#34;https://zhida.zhihu.com/search?content_id=462989051&amp;amp;content_type=Answer&amp;amp;match_order=1&amp;amp;q=learning_rate&amp;amp;zhida_source=entity&#34;&gt;learning_rate&lt;/a&gt;, 因为梯度震荡小，大&lt;/strong&gt;learning_rate&lt;strong&gt;可以加速收敛过程，也可以防止陷入到局部最小值，而小batch_size用小learning_rate迭代，防止错过最优点，一直上下震荡没法收敛（这也是一个小trick）&lt;/strong&gt;。[2]&lt;/p&gt;&#xA;&lt;h1 id=&#34;参考&#34;&gt;&#xA;  参考&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%8f%82%e8%80%83&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.zhihu.com/question/61607442/answer/1875700191&#34;&gt;怎么选取训练神经网络时的Batch size?&lt;/a&gt;  Summer Clover&lt;/li&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://www.zhihu.com/question/456600260/answer/2380983385&#34;&gt;训练神经网络时batchsize扩大一倍的同时需要增加epoch数量吗?&lt;/a&gt; 新一&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.notion.so/7-1-174bfe21108480a7a702e4ebed99f68f?pvs=21&#34;&gt;7.1 批大小调整实验&lt;/a&gt; 百度邱&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://aistudio.baidu.com/education/lessonvideo/3048883&#34;&gt;7.1 批大小调整实验&lt;/a&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://zhuanlan.zhihu.com/p/148267858&#34;&gt;设置BatchSize&lt;/a&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://www.zhihu.com/question/32673260/answer/3356342576&#34;&gt;深度学习中的batch的大小对学习效果有何影响？&lt;/a&gt;&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)前向/反向传播</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/</link>
+      <pubDate>Tue, 09 Jan 2024 12:22:12 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;前向反向传播&#34;&gt;&#xA;  前向/反向传播&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%89%8d%e5%90%91%e5%8f%8d%e5%90%91%e4%bc%a0%e6%92%ad&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/164bfe211084800d80dbe868719ce79a?pvs=4&#34;&gt;(原理&amp;amp;实战)前向/反向传播&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)Dropout</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/</link>
+      <pubDate>Mon, 08 Jan 2024 19:19:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;dropout&#34;&gt;&#xA;  Dropout&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#dropout&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/Dropout-16fbfe21108480259446f7c7feb39aca?pvs=4&#34;&gt;(原理&amp;amp;实战)Dropout&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理&amp;实战)交叉熵损失</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/</link>
+      <pubDate>Fri, 12 Jan 2024 19:06:59 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;交叉熵损失&#34;&gt;&#xA;  交叉熵损失&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e4%ba%a4%e5%8f%89%e7%86%b5%e6%8d%9f%e5%a4%b1&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/176bfe21108480e19198ec69bf135e38?pvs=4&#34;&gt;(原理&amp;amp;实战)交叉熵损失&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>规范化 Norm</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/</link>
+      <pubDate>Mon, 08 Jan 2024 19:40:39 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;norm-作用1&#34;&gt;&#xA;  Norm 作用[1]&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#norm-%e4%bd%9c%e7%94%a81&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;dnn 的标准组件，稳定和加速训练过程&lt;/p&gt;&#xA;&lt;h1 id=&#34;batch-norm1&#34;&gt;&#xA;  Batch Norm[1]&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#batch-norm1&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;reduce cross &lt;strong&gt;batch size&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;mini-batch dimension&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;一般用于图像，不涉及到padding的问题；&lt;/p&gt;&#xA;&lt;h1 id=&#34;layer-norm1&#34;&gt;&#xA;  Layer Norm[1]&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#layer-norm1&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;reduce cross &lt;strong&gt;hidden dim&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;li&gt;reduce across the &lt;strong&gt;feature dimension&lt;/strong&gt;.&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;一般用于序列，一个 batch size 内存在 padding；&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;RMSNorm: 对 LN 的一种变体，llama&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;hr&gt;&#xA;&lt;aside&gt; 💡&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;a href=&#34;https://spaces.ac.cn/archives/9009&#34;&gt;https://spaces.ac.cn/archives/9009&lt;/a&gt;&lt;/li&gt;&#xA;&lt;li&gt;Pre LN: &lt;code&gt;llama&lt;/code&gt;&lt;/li&gt;&#xA;&lt;li&gt;Post LN: &lt;code&gt;attention is all you need&lt;/code&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;llama在工程上使用Pre LN&lt;/p&gt;&#xA;&lt;/aside&gt;&#xA;&lt;hr&gt;&#xA;&lt;ol&gt;&#xA;&lt;li&gt;[&lt;a href=&#34;https://www.bilibili.com/video/BV13q49eaERj/&#34;&gt;pytorch] BN、LN、RMSNorm 及 pre LN vs. post LN 对比，标准化&lt;/a&gt;  v ***&lt;/li&gt;&#xA;&lt;/ol&gt;&#xA;&lt;p&gt;​&#x9;&lt;a href=&#34;https://github.com/chunhuizhang/llm_aigc/blob/main/tutorials/nn_basics/tricks_norms/normalization.ipynb&#34;&gt;normalization.ipynb&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;​&#x9;[&lt;a href=&#34;https://www.notion.so/pytorch-BN-LN-RMSNorm-pre-LN-vs-post-LN-177bfe2110848088830cfea3d5a33d3e?pvs=21&#34;&gt;pytorch] BN、LN、RMSNorm 及 pre LN vs. post LN 对比，标准化 &lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理)梯度优化</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/</link>
+      <pubDate>Thu, 04 Apr 2024 17:28:27 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;梯度优化&#34;&gt;&#xA;  梯度优化&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e6%a2%af%e5%ba%a6%e4%bc%98%e5%8c%96&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h1 id=&#34;gradient-accumulation&#34;&gt;&#xA;  &lt;strong&gt;Gradient accumulation&lt;/strong&gt;&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#gradient-accumulation&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;img src=&#34;./images/maonmv7e.bmp&#34; alt=&#34;maonmv7e.bmp&#34; /&gt;&lt;/p&gt;&#xA;&lt;h1 id=&#34;gradient-checkpointing-10&#34;&gt;&#xA;  &lt;strong&gt;G&lt;/strong&gt;radient checkpointing [10]&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#gradient-checkpointing-10&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;显存占用优化算法&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;memory usage 与 computation time 之间的 tradeoff ；&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;gradient checkpointing&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;In deep neural networks, backpropagation requires storing &lt;strong&gt;intermediate activations&lt;/strong&gt; for computing gradients during the backward pass.&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;但是当层数变多时，存储所有的中间层的激活值（intermediate activations）非常地占用显存；&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;li&gt;&#xA;&lt;p&gt;gradient checkpointing&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;选择性地重新计算（recompute）一部分的 intermediate activations 在反向传播过程中&lt;/strong&gt;来缓解显存的压力；&lt;/p&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h1 id=&#34;gradient-clipping--梯度裁剪&#34;&gt;&#xA;  &lt;strong&gt;Gradient Clipping  (梯度裁剪)&lt;/strong&gt;&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#gradient-clipping--%e6%a2%af%e5%ba%a6%e8%a3%81%e5%89%aa&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h3 id=&#34;目的21&#34;&gt;&#xA;  目的[21]&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e7%9b%ae%e7%9a%8421&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;p&gt;&lt;strong&gt;梯度爆炸问题的常见应对方式为“梯度裁剪”&lt;/strong&gt;，也就是通过“clip”方式来防止迭代中梯度值过大。&lt;/p&gt;&#xA;&lt;h3 id=&#34;两种常见形式20&#34;&gt;&#xA;  两种常见形式[20]&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e4%b8%a4%e7%a7%8d%e5%b8%b8%e8%a7%81%e5%bd%a2%e5%bc%8f20&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;梯度范数裁剪（Gradient Norm Clipping）: 这种方法涉及计算所有参数梯度的范数（例如L2范数），如果这个范数超过了设定的阈值，就将梯度缩放到这个阈值以内。在PyTorch中，这可以通过 &lt;strong&gt;torch.nn.utils.clip_grad_norm_&lt;/strong&gt; 函数实现。&lt;/li&gt;&#xA;&lt;li&gt;梯度值裁剪（Gradient Value Clipping）: 这种方法对每个参数的梯度值进行独立裁剪，确保它们不会超过一个设定的最大值或最小值。在PyTorch中，这可以通过 &lt;strong&gt;torch.nn.utils.clip_grad_value_&lt;/strong&gt; 函数实现。&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h1 id=&#34;参考&#34;&gt;&#xA;  参考&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%8f%82%e8%80%83&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;h3 id=&#34;overview&#34;&gt;&#xA;  overview&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#overview&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h3&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://huggingface.co/docs/transformers/v4.18.0/en/performance&#34;&gt;Performance and Scalability: How To Fit a Bigger Model and Train It Faster&lt;/a&gt;  ***&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理)过拟合</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/</link>
+      <pubDate>Mon, 08 Jan 2024 19:40:39 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;原理过拟合&#34;&gt;&#xA;  (原理)过拟合&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%8e%9f%e7%90%86%e8%bf%87%e6%8b%9f%e5%90%88&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/1e1bfe2110848025a7b2ffba454daa86?source=copy_link&#34;&gt;(原理)过拟合&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

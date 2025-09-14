@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Transformer on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/tags/Transformer/</link>
+    <description>Recent content in Transformer on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 16 Feb 2023 13:57:57 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/tags/Transformer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(原理)Transformer</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/Transformer/</link>
+      <pubDate>Wed, 30 Nov 2022 16:44:11 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/Transformer/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xD;&#xA;&lt;!-- more --&gt;&#xD;&#xA;&lt;h1 id=&#34;原理transformer&#34;&gt;&#xA;  (原理)Transformer&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%8e%9f%e7%90%86transformer&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/Transformer-b1b9836f9c244db3acda7869f64ff860?pvs=4&#34;&gt;(原理)Transformer&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(实战)Transformer</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/</link>
+      <pubDate>Thu, 16 Feb 2023 13:57:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;参考&#34;&gt;&#xA;  参考&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e5%8f%82%e8%80%83&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;1xx. &lt;a href=&#34;https://github.com/www6v/AIGC/blob/master/transformer/transformer.ipynb&#34;&gt;transformer.ipynb&lt;/a&gt; git&#xA;&lt;a href=&#34;https://www.bilibili.com/video/BV1nc411y7m4/&#34;&gt;Transformer代码实现&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;1xx. &lt;a href=&#34;https://paperswithcode.com/method/transformer&#34;&gt;Transformer&lt;/a&gt;&#xA;&lt;a href=&#34;https://github.com/tunz/transformer-pytorch/blob/e7266679f0b32fd99135ea617213f986ceede056/model/transformer.py#L201&#34;&gt;transformer.py&lt;/a&gt; git&lt;/p&gt;&#xA;&lt;p&gt;1xx. &lt;a href=&#34;http://arthurchiao.art/blog/transformers-from-scratch-zh/&#34;&gt;[译] Transformer 是如何工作的：600 行 Python 代码实现 self-attention 和两类 Transformer（2019）&lt;/a&gt; V, github&#xA;Transformers from scratch&lt;/p&gt;&#xA;&lt;p&gt;1xx. &lt;a href=&#34;https://blog.csdn.net/v_JULY_v/article/details/130090649&#34;&gt;从零实现Transformer的简易版与强大版：从300多行到3000多行&lt;/a&gt;&lt;/p&gt;&#xA;&lt;p&gt;1xx. &lt;a href=&#34;https://zhuanlan.zhihu.com/p/398039366&#34;&gt;Transformer源码详解（Pytorch版本）&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

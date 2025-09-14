@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch_npu
+from torch_npu.contrib import transfer_to_npu
+
+class Expert(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, output_dim))
+        
+    def forward(self, x):
+        return self.net(x)
+
+class MoE(nn.Module):
+    def __init__(self, input_dim, num_experts, top_k, expert_capacity, hidden_dim, output_dim):
+        super().__init__()
+        self.num_experts = num_experts
+        self.top_k = top_k
+        self.expert_capacity = expert_capacity
+        
+        # 路由网络
+        self.gate = nn.Linear(input_dim, num_experts)
+        
+        # 专家集合
+        self.experts = nn.ModuleList(
+            [Expert(input_dim, hidden_dim, output_dim) for _ in range(num_experts)])
+        
+    def forward(self, x):
+        batch_size, input_dim = x.shape
+        device = x.device
+        
+        # 路由计算
+        logits = self.gate(x)
+        probs = torch.softmax(logits, dim=-1)
+        topk_probs, topk_indices = torch.topk(probs, self.top_k, dim=-1)
+        
+        # 辅助损失计算
+        if self.training:
+            # 重要性损失（专家利用率均衡）
+            importance = probs.sum(0)
+            importance_loss = torch.var(importance) / (self.num_experts ** 2)
+            
+            # 负载均衡损失（样本分配均衡）
+            mask = torch.zeros_like(probs, dtype=torch.bool)
+            mask.scatter_(1, topk_indices, True)
+            routing_probs = probs * mask
+            expert_usage = mask.float().mean(0)
+            routing_weights = routing_probs.mean(0)
+            load_balance_loss = self.num_experts * (expert_usage * routing_weights).sum()
+            
+            aux_loss = importance_loss &#43; load_balance_loss
+        else:
+            aux_loss = 0.0
+
+        # 专家分配逻辑
+        flat_indices = topk_indices.view(-1)
+        flat_probs = topk_probs.view(-1)
+        sample_indices = torch.arange(batch_size, device=device)[:, None]\
+                            .expand(-1, self.top_k).flatten()
+
+        # 初始化输出
+        outputs = torch.zeros(batch_size, self.experts[0].net[-1].out_features, 
+                            device=device)
+
+        # 处理每个专家
+        for expert_idx in range(self.num_experts):
+            # 获取分配给当前专家的样本
+            expert_mask = flat_indices == expert_idx
+            expert_samples = sample_indices[expert_mask]
+            expert_weights = flat_probs[expert_mask]
+
+            # 容量控制
+            if len(expert_samples) &gt; self.expert_capacity:
+                expert_samples = expert_samples[:self.expert_capacity]
+                expert_weights = expert_weights[:self.expert_capacity]
+
+            if len(expert_samples) == 0:
+                continue
+
+            # 处理专家计算
+            expert_input = x[expert_samples]
+            expert_output = self.experts[expert_idx](expert_input)
+            weighted_output = expert_output * expert_weights.unsqueeze(-1)
+            
+            # 累加输出
+            outputs.index_add_(0, expert_samples, weighted_output)
+
+        return outputs, aux_loss
+
+# 测试示例
+if __name__ == &#34;__main__&#34;:
+    input_dim = 128
+    output_dim = 256
+    num_experts = 8
+    top_k = 2
+    expert_capacity = 32
+    hidden_dim = 512
+    batch_size = 64
+
+    # add
+    device = torch.device(&#34;npu:4&#34; if torch.npu.is_available() else &#34;cpu&#34;)
+    moe = MoE(input_dim, num_experts, top_k, expert_capacity, hidden_dim, output_dim).to(device)
+    x = torch.randn(batch_size, input_dim).to(device)
+
+    experimental_config = torch_npu.profiler._ExperimentalConfig(
+        export_type=torch_npu.profiler.ExportType.Text,
+        profiler_level=torch_npu.profiler.ProfilerLevel.Level0,
+        msprof_tx=False,
+        aic_metrics=torch_npu.profiler.AiCMetrics.AiCoreNone,
+        l2_cache=False,
+        op_attr=False,
+        data_simplification=False,
+        record_op_args=False,
+        gc_detect_threshold=None
+    )
+
+    with torch_npu.profiler.profile(
+            activities=[
+                torch_npu.profiler.ProfilerActivity.CPU,
+                torch_npu.profiler.ProfilerActivity.NPU
+            ],
+            schedule=torch_npu.profiler.schedule(wait=0, warmup=0, active=1, repeat=1, skip_first=1),
+            on_trace_ready=torch_npu.profiler.tensorboard_trace_handler(&#34;./moe_stand_npu_result&#34;),
+            record_shapes=False,
+            profile_memory=False,
+            with_stack=False,
+            with_modules=False,
+            with_flops=False,
+            experimental_config=experimental_config) as prof:
+        # 训练模式
+        for _ in range(10):
+            moe.train()
+            output, loss = moe(x)
+            print(f&#34;Using device: {x.device}&#34;)
+            print(f&#34;Training output shape: {output.shape}&#34;)      # torch.Size([64, 256])
+            print(f&#34;Training auxiliary loss: {loss.item():.4f}&#34;)     # 示例值，如0.1234
+            prof.step()
+
+    print(&#34;=&#34; * 80)
+
+    # 推理模式
+    moe.eval()
+    output, _ = moe(x)
+    print(f&#34;Eval output shape: {output.shape}&#34;)     # torch.Size([64, 256])
+
+  参考
+  #
+
+MoE git">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/MOE/gptModelMOECode/gptModelMOECode/">
+  <meta property="og:site_name" content="LLM 算法">
+  <meta property="og:title" content="(代码)MOE">
+  <meta property="og:description" content="import torch import torch.nn as nn import torch.nn.functional as F import torch_npu from torch_npu.contrib import transfer_to_npu class Expert(nn.Module): def __init__(self, input_dim, hidden_dim, output_dim): super().__init__() self.net = nn.Sequential( nn.Linear(input_dim, hidden_dim), nn.GELU(), nn.Linear(hidden_dim, output_dim)) def forward(self, x): return self.net(x) class MoE(nn.Module): def __init__(self, input_dim, num_experts, top_k, expert_capacity, hidden_dim, output_dim): super().__init__() self.num_experts = num_experts self.top_k = top_k self.expert_capacity = expert_capacity # 路由网络 self.gate = nn.Linear(input_dim, num_experts) # 专家集合 self.experts = nn.ModuleList( [Expert(input_dim, hidden_dim, output_dim) for _ in range(num_experts)]) def forward(self, x): batch_size, input_dim = x.shape device = x.device # 路由计算 logits = self.gate(x) probs = torch.softmax(logits, dim=-1) topk_probs, topk_indices = torch.topk(probs, self.top_k, dim=-1) # 辅助损失计算 if self.training: # 重要性损失（专家利用率均衡） importance = probs.sum(0) importance_loss = torch.var(importance) / (self.num_experts ** 2) # 负载均衡损失（样本分配均衡） mask = torch.zeros_like(probs, dtype=torch.bool) mask.scatter_(1, topk_indices, True) routing_probs = probs * mask expert_usage = mask.float().mean(0) routing_weights = routing_probs.mean(0) load_balance_loss = self.num_experts * (expert_usage * routing_weights).sum() aux_loss = importance_loss &#43; load_balance_loss else: aux_loss = 0.0 # 专家分配逻辑 flat_indices = topk_indices.view(-1) flat_probs = topk_probs.view(-1) sample_indices = torch.arange(batch_size, device=device)[:, None]\ .expand(-1, self.top_k).flatten() # 初始化输出 outputs = torch.zeros(batch_size, self.experts[0].net[-1].out_features, device=device) # 处理每个专家 for expert_idx in range(self.num_experts): # 获取分配给当前专家的样本 expert_mask = flat_indices == expert_idx expert_samples = sample_indices[expert_mask] expert_weights = flat_probs[expert_mask] # 容量控制 if len(expert_samples) &gt; self.expert_capacity: expert_samples = expert_samples[:self.expert_capacity] expert_weights = expert_weights[:self.expert_capacity] if len(expert_samples) == 0: continue # 处理专家计算 expert_input = x[expert_samples] expert_output = self.experts[expert_idx](expert_input) weighted_output = expert_output * expert_weights.unsqueeze(-1) # 累加输出 outputs.index_add_(0, expert_samples, weighted_output) return outputs, aux_loss # 测试示例 if __name__ == &#34;__main__&#34;: input_dim = 128 output_dim = 256 num_experts = 8 top_k = 2 expert_capacity = 32 hidden_dim = 512 batch_size = 64 # add device = torch.device(&#34;npu:4&#34; if torch.npu.is_available() else &#34;cpu&#34;) moe = MoE(input_dim, num_experts, top_k, expert_capacity, hidden_dim, output_dim).to(device) x = torch.randn(batch_size, input_dim).to(device) experimental_config = torch_npu.profiler._ExperimentalConfig( export_type=torch_npu.profiler.ExportType.Text, profiler_level=torch_npu.profiler.ProfilerLevel.Level0, msprof_tx=False, aic_metrics=torch_npu.profiler.AiCMetrics.AiCoreNone, l2_cache=False, op_attr=False, data_simplification=False, record_op_args=False, gc_detect_threshold=None ) with torch_npu.profiler.profile( activities=[ torch_npu.profiler.ProfilerActivity.CPU, torch_npu.profiler.ProfilerActivity.NPU ], schedule=torch_npu.profiler.schedule(wait=0, warmup=0, active=1, repeat=1, skip_first=1), on_trace_ready=torch_npu.profiler.tensorboard_trace_handler(&#34;./moe_stand_npu_result&#34;), record_shapes=False, profile_memory=False, with_stack=False, with_modules=False, with_flops=False, experimental_config=experimental_config) as prof: # 训练模式 for _ in range(10): moe.train() output, loss = moe(x) print(f&#34;Using device: {x.device}&#34;) print(f&#34;Training output shape: {output.shape}&#34;) # torch.Size([64, 256]) print(f&#34;Training auxiliary loss: {loss.item():.4f}&#34;) # 示例值，如0.1234 prof.step() print(&#34;=&#34; * 80) # 推理模式 moe.eval() output, _ = moe(x) print(f&#34;Eval output shape: {output.shape}&#34;) # torch.Size([64, 256]) 参考 # MoE git">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="docs">
+    <meta property="article:published_time" content="2025-05-03T18:22:23+00:00">
+    <meta property="article:modified_time" content="2025-05-03T18:22:23+00:00">
+<title>(代码)MOE | LLM 算法</title>
+<link rel="icon" href="/www6vAlgo/favicon.png" >
+<link rel="manifest" href="/www6vAlgo/manifest.json">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/MOE/gptModelMOECode/gptModelMOECode/">
+<link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
+  <script defer src="/www6vAlgo/fuse.min.js"></script>
+  <script defer src="/www6vAlgo/en.search.min.a2f95be5084866e4e3cd29e4fc713fe29c3ba2bc9d8a2b31c6c5e40c42e81bba.js" integrity="sha256-ovlb5QhIZuTjzSnk/HE/4pw7orydiisxxsXkDELoG7o=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/www6vAlgo/"><span>LLM 算法</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="toggle"  />
+    <label for="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="flex justify-between">
+      <a role="button" class="">DeepLearning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca800fece441ac3e580321c74f3e9d49" class="toggle"  />
+    <label for="section-ca800fece441ac3e580321c74f3e9d49" class="flex justify-between">
+      <a role="button" class="">basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeepLearning/" class="">Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/" class="">(原理&amp;实战)前向/反向传播</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/" class="">(原理&amp;实战)交叉熵损失</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/" class="">(原理)过拟合</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/Pytorch/" class="">(实战)PyTorch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="toggle"  />
+    <label for="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="flex justify-between">
+      <a role="button" class="">正则化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/" class="">(原理&amp;实战)权重衰减</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/" class="">(原理&amp;实战)Dropout</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1424866912bd75b061251f3b3e940596" class="toggle"  />
+    <label for="section-1424866912bd75b061251f3b3e940596" class="flex justify-between">
+      <a role="button" class="">网络优化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/" class="">(原理)学习率</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/" class="">(原理)Batchsize</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/" class="">规范化 Norm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/" class="">(原理)梯度优化</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d175a581e6d1d294c2886df9f4e638fd" class="toggle"  />
+    <label for="section-d175a581e6d1d294c2886df9f4e638fd" class="flex justify-between">
+      <a role="button" class="">Transformer</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Transformer/" class="">(原理)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/SelfAttention/" class="">(原理)Self-Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/ModelGQA/" class="">(原理)GQA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/" class="">(实战)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/" class="">Tokenizer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="toggle"  />
+    <label for="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="flex justify-between">
+      <a role="button" class="">Embedding</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/survey/" class="">(Survey)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/Embedding/" class="">(原理)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-47d8239bc563cf0526676851b768f952" class="toggle"  />
+    <label for="section-47d8239bc563cf0526676851b768f952" class="flex justify-between">
+      <a role="button" class="">机器学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/" class="">机器学习-数据</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/" class="">机器学习-模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle"  />
+    <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
+      <a role="button" class="">强化学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
+    <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPODeepseek/gptDeepseekGRPO/" class="">(实战)GRPO</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO/gptRLPPO/" class="">(原理)PPO</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f3b12ee3a7ed865e5a6a2f2cd66616b3" class="toggle"  />
+    <label for="section-f3b12ee3a7ed865e5a6a2f2cd66616b3" class="flex justify-between">
+      <a role="button" class="">Agent&amp;RL</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/survey/" class="">(Survey) Agentic RL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e7a8d90c9f4d1530dfd702c793b5ab4f" class="toggle"  />
+    <label for="section-e7a8d90c9f4d1530dfd702c793b5ab4f" class="flex justify-between">
+      <a role="button" class="">Tool</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Tool/OTC/" class="">OTC</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Tool/ReTool/" class="">ReTool</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Tool/ToolRL/" class="">ToolRL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <span>Search</span>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Search/Search-R1/" class="">Search-R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/AgentRL/Search/Kimi-Researcher/" class="">Kimi-Researcher</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-74da2f7bc7a3fb6c948028291efa6462" class="toggle" checked />
+    <label for="section-74da2f7bc7a3fb6c948028291efa6462" class="flex justify-between">
+      <a role="button" class="">LLM</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a343fe5674a1bd12fab2d6b7694216c1" class="toggle"  />
+    <label for="section-a343fe5674a1bd12fab2d6b7694216c1" class="flex justify-between">
+      <a role="button" class="">Foundation Models</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/gptLargeModelSurvey/gptLargeModelSurvey/" class="">(综述)大模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/gptLargeModel/gptLargeModel/" class="">大模型</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2cb0545f8eb11e95288da75d3548e4e7" class="toggle"  />
+    <label for="section-2cb0545f8eb11e95288da75d3548e4e7" class="flex justify-between">
+      <a role="button" class="">decode-only</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptFamily/gptFamily/" class="">GPT 系列</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptLlama/gptLlama/" class="">LLaMA</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptLlamaFamily/gptLlamaFamily/" class="">LLaMA 家族</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/decode-only/gptLlama3-1/gptLlama3-1/" class="">Llama3.1</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3358f65fb3e2e4e1793b7222334ead0c" class="toggle"  />
+    <label for="section-3358f65fb3e2e4e1793b7222334ead0c" class="flex justify-between">
+      <a role="button" class="">encode-only</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/" class="">(原理)BERT</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Foundation-Models/gptLeaderBoard/gptLeaderBoard/" class="">大模型 排行榜</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-87e9d9637395fb89e4a012b1e3ddab96" class="toggle" checked />
+    <label for="section-87e9d9637395fb89e4a012b1e3ddab96" class="flex justify-between">
+      <a role="button" class="">MOE</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/gptModelMOE/gptModelMOE/" class="">(原理)Visual  MOE</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/gptModelMOECode/gptModelMOECode/" class="active">(代码)MOE</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-264623bf1ceb8caecf9f9992a93d7e71" class="toggle"  />
+    <label for="section-264623bf1ceb8caecf9f9992a93d7e71" class="flex justify-between">
+      <a role="button" class="">core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptScalingLaw/" class="">Scaling Law</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptEmergent/" class="">(原理)涌现现象</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptHallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptImpossibleTriangle/" class="">(原理)不可能三角</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/gptEval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>(代码)MOE</h3>
+
+  <label for="toc-control">
+    
+    <img src="/www6vAlgo/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn <span style="color:#66d9ef">as</span> nn
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch.nn.functional <span style="color:#66d9ef">as</span> F
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> torch_npu
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> torch_npu.contrib <span style="color:#f92672">import</span> transfer_to_npu
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Expert</span>(nn<span style="color:#f92672">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, input_dim, hidden_dim, output_dim):
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span><span style="color:#a6e22e">__init__</span>()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>net <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
+</span></span><span style="display:flex;"><span>            nn<span style="color:#f92672">.</span>Linear(input_dim, hidden_dim),
+</span></span><span style="display:flex;"><span>            nn<span style="color:#f92672">.</span>GELU(),
+</span></span><span style="display:flex;"><span>            nn<span style="color:#f92672">.</span>Linear(hidden_dim, output_dim))
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> self<span style="color:#f92672">.</span>net(x)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MoE</span>(nn<span style="color:#f92672">.</span>Module):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(self, input_dim, num_experts, top_k, expert_capacity, hidden_dim, output_dim):
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span><span style="color:#a6e22e">__init__</span>()
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>num_experts <span style="color:#f92672">=</span> num_experts
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>top_k <span style="color:#f92672">=</span> top_k
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>expert_capacity <span style="color:#f92672">=</span> expert_capacity
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 路由网络</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>gate <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Linear(input_dim, num_experts)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 专家集合</span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>experts <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>ModuleList(
+</span></span><span style="display:flex;"><span>            [Expert(input_dim, hidden_dim, output_dim) <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(num_experts)])
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">forward</span>(self, x):
+</span></span><span style="display:flex;"><span>        batch_size, input_dim <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>shape
+</span></span><span style="display:flex;"><span>        device <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>device
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 路由计算</span>
+</span></span><span style="display:flex;"><span>        logits <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>gate(x)
+</span></span><span style="display:flex;"><span>        probs <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>softmax(logits, dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        topk_probs, topk_indices <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>topk(probs, self<span style="color:#f92672">.</span>top_k, dim<span style="color:#f92672">=-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 辅助损失计算</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> self<span style="color:#f92672">.</span>training:
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 重要性损失（专家利用率均衡）</span>
+</span></span><span style="display:flex;"><span>            importance <span style="color:#f92672">=</span> probs<span style="color:#f92672">.</span>sum(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            importance_loss <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>var(importance) <span style="color:#f92672">/</span> (self<span style="color:#f92672">.</span>num_experts <span style="color:#f92672">**</span> <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 负载均衡损失（样本分配均衡）</span>
+</span></span><span style="display:flex;"><span>            mask <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros_like(probs, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>bool)
+</span></span><span style="display:flex;"><span>            mask<span style="color:#f92672">.</span>scatter_(<span style="color:#ae81ff">1</span>, topk_indices, <span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>            routing_probs <span style="color:#f92672">=</span> probs <span style="color:#f92672">*</span> mask
+</span></span><span style="display:flex;"><span>            expert_usage <span style="color:#f92672">=</span> mask<span style="color:#f92672">.</span>float()<span style="color:#f92672">.</span>mean(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            routing_weights <span style="color:#f92672">=</span> routing_probs<span style="color:#f92672">.</span>mean(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>            load_balance_loss <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>num_experts <span style="color:#f92672">*</span> (expert_usage <span style="color:#f92672">*</span> routing_weights)<span style="color:#f92672">.</span>sum()
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            aux_loss <span style="color:#f92672">=</span> importance_loss <span style="color:#f92672">+</span> load_balance_loss
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>            aux_loss <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 专家分配逻辑</span>
+</span></span><span style="display:flex;"><span>        flat_indices <span style="color:#f92672">=</span> topk_indices<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        flat_probs <span style="color:#f92672">=</span> topk_probs<span style="color:#f92672">.</span>view(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        sample_indices <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>arange(batch_size, device<span style="color:#f92672">=</span>device)[:, <span style="color:#66d9ef">None</span>]\
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">.</span>expand(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>, self<span style="color:#f92672">.</span>top_k)<span style="color:#f92672">.</span>flatten()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 初始化输出</span>
+</span></span><span style="display:flex;"><span>        outputs <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>zeros(batch_size, self<span style="color:#f92672">.</span>experts[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>net[<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>out_features, 
+</span></span><span style="display:flex;"><span>                            device<span style="color:#f92672">=</span>device)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 处理每个专家</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> expert_idx <span style="color:#f92672">in</span> range(self<span style="color:#f92672">.</span>num_experts):
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 获取分配给当前专家的样本</span>
+</span></span><span style="display:flex;"><span>            expert_mask <span style="color:#f92672">=</span> flat_indices <span style="color:#f92672">==</span> expert_idx
+</span></span><span style="display:flex;"><span>            expert_samples <span style="color:#f92672">=</span> sample_indices[expert_mask]
+</span></span><span style="display:flex;"><span>            expert_weights <span style="color:#f92672">=</span> flat_probs[expert_mask]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 容量控制</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(expert_samples) <span style="color:#f92672">&gt;</span> self<span style="color:#f92672">.</span>expert_capacity:
+</span></span><span style="display:flex;"><span>                expert_samples <span style="color:#f92672">=</span> expert_samples[:self<span style="color:#f92672">.</span>expert_capacity]
+</span></span><span style="display:flex;"><span>                expert_weights <span style="color:#f92672">=</span> expert_weights[:self<span style="color:#f92672">.</span>expert_capacity]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> len(expert_samples) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 处理专家计算</span>
+</span></span><span style="display:flex;"><span>            expert_input <span style="color:#f92672">=</span> x[expert_samples]
+</span></span><span style="display:flex;"><span>            expert_output <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>experts[expert_idx](expert_input)
+</span></span><span style="display:flex;"><span>            weighted_output <span style="color:#f92672">=</span> expert_output <span style="color:#f92672">*</span> expert_weights<span style="color:#f92672">.</span>unsqueeze(<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># 累加输出</span>
+</span></span><span style="display:flex;"><span>            outputs<span style="color:#f92672">.</span>index_add_(<span style="color:#ae81ff">0</span>, expert_samples, weighted_output)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> outputs, aux_loss
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 测试示例</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>    input_dim <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span>
+</span></span><span style="display:flex;"><span>    output_dim <span style="color:#f92672">=</span> <span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>    num_experts <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>    top_k <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    expert_capacity <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>
+</span></span><span style="display:flex;"><span>    hidden_dim <span style="color:#f92672">=</span> <span style="color:#ae81ff">512</span>
+</span></span><span style="display:flex;"><span>    batch_size <span style="color:#f92672">=</span> <span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># add</span>
+</span></span><span style="display:flex;"><span>    device <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>device(<span style="color:#e6db74">&#34;npu:4&#34;</span> <span style="color:#66d9ef">if</span> torch<span style="color:#f92672">.</span>npu<span style="color:#f92672">.</span>is_available() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#34;cpu&#34;</span>)
+</span></span><span style="display:flex;"><span>    moe <span style="color:#f92672">=</span> MoE(input_dim, num_experts, top_k, expert_capacity, hidden_dim, output_dim)<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>randn(batch_size, input_dim)<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    experimental_config <span style="color:#f92672">=</span> torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>_ExperimentalConfig(
+</span></span><span style="display:flex;"><span>        export_type<span style="color:#f92672">=</span>torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>ExportType<span style="color:#f92672">.</span>Text,
+</span></span><span style="display:flex;"><span>        profiler_level<span style="color:#f92672">=</span>torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>ProfilerLevel<span style="color:#f92672">.</span>Level0,
+</span></span><span style="display:flex;"><span>        msprof_tx<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>        aic_metrics<span style="color:#f92672">=</span>torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>AiCMetrics<span style="color:#f92672">.</span>AiCoreNone,
+</span></span><span style="display:flex;"><span>        l2_cache<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>        op_attr<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>        data_simplification<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>        record_op_args<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>        gc_detect_threshold<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>profile(
+</span></span><span style="display:flex;"><span>            activities<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>                torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>ProfilerActivity<span style="color:#f92672">.</span>CPU,
+</span></span><span style="display:flex;"><span>                torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>ProfilerActivity<span style="color:#f92672">.</span>NPU
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>            schedule<span style="color:#f92672">=</span>torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>schedule(wait<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, warmup<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>, active<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, repeat<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>, skip_first<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>            on_trace_ready<span style="color:#f92672">=</span>torch_npu<span style="color:#f92672">.</span>profiler<span style="color:#f92672">.</span>tensorboard_trace_handler(<span style="color:#e6db74">&#34;./moe_stand_npu_result&#34;</span>),
+</span></span><span style="display:flex;"><span>            record_shapes<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>            profile_memory<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>            with_stack<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>            with_modules<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>            with_flops<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>            experimental_config<span style="color:#f92672">=</span>experimental_config) <span style="color:#66d9ef">as</span> prof:
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># 训练模式</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> _ <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">10</span>):
+</span></span><span style="display:flex;"><span>            moe<span style="color:#f92672">.</span>train()
+</span></span><span style="display:flex;"><span>            output, loss <span style="color:#f92672">=</span> moe(x)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Using device: </span><span style="color:#e6db74">{</span>x<span style="color:#f92672">.</span>device<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Training output shape: </span><span style="color:#e6db74">{</span>output<span style="color:#f92672">.</span>shape<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)      <span style="color:#75715e"># torch.Size([64, 256])</span>
+</span></span><span style="display:flex;"><span>            print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Training auxiliary loss: </span><span style="color:#e6db74">{</span>loss<span style="color:#f92672">.</span>item()<span style="color:#e6db74">:</span><span style="color:#e6db74">.4f</span><span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)     <span style="color:#75715e"># 示例值，如0.1234</span>
+</span></span><span style="display:flex;"><span>            prof<span style="color:#f92672">.</span>step()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">&#34;=&#34;</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">80</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 推理模式</span>
+</span></span><span style="display:flex;"><span>    moe<span style="color:#f92672">.</span>eval()
+</span></span><span style="display:flex;"><span>    output, _ <span style="color:#f92672">=</span> moe(x)
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Eval output shape: </span><span style="color:#e6db74">{</span>output<span style="color:#f92672">.</span>shape<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)     <span style="color:#75715e"># torch.Size([64, 256])</span>
+</span></span></code></pre></div><h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<p><a href="https://github.com/www6v/LLM-building/tree/master/transformer/moe">MoE</a> git</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

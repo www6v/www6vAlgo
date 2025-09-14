@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ML on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/categories/ML/</link>
+    <description>Recent content in ML on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 21 Nov 2023 22:44:57 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/categories/ML/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>机器学习-数据</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/</link>
+      <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;机器学习-数据&#34;&gt;&#xA;  机器学习-数据&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0-%e6%95%b0%e6%8d%ae&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/ML-216bfe2110848076a892e11e7144828c?source=copy_link&#34;&gt;机器学习-数据&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>机器学习-模型</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/</link>
+      <pubDate>Tue, 21 Nov 2023 22:44:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;机器学习-模型&#34;&gt;&#xA;  机器学习-模型&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0-%e6%a8%a1%e5%9e%8b&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/216bfe21108480868a4cf3a485dd48e6?source=copy_link&#34;&gt;机器学习-模型&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
