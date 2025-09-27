@@ -10,23 +10,23 @@
     <atom:link href="https://www6v.github.io/www6vAlgo/tags/RL/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>(原理)PPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/gptRLPPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:32 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/gptRLPPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;ppo&#34;&gt;&#xA;  PPO&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#ppo&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/PPO-204bfe21108480b2aba0ce27d7d5e761?pvs=4&#34;&gt;(原理)PPO&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>(原理|实现)PPO-RewardModel</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;ppo-rewardmodel&#34;&gt;&#xA;  PPO-RewardModel&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#ppo-rewardmodel&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/PPO-RM-205bfe21108480a39b78d82696d1ede4?pvs=4&#34;&gt;(原理|实现)PPO-RewardModel&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>(原理&amp;实战)veRL Config</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/veRLConfig/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/framework/veRLConfig/</link>
       <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/veRLConfig/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/framework/veRLConfig/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;verl-config&#34;&gt;&#xA;  veRL Config&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#verl-config&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/veRL-Config-238bfe21108480b48225d75aec0990b2?source=copy_link&#34;&gt;(原理&amp;amp;实战)veRL Config&lt;/a&gt;&lt;/p&gt;</description>
     </item>
   </channel>
