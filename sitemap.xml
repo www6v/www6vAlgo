@@ -182,11 +182,26 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/decode-only/</loc>
     <lastmod>2024-09-04T12:24:07+00:00</lastmod>
   </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/</loc>
+    <lastmod>2024-07-21T12:39:48+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/Survey/</loc>
+    <lastmod>2024-07-21T12:39:48+00:00</lastmod>
+  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Search/Kimi-Researcher/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/unified/</loc>
     <lastmod>2024-06-01T22:12:51+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/</loc>
+    <lastmod>2024-04-04T22:03:52+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/</loc>
+    <lastmod>2024-02-25T18:46:57+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/V3/</loc>
+    <lastmod>2024-02-06T18:35:28+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/</loc>
     <lastmod>2024-01-08T19:19:59+00:00</lastmod>
@@ -227,6 +242,33 @@
     <loc>https://www6v.github.io/www6vAlgo/tags/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/Survey/gptReasoningTTS/gptReasoningTTS/</loc>
+    <lastmod>2024-07-21T12:39:48+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/categories/TTS/</loc>
+    <lastmod>2024-07-21T12:39:48+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/tags/TTS/</loc>
+    <lastmod>2024-07-21T12:39:48+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/Survey/gptReasoningPostTraining/gptReasoningPostTraining/</loc>
+    <lastmod>2024-04-04T22:33:18+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/categories/reasoning/</loc>
+    <lastmod>2024-04-04T22:33:18+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/tags/reasoning/</loc>
+    <lastmod>2024-04-04T22:33:18+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/gptReasoningGRPO/gptReasoningGRPO/</loc>
+    <lastmod>2024-04-04T22:03:52+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/categories/model/</loc>
+    <lastmod>2024-04-04T22:03:52+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/tags/model/</loc>
+    <lastmod>2024-04-04T22:03:52+00:00</lastmod>
+  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/DeepLearning/</loc>
     <lastmod>2024-04-04T17:28:27+00:00</lastmod>
   </url><url>
@@ -245,13 +287,28 @@
     <loc>https://www6v.github.io/www6vAlgo/tags/DeepSeek/</loc>
     <lastmod>2024-02-28T01:29:48+00:00</lastmod>
   </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptDeepseekDistill/gptDeepseekDistill/</loc>
+    <lastmod>2024-02-25T18:46:57+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptDeepseekSFT/gptDeepseekSFT/</loc>
+    <lastmod>2024-02-23T17:29:20+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptDeepSeekExplain2/gptDeepSeekExplain2/</loc>
+    <lastmod>2024-02-18T09:16:31+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptDeepSeekExplain1/gptDeepSeekExplain1/</loc>
+    <lastmod>2024-02-18T09:16:22+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptReasoningLLM/gptReasoningLLM/</loc>
+    <lastmod>2024-02-18T09:01:44+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptDeepSeekR1/gptDeepSeekR1/</loc>
+    <lastmod>2024-02-06T18:42:00+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/V3/gptDeepSeek/gptDeepSeek/</loc>
+    <lastmod>2024-02-06T18:35:28+00:00</lastmod>
+  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</loc>
-    <lastmod>2024-01-12T22:16:10+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/model/</loc>
-    <lastmod>2024-01-12T22:16:10+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/model/</loc>
     <lastmod>2024-01-12T22:16:10+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/ML/</loc>

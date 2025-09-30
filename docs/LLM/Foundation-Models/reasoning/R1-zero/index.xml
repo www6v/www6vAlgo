@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R1-zero on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/</link>
+    <description>Recent content in R1-zero on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 04 Apr 2024 22:03:52 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(原理)GRPO</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/gptReasoningGRPO/gptReasoningGRPO/</link>
+      <pubDate>Thu, 04 Apr 2024 22:03:52 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/gptReasoningGRPO/gptReasoningGRPO/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;grpo&#34;&gt;&#xA;  GRPO&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#grpo&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;iframe src=&#34;https://candied-skunk-1ca.notion.site/ebd/194bfe21108480129939e44fd7ddacfd&#34; width=&#34;100%&#34; height=&#34;1000&#34; frameborder=&#34;0&#34; allowfullscreen /&gt;</description>
+    </item>
+  </channel>
+</rss>
