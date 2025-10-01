@@ -24,23 +24,23 @@
     </item>
     <item>
       <title>(原理)GRPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/gptReasoningGRPO/gptReasoningGRPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/</link>
       <pubDate>Thu, 04 Apr 2024 22:03:52 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1-zero/gptReasoningGRPO/gptReasoningGRPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;grpo&#34;&gt;&#xA;  GRPO&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#grpo&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;iframe src=&#34;https://candied-skunk-1ca.notion.site/ebd/194bfe21108480129939e44fd7ddacfd&#34; width=&#34;100%&#34; height=&#34;1000&#34; frameborder=&#34;0&#34; allowfullscreen /&gt;</description>
     </item>
     <item>
       <title>(原理)Reasoning LLM</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptReasoningLLM/gptReasoningLLM/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1/ReasoningLLM/</link>
       <pubDate>Sun, 18 Feb 2024 09:01:44 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/R1/gptReasoningLLM/gptReasoningLLM/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1/ReasoningLLM/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;reasoning-llm&#34;&gt;&#xA;  Reasoning LLM&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#reasoning-llm&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/Visual-Guide-to-Reasoning-LLMs-Exploring-Test-Time-Compute-Techniques-and-DeepSeek-R1-194bfe2110848099a5c3e0585f332d2a?pvs=4&#34;&gt;(原理)Reasoning LLM&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>(原理)BERT</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Dense/BERT/</link>
       <pubDate>Fri, 12 Jan 2024 22:16:10 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/encode-only/gptBERT/gptBERT/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Dense/BERT/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;bert&#34;&gt;&#xA;  BERT&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#bert&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/BERT-16abfe211084808fb8a3d0769c37c3db?pvs=4&#34;&gt;(原理)BERT&lt;/a&gt;&lt;/p&gt;</description>
     </item>
   </channel>

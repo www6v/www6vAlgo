@@ -10,9 +10,9 @@
     <atom:link href="https://www6v.github.io/www6vAlgo/tags/TTS/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>(Survey) Test-Time Scaling</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/Survey/gptReasoningTTS/gptReasoningTTS/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/</link>
       <pubDate>Sun, 21 Jul 2024 12:39:48 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Foundation-Models/reasoning/Survey/gptReasoningTTS/gptReasoningTTS/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/</guid>
       <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;test-time-scaling&#34;&gt;&#xA;  Test-Time Scaling&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#test-time-scaling&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/A-Survey-on-Test-Time-Scaling-in-Large-Language-Models-What-How-Where-and-How-Well-227bfe21108480ff95e4c0c105c3c74b?source=copy_link&#34;&gt;(Survey) Test-Time Scaling&lt;/a&gt;&lt;/p&gt;</description>
     </item>
   </channel>
