@@ -3,13 +3,44 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="test">
+<meta name="description" content="
+  论文
+  #
+
+https://github.com/QwenLM/Qwen3/
+
+  Arch
+  #
+
+
+
+
+  Post-training
+  #
+
+
+
+  阶段三：思考模式融合
+  #
+
+**两种模式使用/think和/no_think标志进行区分，**注意“非思考模式”也有开始和结束的标志符，只是其思考过程置为空。并且在训练过程中，会针对多轮对话进行“思考”和“非思考”模式的混合训练。
+
+  参考
+  #
+
+The Big LLM Architecture Comparison
+Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程
+【LLM4】Qwen3-RL训练详解">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/">
   <meta property="og:site_name" content="LLM 算法">
   <meta property="og:title" content="Qwen3">
-  <meta property="og:description" content="test">
+  <meta property="og:description" content="论文 # https://github.com/QwenLM/Qwen3/
+Arch # Post-training # 阶段三：思考模式融合 # **两种模式使用/think和/no_think标志进行区分，**注意“非思考模式”也有开始和结束的标志符，只是其思考过程置为空。并且在训练过程中，会针对多轮对话进行“思考”和“非思考”模式的混合训练。
+参考 # The Big LLM Architecture Comparison
+Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程
+【LLM4】Qwen3-RL训练详解">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <title>Qwen3 | LLM 算法</title>
@@ -18,7 +49,7 @@
 <link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.7642d809b2d78ebbf6ec1e2d0ca6da1b68e8ef051a3c6fef782bfffb53b69d01.js" integrity="sha256-dkLYCbLXjrv27B4tDKbaG2jo7wUaPG/veCv/&#43;1O2nQE=" crossorigin="anonymous"></script>
+  <script defer src="/www6vAlgo/en.search.min.3947d298237361a883d488040b6627188365da6cb758dc65e5e50885af27e352.js" integrity="sha256-OUfSmCNzYaiD1IgEC2YnGINl2my3WNxl5eUIha8n41I=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
@@ -1757,7 +1788,22 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#论文">论文</a></li>
+    <li><a href="#arch">Arch</a></li>
+    <li><a href="#post-training">Post-training</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#阶段三思考模式融合"><strong>阶段三：思考模式融合</strong></a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
 
 
 
@@ -1768,7 +1814,34 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><p>test</p>
+  <article class="markdown book-article"><h1 id="论文">
+  论文
+  <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
+</h1>
+<p><a href="https://github.com/QwenLM/Qwen3/">https://github.com/QwenLM/Qwen3/</a></p>
+<h1 id="arch">
+  Arch
+  <a class="anchor" href="#arch">#</a>
+</h1>
+<p><img src="./images/qwen3-dense.webp" alt="Qwen3 dense" /></p>
+<p><img src="./images/qwen3-moe.webp" alt="Qwen3 dense" /></p>
+<h1 id="post-training">
+  Post-training
+  <a class="anchor" href="#post-training">#</a>
+</h1>
+<p><img src="./images/post-training.webp" alt="post-training" /></p>
+<h3 id="阶段三思考模式融合">
+  <strong>阶段三：思考模式融合</strong>
+  <a class="anchor" href="#%e9%98%b6%e6%ae%b5%e4%b8%89%e6%80%9d%e8%80%83%e6%a8%a1%e5%bc%8f%e8%9e%8d%e5%90%88">#</a>
+</h3>
+<p>**两种模式使用/think和/no_think标志进行区分，**注意“非思考模式”也有开始<think>和结束</think>的标志符，<strong>只是其思考过程置为空</strong>。并且在训练过程中，会针对多轮对话进行“思考”和“非思考”模式的混合训练。</p>
+<h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<p><a href="https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison">The Big LLM Architecture Comparison</a></p>
+<p><a href="https://mp.weixin.qq.com/s/-4H-GhqWIpoBYvJ2M7_8DQ">Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/1921218299133396032">【LLM4】Qwen3-RL训练详解</a></p>
 </article>
  
       
@@ -1808,7 +1881,22 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#论文">论文</a></li>
+    <li><a href="#arch">Arch</a></li>
+    <li><a href="#post-training">Post-training</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#阶段三思考模式融合"><strong>阶段三：思考模式融合</strong></a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
 
 
  
