@@ -9,7 +9,12 @@
 
 https://github.com/QwenLM/Qwen3/
 
-  Arch
+  Arch [2]
+  #
+
+
+
+  Compare [1]
   #
 
 
@@ -28,19 +33,23 @@ https://github.com/QwenLM/Qwen3/
   参考
   #
 
+
 The Big LLM Architecture Comparison
+Understanding and Implementing Qwen3 From Scratch
+
 Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程
-【LLM4】Qwen3-RL训练详解">
+【LLM4】Qwen3-RL训练详解 ***
+up: 卢老师， 怀中猫">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/">
   <meta property="og:site_name" content="LLM 算法">
   <meta property="og:title" content="Qwen3">
   <meta property="og:description" content="论文 # https://github.com/QwenLM/Qwen3/
-Arch # Post-training # 阶段三：思考模式融合 # **两种模式使用/think和/no_think标志进行区分，**注意“非思考模式”也有开始和结束的标志符，只是其思考过程置为空。并且在训练过程中，会针对多轮对话进行“思考”和“非思考”模式的混合训练。
-参考 # The Big LLM Architecture Comparison
-Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程
-【LLM4】Qwen3-RL训练详解">
+Arch [2] # Compare [1] # Post-training # 阶段三：思考模式融合 # **两种模式使用/think和/no_think标志进行区分，**注意“非思考模式”也有开始和结束的标志符，只是其思考过程置为空。并且在训练过程中，会针对多轮对话进行“思考”和“非思考”模式的混合训练。
+参考 # The Big LLM Architecture Comparison Understanding and Implementing Qwen3 From Scratch Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程
+【LLM4】Qwen3-RL训练详解 ***
+up: 卢老师， 怀中猫">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <title>Qwen3 | LLM 算法</title>
@@ -49,7 +58,7 @@ Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程
 <link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.3947d298237361a883d488040b6627188365da6cb758dc65e5e50885af27e352.js" integrity="sha256-OUfSmCNzYaiD1IgEC2YnGINl2my3WNxl5eUIha8n41I=" crossorigin="anonymous"></script>
+  <script defer src="/www6vAlgo/en.search.min.91e5685caaad21e2772ffa1831e449e5422876f024cbd401d8b25cc6e1798c75.js" integrity="sha256-keVoXKqtIeJ3L/oYMeRJ5UIodvAky9QB2LJcxuF5jHU=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
@@ -1545,7 +1554,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi1.5/" class="">kimi1.5</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi1.5/" class="">Kimi1.5</a>
   
 
           
@@ -1791,7 +1800,8 @@ https://github.com/alex-shpak/hugo-book
 <nav id="TableOfContents">
   <ul>
     <li><a href="#论文">论文</a></li>
-    <li><a href="#arch">Arch</a></li>
+    <li><a href="#arch-2">Arch [2]</a></li>
+    <li><a href="#compare-1">Compare [1]</a></li>
     <li><a href="#post-training">Post-training</a>
       <ul>
         <li>
@@ -1819,12 +1829,17 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
 </h1>
 <p><a href="https://github.com/QwenLM/Qwen3/">https://github.com/QwenLM/Qwen3/</a></p>
-<h1 id="arch">
-  Arch
-  <a class="anchor" href="#arch">#</a>
+<h1 id="arch-2">
+  Arch [2]
+  <a class="anchor" href="#arch-2">#</a>
 </h1>
-<p><img src="./images/qwen3-dense.webp" alt="Qwen3 dense" /></p>
-<p><img src="./images/qwen3-moe.webp" alt="Qwen3 dense" /></p>
+<p><img src="./images/arch.png" alt="Qwen3 dense" /></p>
+<h1 id="compare-1">
+  Compare [1]
+  <a class="anchor" href="#compare-1">#</a>
+</h1>
+<p><img src="./images/qwen3-dense.webp" alt="Qwen3 dense" />
+<img src="./images/qwen3-moe.webp" alt="Qwen3 moe" /></p>
 <h1 id="post-training">
   Post-training
   <a class="anchor" href="#post-training">#</a>
@@ -1839,9 +1854,13 @@ https://github.com/alex-shpak/hugo-book
   参考
   <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
 </h1>
-<p><a href="https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison">The Big LLM Architecture Comparison</a></p>
+<ol>
+<li><a href="https://magazine.sebastianraschka.com/p/the-big-llm-architecture-comparison">The Big LLM Architecture Comparison</a></li>
+<li><a href="https://sebastianraschka.com/blog/2025/qwen3-from-scratch.html">Understanding and Implementing Qwen3 From Scratch</a></li>
+</ol>
 <p><a href="https://mp.weixin.qq.com/s/-4H-GhqWIpoBYvJ2M7_8DQ">Qwen3技术报告的几点细节、ArXiv论文翻译实现方案及试错历程</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/1921218299133396032">【LLM4】Qwen3-RL训练详解</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/1921218299133396032">【LLM4】Qwen3-RL训练详解</a> ***</p>
+<p>up: 卢老师， 怀中猫</p>
 </article>
  
       
@@ -1884,7 +1903,8 @@ https://github.com/alex-shpak/hugo-book
 <nav id="TableOfContents">
   <ul>
     <li><a href="#论文">论文</a></li>
-    <li><a href="#arch">Arch</a></li>
+    <li><a href="#arch-2">Arch [2]</a></li>
+    <li><a href="#compare-1">Compare [1]</a></li>
     <li><a href="#post-training">Post-training</a>
       <ul>
         <li>
