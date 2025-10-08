@@ -24,10 +24,10 @@
     </item>
     <item>
       <title>(原理)GRPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPO/</link>
       <pubDate>Thu, 04 Apr 2024 22:03:52 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/</guid>
-      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;grpo&#34;&gt;&#xA;  GRPO&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#grpo&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;iframe src=&#34;https://candied-skunk-1ca.notion.site/ebd/194bfe21108480129939e44fd7ddacfd&#34; width=&#34;100%&#34; height=&#34;1000&#34; frameborder=&#34;0&#34; allowfullscreen /&gt;</description>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPO/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;grpo&#34;&gt;&#xA;  GRPO&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#grpo&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/ebd/194bfe21108480129939e44fd7ddacfd&#34;&gt;GRPO&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>(原理)Reasoning LLM</title>

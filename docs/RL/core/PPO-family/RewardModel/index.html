@@ -3,22 +3,29 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="">
+<meta name="description" content="
+
+
+  PPO-RewardModel
+  #
+
+(原理|实现)PPO-RewardModel">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/">
   <meta property="og:site_name" content="LLM 算法">
-  <meta property="og:title" content="R1-zero">
+  <meta property="og:title" content="(原理|实现)PPO-RewardModel">
+  <meta property="og:description" content="PPO-RewardModel # (原理|实现)PPO-RewardModel">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
-<title>R1-zero | LLM 算法</title>
+<title>(原理|实现)PPO-RewardModel | LLM 算法</title>
 <link rel="icon" href="/www6vAlgo/favicon.png" >
 <link rel="manifest" href="/www6vAlgo/manifest.json">
-<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.97c03b7bd85c5df7d10991502d3833adc8fa06e443c3338e56e44a4f6036aefc.js" integrity="sha256-l8A7e9hcXffRCZFQLTgzrcj6BuRDwzOOVuRKT2A2rvw=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/index.xml" title="LLM 算法" />
+  <script defer src="/www6vAlgo/en.search.min.d438de3313e10cf839fe825a9bfaf648e3331c75936b9cecd6c33d9b222f3fda.js" integrity="sha256-1DjeMxPhDPg5/oJam/r2SOMzHHWTa5zs1sM9myIvP9o=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -577,7 +584,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle"  />
+    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle" checked />
     <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
       <a role="button" class="">强化学习</a>
     </label>
@@ -593,7 +600,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
+    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle" checked />
     <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
       <a role="button" class="">Core</a>
     </label>
@@ -609,7 +616,23 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/GRPODeepseek/" class="">(实战)GRPO</a>
+    <input type="checkbox" id="section-a4b91a8ec30520aa20445e5046653468" class="toggle" checked />
+    <label for="section-a4b91a8ec30520aa20445e5046653468" class="flex justify-between">
+      <a role="button" class="">PPO family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
   
 
           
@@ -627,7 +650,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/PPO/" class="">(原理)PPO</a>
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
   
 
           
@@ -645,7 +668,46 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/PPO1/" class="">(原理)PPO</a>
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="active">(原理|实现)PPO-RewardModel</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-792edea28c7fa6c149b193954c187e3e" class="toggle"  />
+    <label for="section-792edea28c7fa6c149b193954c187e3e" class="flex justify-between">
+      <a role="button" class="">GRPO Family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
   
 
           
@@ -663,11 +725,16 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="">(原理)GRPO</a>
   
 
           
   <ul>
+    
+  </ul>
+
+        </li>
+      
     
   </ul>
 
@@ -994,7 +1061,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-74da2f7bc7a3fb6c948028291efa6462" class="toggle" checked />
+    <input type="checkbox" id="section-74da2f7bc7a3fb6c948028291efa6462" class="toggle"  />
     <label for="section-74da2f7bc7a3fb6c948028291efa6462" class="flex justify-between">
       <a role="button" class="">LLM</a>
     </label>
@@ -1196,7 +1263,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-00115c923a3b56db78447633045b86e5" class="toggle" checked />
+    <input type="checkbox" id="section-00115c923a3b56db78447633045b86e5" class="toggle"  />
     <label for="section-00115c923a3b56db78447633045b86e5" class="flex justify-between">
       <a role="button" class="">Reasoning</a>
     </label>
@@ -1247,45 +1314,6 @@ https://github.com/alex-shpak/hugo-book
 
   
     <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningPostTraining/" class="">(Survey)Reasoning LLM Post-Training</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-2f79310154bdc9dc12b6606f2f361443" class="toggle" checked />
-    <label for="section-2f79310154bdc9dc12b6606f2f361443" class="flex justify-between">
-      <a role="button" class="active">R1-zero</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/" class="">(原理)GRPO</a>
   
 
           
@@ -1492,7 +1520,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
   
 
           
@@ -1510,7 +1538,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen3 Report</a>
   
 
           
@@ -1778,7 +1806,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>R1-zero</h3>
+  <h3>(原理|实现)PPO-RewardModel</h3>
 
   <label for="toc-control">
     
@@ -1792,7 +1820,11 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#ppo-rewardmodel">PPO-RewardModel</a></li>
+  </ul>
+</nav>
 
 
 
@@ -1803,7 +1835,14 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"></article>
+  <article class="markdown book-article"><p></p>
+<!-- more -->
+<h1 id="ppo-rewardmodel">
+  PPO-RewardModel
+  <a class="anchor" href="#ppo-rewardmodel">#</a>
+</h1>
+<p><a href="https://candied-skunk-1ca.notion.site/PPO-RM-205bfe21108480a39b78d82696d1ede4?pvs=4">(原理|实现)PPO-RewardModel</a></p>
+</article>
  
       
 
@@ -1828,6 +1867,10 @@ https://github.com/alex-shpak/hugo-book
 
       
   
+  <div class="book-comments">
+
+</div>
+  
  
 
       <label for="menu-control" class="hidden book-menu-overlay"></label>
@@ -1838,7 +1881,11 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#ppo-rewardmodel">PPO-RewardModel</a></li>
+  </ul>
+</nav>
 
 
  

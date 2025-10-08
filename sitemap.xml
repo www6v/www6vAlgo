@@ -35,7 +35,7 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/MoE/ModelMOE/</loc>
     <lastmod>2024-03-08T22:41:41+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPODeepseek/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/</loc>
     <lastmod>2024-02-28T01:29:48+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/</loc>
@@ -73,9 +73,9 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/kimi1.5/</loc>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/</loc>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/</loc>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/MoE/ModelMOECode/</loc>
     <lastmod>2025-05-03T18:22:23+00:00</lastmod>
@@ -89,10 +89,10 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Tool/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/PPO/</loc>
     <lastmod>2024-06-01T22:12:32+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO1/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/PPO1/</loc>
     <lastmod>2024-06-01T22:12:32+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/</loc>
@@ -137,8 +137,14 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Search/websailer/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/</loc>
     <lastmod>2024-06-01T22:12:51+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/</loc>
+    <lastmod>2024-06-01T22:12:51+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/</loc>
+    <lastmod>2024-04-04T22:03:52+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/</loc>
     <lastmod>2024-01-12T19:06:59+00:00</lastmod>
@@ -199,9 +205,6 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/unified/</loc>
     <lastmod>2024-06-01T22:12:51+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/</loc>
-    <lastmod>2024-04-04T22:03:52+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1/</loc>
     <lastmod>2024-02-25T18:46:57+00:00</lastmod>
@@ -270,7 +273,7 @@
     <loc>https://www6v.github.io/www6vAlgo/tags/reasoning/</loc>
     <lastmod>2024-04-04T22:33:18+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPO/</loc>
     <lastmod>2024-04-04T22:03:52+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/model/</loc>

@@ -4,41 +4,28 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  PPO训练中四种模型的合作关系
+
+
+  GRPO
   #
 
-
-
-  PPO训练中各模型的输入与输出
-  #
-
-
-
-  基于PPO进行RLHF训练的原理图
-  #
-
-
-
-  参考
-  #
-
-第8部分：RLHF 与 RLAIF">
+GRPO">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/RL/core/PPO1/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPO/">
   <meta property="og:site_name" content="LLM 算法">
-  <meta property="og:title" content="(原理)PPO">
-  <meta property="og:description" content="PPO训练中四种模型的合作关系 # PPO训练中各模型的输入与输出 # 基于PPO进行RLHF训练的原理图 # 参考 # 第8部分：RLHF 与 RLAIF">
+  <meta property="og:title" content="(原理)GRPO">
+  <meta property="og:description" content="GRPO # GRPO">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
-<title>(原理)PPO | LLM 算法</title>
+<title>(原理)GRPO | LLM 算法</title>
 <link rel="icon" href="/www6vAlgo/favicon.png" >
 <link rel="manifest" href="/www6vAlgo/manifest.json">
-<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/RL/core/PPO1/">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPO/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.97c03b7bd85c5df7d10991502d3833adc8fa06e443c3338e56e44a4f6036aefc.js" integrity="sha256-l8A7e9hcXffRCZFQLTgzrcj6BuRDwzOOVuRKT2A2rvw=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/RL/core/PPO1/index.xml" title="LLM 算法" />
+  <script defer src="/www6vAlgo/en.search.min.d438de3313e10cf839fe825a9bfaf648e3331c75936b9cecd6c33d9b222f3fda.js" integrity="sha256-1DjeMxPhDPg5/oJam/r2SOMzHHWTa5zs1sM9myIvP9o=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPO/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -629,7 +616,23 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/GRPODeepseek/" class="">(实战)GRPO</a>
+    <input type="checkbox" id="section-a4b91a8ec30520aa20445e5046653468" class="toggle"  />
+    <label for="section-a4b91a8ec30520aa20445e5046653468" class="flex justify-between">
+      <a role="button" class="">PPO family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
   
 
           
@@ -647,7 +650,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/PPO/" class="">(原理)PPO</a>
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
   
 
           
@@ -665,7 +668,46 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/PPO1/" class="active">(原理)PPO</a>
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-792edea28c7fa6c149b193954c187e3e" class="toggle" checked />
+    <label for="section-792edea28c7fa6c149b193954c187e3e" class="flex justify-between">
+      <a role="button" class="">GRPO Family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
   
 
           
@@ -683,11 +725,16 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/RL/core/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="active">(原理)GRPO</a>
   
 
           
   <ul>
+    
+  </ul>
+
+        </li>
+      
     
   </ul>
 
@@ -1289,45 +1336,6 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-2f79310154bdc9dc12b6606f2f361443" class="toggle"  />
-    <label for="section-2f79310154bdc9dc12b6606f2f361443" class="flex justify-between">
-      <a role="button" class="">R1-zero</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Reasoning/R1-zero/ReasoningGRPO/" class="">(原理)GRPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <input type="checkbox" id="section-2d95ba6fdc69c818b831536584a44b3e" class="toggle"  />
     <label for="section-2d95ba6fdc69c818b831536584a44b3e" class="flex justify-between">
       <a role="button" class="">R1</a>
@@ -1512,7 +1520,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
   
 
           
@@ -1530,7 +1538,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen3 Report</a>
   
 
           
@@ -1798,7 +1806,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>(原理)PPO</h3>
+  <h3>(原理)GRPO</h3>
 
   <label for="toc-control">
     
@@ -1814,10 +1822,7 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#ppo训练中四种模型的合作关系">PPO训练中四种模型的合作关系</a></li>
-    <li><a href="#ppo训练中各模型的输入与输出">PPO训练中各模型的输入与输出</a></li>
-    <li><a href="#基于ppo进行rlhf训练的原理图">基于PPO进行RLHF训练的原理图</a></li>
-    <li><a href="#参考">参考</a></li>
+    <li><a href="#grpo">GRPO</a></li>
   </ul>
 </nav>
 
@@ -1830,26 +1835,13 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="ppo训练中四种模型的合作关系">
-  PPO训练中四种模型的合作关系
-  <a class="anchor" href="#ppo%e8%ae%ad%e7%bb%83%e4%b8%ad%e5%9b%9b%e7%a7%8d%e6%a8%a1%e5%9e%8b%e7%9a%84%e5%90%88%e4%bd%9c%e5%85%b3%e7%b3%bb">#</a>
+  <article class="markdown book-article"><p></p>
+<!-- more -->
+<h1 id="grpo">
+  GRPO
+  <a class="anchor" href="#grpo">#</a>
 </h1>
-<p><img src="./images/ppo_models.png" alt="PPO训练中四种模型的合作关系" /></p>
-<h1 id="ppo训练中各模型的输入与输出">
-  PPO训练中各模型的输入与输出
-  <a class="anchor" href="#ppo%e8%ae%ad%e7%bb%83%e4%b8%ad%e5%90%84%e6%a8%a1%e5%9e%8b%e7%9a%84%e8%be%93%e5%85%a5%e4%b8%8e%e8%be%93%e5%87%ba">#</a>
-</h1>
-<p><img src="./images/ppo_model_output.png" alt="PPO训练中各模型的输入与输出" /></p>
-<h1 id="基于ppo进行rlhf训练的原理图">
-  基于PPO进行RLHF训练的原理图
-  <a class="anchor" href="#%e5%9f%ba%e4%ba%8eppo%e8%bf%9b%e8%a1%8crlhf%e8%ae%ad%e7%bb%83%e7%9a%84%e5%8e%9f%e7%90%86%e5%9b%be">#</a>
-</h1>
-<p><img src="./images/ppo_overview.png" alt="基于PPO进行RLHF训练的原理图" /></p>
-<h1 id="参考">
-  参考
-  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
-</h1>
-<p><strong>第8部分：RLHF 与 RLAIF</strong></p>
+<p><a href="https://candied-skunk-1ca.notion.site/ebd/194bfe21108480129939e44fd7ddacfd">GRPO</a></p>
 </article>
  
       
@@ -1891,10 +1883,7 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#ppo训练中四种模型的合作关系">PPO训练中四种模型的合作关系</a></li>
-    <li><a href="#ppo训练中各模型的输入与输出">PPO训练中各模型的输入与输出</a></li>
-    <li><a href="#基于ppo进行rlhf训练的原理图">基于PPO进行RLHF训练的原理图</a></li>
-    <li><a href="#参考">参考</a></li>
+    <li><a href="#grpo">GRPO</a></li>
   </ul>
 </nav>
 
