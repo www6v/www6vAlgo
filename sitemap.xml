@@ -14,6 +14,9 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/</loc>
+    <lastmod>2024-07-08T18:49:43+00:00</lastmod>
+  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Tool/OTC/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
@@ -23,13 +26,16 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/survey/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Survey/Survey/</loc>
+    <lastmod>2024-07-08T18:49:43+00:00</lastmod>
+  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Tool/ToolRL/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/</loc>
     <lastmod>2024-04-04T17:28:27+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Search/Search-R1/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Search/Search-R1/</loc>
     <lastmod>2024-03-26T12:13:50+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/MoE/ModelMOE/</loc>
@@ -134,10 +140,13 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/</loc>
     <lastmod>2024-07-21T12:39:48+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Search/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Search/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Search/websailer/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Survey/</loc>
+    <lastmod>2024-07-08T18:49:43+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Search/websailer/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/</loc>
@@ -206,7 +215,7 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/</loc>
     <lastmod>2024-07-21T12:39:48+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Agentic-RL/Search/Kimi-Researcher/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Search/Kimi-Researcher/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/unified/</loc>
