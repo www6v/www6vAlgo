@@ -3,13 +3,66 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="test">
+<meta name="description" content="
+  论文
+  #
+
+Reinforcement Learning Foundations for Deep Research Systems: A Survey
+
+  Method
+  #
+
+
+  
+      
+          方法
+          优化目标
+          数据形式
+          关键短板
+      
+  
+  
+      
+          SFT
+          模仿单步
+          (q, a) 对
+          暴露偏差、无法纠错
+      
+      
+          DPO
+          偏好排序
+          (q, a⁺, a⁻)
+          无状态、信用分配短视
+      
+      
+          RL
+          最大化回报
+          (q, τ, r)
+          需可验证奖励&#43;探索策略
+      
+  
+
+
+  RL METHODS FOR AGENTIC RESEARCH
+  #
+
+
+  TRAINING REGIME AND OPTIMIZATION STRUCTURE
+  #
+
+
+
+  REWARD DESIGN AND CREDIT ASSIGNMENT
+  #
+
+">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Survey/Survey/">
   <meta property="og:site_name" content="LLM 算法">
   <meta property="og:title" content="Survey">
-  <meta property="og:description" content="test">
+  <meta property="og:description" content="论文 # Reinforcement Learning Foundations for Deep Research Systems: A Survey
+Method # 方法 优化目标 数据形式 关键短板 SFT 模仿单步 (q, a) 对 暴露偏差、无法纠错 DPO 偏好排序 (q, a⁺, a⁻) 无状态、信用分配短视 RL 最大化回报 (q, τ, r) 需可验证奖励&#43;探索策略 RL METHODS FOR AGENTIC RESEARCH # TRAINING REGIME AND OPTIMIZATION STRUCTURE # REWARD DESIGN AND CREDIT ASSIGNMENT #">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <title>Survey | LLM 算法</title>
@@ -18,7 +71,7 @@
 <link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Survey/Survey/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.32da9dc8a47b330e766c71c3e33749566222b3b13ab121b569d8bb6fb746e2a9.js" integrity="sha256-MtqdyKR7Mw52bHHD4zdJVmIis7E6sSG1adi7b7dG4qk=" crossorigin="anonymous"></script>
+  <script defer src="/www6vAlgo/en.search.min.a0840b643a4100a57a22317047a74ac22987f1bfd8e703af3b983316dbc9b2da.js" integrity="sha256-oIQLZDpBAKV6IjFwR6dKwimH8b/Y5wOvO5gzFtvJsto=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/RL/Deep-Research/Survey/Survey/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
@@ -1910,7 +1963,24 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#论文">论文</a></li>
+    <li><a href="#method">Method</a></li>
+    <li><a href="#rl-methods-for-agentic-research">RL METHODS FOR AGENTIC RESEARCH</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#training-regime-and-optimization-structure">TRAINING REGIME AND OPTIMIZATION STRUCTURE</a></li>
+            <li><a href="#reward-design-and-credit-assignment">REWARD DESIGN AND CREDIT ASSIGNMENT</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#framework">framework</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
 
 
 
@@ -1921,7 +1991,77 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><p>test</p>
+  <article class="markdown book-article"><h1 id="论文">
+  论文
+  <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
+</h1>
+<p><a href="https://arxiv.org/pdf/2509.06733">Reinforcement Learning Foundations for Deep Research Systems: A Survey</a></p>
+<h1 id="method">
+  Method
+  <a class="anchor" href="#method">#</a>
+</h1>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">方法</th>
+          <th style="text-align: left">优化目标</th>
+          <th style="text-align: left">数据形式</th>
+          <th style="text-align: left">关键短板</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left">SFT</td>
+          <td style="text-align: left">模仿单步</td>
+          <td style="text-align: left">(q, a) 对</td>
+          <td style="text-align: left">暴露偏差、无法纠错</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">DPO</td>
+          <td style="text-align: left">偏好排序</td>
+          <td style="text-align: left">(q, a⁺, a⁻)</td>
+          <td style="text-align: left">无状态、信用分配短视</td>
+      </tr>
+      <tr>
+          <td style="text-align: left">RL</td>
+          <td style="text-align: left">最大化回报</td>
+          <td style="text-align: left">(q, τ, r)</td>
+          <td style="text-align: left">需可验证奖励+探索策略</td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="rl-methods-for-agentic-research">
+  RL METHODS FOR AGENTIC RESEARCH
+  <a class="anchor" href="#rl-methods-for-agentic-research">#</a>
+</h1>
+<h3 id="training-regime-and-optimization-structure">
+  TRAINING REGIME AND OPTIMIZATION STRUCTURE
+  <a class="anchor" href="#training-regime-and-optimization-structure">#</a>
+</h3>
+<p><img src="./images/640.webp" alt="TRAINING REGIME AND OPTIMIZATION STRUCTURE" /></p>
+<h3 id="reward-design-and-credit-assignment">
+  REWARD DESIGN AND CREDIT ASSIGNMENT
+  <a class="anchor" href="#reward-design-and-credit-assignment">#</a>
+</h3>
+<p><img src="./images/640-1.webp" alt="REWARD DESIGN AND CREDIT ASSIGNMENT" /></p>
+<ul>
+<li>
+<p>结果奖励（Outcome-only）</p>
+</li>
+<li>
+<p>步骤奖励（Step-level）</p>
+</li>
+</ul>
+<h1 id="framework">
+  framework
+  <a class="anchor" href="#framework">#</a>
+</h1>
+<p><img src="./images/640-framework.webp" alt="framework" /></p>
+<h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<p><a href="https://mp.weixin.qq.com/s/SbPF7zAulPok2Xz3wU2ncw">2篇最新论文，把Deep Research讲透了~</a></p>
 </article>
  
       
@@ -1961,7 +2101,24 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#论文">论文</a></li>
+    <li><a href="#method">Method</a></li>
+    <li><a href="#rl-methods-for-agentic-research">RL METHODS FOR AGENTIC RESEARCH</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#training-regime-and-optimization-structure">TRAINING REGIME AND OPTIMIZATION STRUCTURE</a></li>
+            <li><a href="#reward-design-and-credit-assignment">REWARD DESIGN AND CREDIT ASSIGNMENT</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#framework">framework</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
 
 
  
