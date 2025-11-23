@@ -11,13 +11,75 @@ https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file
 https://moonshotai.github.io/Kimi-K2/
 https://arxiv.org/pdf/2507.20534
 
-  分析
+
+  概述
   #
 
-最新重量级报告，Kimi 开源 K2技术「Make Kimi Great Again」    翻译 最上面的总结
-Kimi K2
-Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力训练的完整流程（含MuonClip优化、Agentic 数据合成等）
-Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力训练的完整流程">
+
+
+Kimi K2 标志着从传统静态大语言模型（LLM）向智能体智能（agentic intelligence）的转变。在这种新范式下，模型通过与动态环境的交互主动学习，而不仅仅依赖预先收集的数据集。其目标是赋予大语言模型自主感知、规划、推理和行动的能力，使其能够突破训练数据的局限。其影响深远：智能体大语言模型不再局限于模仿人类语料，而是通过合成数据、探索环境和实时适应，发展出新的能力。这为超人类推理、工具编排、软件开发和现实世界中的自主性铺平了道路。
+
+
+智能体智能也重新定义了训练挑战。预训练不仅需高效地建立广泛先验知识，还需在万亿参数规模下避免不稳定。后训练则需在自然语料中智能体行为稀缺的情况下，生成可验证、可执行的行为。K2 通过结合 MuonClip 稳定优化器、大规模智能体数据合成 和多信号强化学习（RL），成为当前最强的开源非“思考”模型之一。
+
+
+你可以在这里在线试用：kimi.com
+
+
+以下是 Kimi K2 的整体流程概览。
+
+
+
+
+  什么是 Kimi K2？
+  #
+
+
+
+Kimi K2 是一个混合专家模型（MoE），总参数量为 1 万亿，但每次推理仅激活 320 亿参数，使其在保持强大性能的同时具备良好的计算效率。
+
+
+更重要的是，Kimi K2 不仅是一个对话模型。它被设计用于智能体行为——如规划、推理、使用工具，并自主执行多步任务。
+
+
+Moonshot AI 发布了两个开源版本：
+
+Kimi-K2-Base：原始预训练模型，适合研究和微调
+Kimi-K2-Instruct：经过后训练、具备指令跟随能力的模型，适用于反射性任务
+
+
+
+
+
+  架构设计
+  #
+
+
+
+Kimi K2 采用了类似 DeepSeek V3 的 MoE 架构，但在专家数量、注意力头数量等方面有所不同：使用了更多专家、更少注意力头，并引入了更优的负载均衡机制，防止少数专家主导训练（即“专家塌陷”）。
+
+
+模型采用 32/1024 的稀疏激活结构，即每次仅激活 32 位专家。尽管稀疏度极高（推理时仅激活约 3% 的参数），K2 在各类任务上依然表现出色。
+
+
+以下是简化示意图（来自 Sebastian Raschka）：
+
+
+这种架构使 Kimi K2 能扩展至万亿参数规模，同时保持计算可行性。路由机制确保模型不同部分各司其职，训练动态则确保每位专家都能被充分利用。
+
+
+
+
+  预训练
+  #
+
+
+  MuonClip 优化器
+  #
+
+
+
+Token 效率与稳定性结合：K2 引入了 MuonClip，将高效的 Muon 优化器与 QK-Clip 机制结合。Muon 提高了每个 token 的学习效率，但在大规模训练中会出现注意力 logits 不稳定增长的问题。QK-Clip 通过在 logits 超过阈值时对查询和键权重进行重缩放，抑制其增长。重要的是，这种重缩放不会改变当前步骤的前向/反向计算，从而保留了优化动态。该机制有效防止了训练过程中的损失爆炸，使 K2 能在 15.5T tokens 上稳定训练，未出现发散。">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2/">
@@ -26,10 +88,18 @@ Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力
   <meta property="og:description" content="论文 # https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file
 https://moonshotai.github.io/Kimi-K2/
 https://arxiv.org/pdf/2507.20534
-分析 # 最新重量级报告，Kimi 开源 K2技术「Make Kimi Great Again」 翻译 最上面的总结
-Kimi K2
-Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力训练的完整流程（含MuonClip优化、Agentic 数据合成等）
-Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力训练的完整流程">
+概述 # Kimi K2 标志着从传统静态大语言模型（LLM）向智能体智能（agentic intelligence）的转变。在这种新范式下，模型通过与动态环境的交互主动学习，而不仅仅依赖预先收集的数据集。其目标是赋予大语言模型自主感知、规划、推理和行动的能力，使其能够突破训练数据的局限。其影响深远：智能体大语言模型不再局限于模仿人类语料，而是通过合成数据、探索环境和实时适应，发展出新的能力。这为超人类推理、工具编排、软件开发和现实世界中的自主性铺平了道路。
+智能体智能也重新定义了训练挑战。预训练不仅需高效地建立广泛先验知识，还需在万亿参数规模下避免不稳定。后训练则需在自然语料中智能体行为稀缺的情况下，生成可验证、可执行的行为。K2 通过结合 MuonClip 稳定优化器、大规模智能体数据合成 和多信号强化学习（RL），成为当前最强的开源非“思考”模型之一。
+你可以在这里在线试用：kimi.com
+以下是 Kimi K2 的整体流程概览。
+什么是 Kimi K2？ # Kimi K2 是一个混合专家模型（MoE），总参数量为 1 万亿，但每次推理仅激活 320 亿参数，使其在保持强大性能的同时具备良好的计算效率。
+更重要的是，Kimi K2 不仅是一个对话模型。它被设计用于智能体行为——如规划、推理、使用工具，并自主执行多步任务。
+Moonshot AI 发布了两个开源版本：
+Kimi-K2-Base：原始预训练模型，适合研究和微调 Kimi-K2-Instruct：经过后训练、具备指令跟随能力的模型，适用于反射性任务 架构设计 # Kimi K2 采用了类似 DeepSeek V3 的 MoE 架构，但在专家数量、注意力头数量等方面有所不同：使用了更多专家、更少注意力头，并引入了更优的负载均衡机制，防止少数专家主导训练（即“专家塌陷”）。
+模型采用 32/1024 的稀疏激活结构，即每次仅激活 32 位专家。尽管稀疏度极高（推理时仅激活约 3% 的参数），K2 在各类任务上依然表现出色。
+以下是简化示意图（来自 Sebastian Raschka）：
+这种架构使 Kimi K2 能扩展至万亿参数规模，同时保持计算可行性。路由机制确保模型不同部分各司其职，训练动态则确保每位专家都能被充分利用。
+预训练 # MuonClip 优化器 # Token 效率与稳定性结合：K2 引入了 MuonClip，将高效的 Muon 优化器与 QK-Clip 机制结合。Muon 提高了每个 token 的学习效率，但在大规模训练中会出现注意力 logits 不稳定增长的问题。QK-Clip 通过在 logits 超过阈值时对查询和键权重进行重缩放，抑制其增长。重要的是，这种重缩放不会改变当前步骤的前向/反向计算，从而保留了优化动态。该机制有效防止了训练过程中的损失爆炸，使 K2 能在 15.5T tokens 上稳定训练，未出现发散。">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <title>kimi k2 | LLM 算法</title>
@@ -38,7 +108,7 @@ Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力
 <link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.ac754fca2c390f383528f07650fbb74a2558681b817093d0494bc6742ee07fad.js" integrity="sha256-rHVPyiw5Dzg1KPB2UPu3SiVYaBuBcJPQSUvGdC7gf60=" crossorigin="anonymous"></script>
+  <script defer src="/www6vAlgo/en.search.min.509e55d1188cd900b08d52850fcb6fd7ed486c8927c63aa360b9c672fc453f79.js" integrity="sha256-UJ5V0RiM2QCwjVKFD8tv1&#43;1IbIknxjqjYLnGcvxFP3k=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
@@ -1765,6 +1835,24 @@ https://github.com/alex-shpak/hugo-book
   
 
   
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2-thinking/" class="">Kimi K2 Thinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
     <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/" class="">kimi k2</a>
   
 
@@ -2088,8 +2176,40 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#论文">论文</a></li>
-    <li><a href="#分析">分析</a></li>
+    <li><a href="#论文">论文</a>
+      <ul>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#什么是-kimi-k2">什么是 Kimi K2？</a></li>
+        <li><a href="#架构设计">架构设计</a></li>
+        <li><a href="#预训练">预训练</a>
+          <ul>
+            <li><a href="#muonclip-优化器">MuonClip 优化器</a></li>
+            <li><a href="#token-效用与合成改写">Token 效用与合成改写</a></li>
+            <li><a href="#模型架构">模型架构</a></li>
+            <li><a href="#训练基础设施">训练基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#后训练">后训练</a>
+          <ul>
+            <li><a href="#基于智能体数据的监督微调sft">基于智能体数据的监督微调（SFT）</a></li>
+            <li><a href="#强化学习rl">强化学习（RL）</a></li>
+            <li><a href="#rl-基础设施">RL 基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#评测结果">评测结果</a>
+          <ul>
+            <li><a href="#编程与工程能力">编程与工程能力</a></li>
+            <li><a href="#智能体工具使用">智能体工具使用</a></li>
+            <li><a href="#数学与-stem">数学与 STEM</a></li>
+            <li><a href="#通用与长上下文能力">通用与长上下文能力</a></li>
+          </ul>
+        </li>
+        <li><a href="#muonclip-优化总结">MuonClip 优化总结</a></li>
+        <li><a href="#智能体智能作为一种新范式">智能体智能作为一种新范式</a></li>
+        <li><a href="#参考资料">参考资料</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
 
@@ -2109,14 +2229,264 @@ https://github.com/alex-shpak/hugo-book
 <p><a href="https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file">https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file</a></p>
 <p><a href="https://moonshotai.github.io/Kimi-K2/">https://moonshotai.github.io/Kimi-K2/</a></p>
 <p><a href="https://arxiv.org/pdf/2507.20534">https://arxiv.org/pdf/2507.20534</a></p>
-<h1 id="分析">
-  分析
-  <a class="anchor" href="#%e5%88%86%e6%9e%90">#</a>
+<hr>
+<h2 id="概述">
+  概述
+  <a class="anchor" href="#%e6%a6%82%e8%bf%b0">#</a>
+</h2>
+<ul>
+<li>
+<p><a href="https://arxiv.org/abs/2507.20534">Kimi K2</a> 标志着从传统静态大语言模型（LLM）向<strong>智能体智能（agentic intelligence）<strong>的转变。在这种新范式下，模型通过与动态环境的交互主动学习，而不仅仅依赖预先收集的数据集。其目标是赋予大语言模型自主感知、规划、推理和行动的能力，使其能够突破训练数据的局限。其影响深远：智能体大语言模型不再局限于模仿人类语料，而是通过合成数据、探索环境和实时适应，发展出</strong>新的能力</strong>。这为<strong>超人类推理、工具编排、软件开发和现实世界中的自主性</strong>铺平了道路。</p>
+</li>
+<li>
+<p>智能体智能也重新定义了训练挑战。预训练不仅需高效地建立广泛先验知识，还需在万亿参数规模下避免不稳定。后训练则需在自然语料中智能体行为稀缺的情况下，生成可验证、可执行的行为。K2 通过结合 <strong>MuonClip 稳定优化器</strong>、<strong>大规模智能体数据合成</strong> 和<strong>多信号强化学习（RL）</strong>，成为当前最强的开源非“思考”模型之一。</p>
+</li>
+<li>
+<p>你可以在这里在线试用：<a href="https://www.kimi.com/">kimi.com</a></p>
+</li>
+<li>
+<p>以下是 <a href="https://moonshotai.github.io/Kimi-K2/">Kimi K2</a> 的整体流程概览。</p>
+</li>
+</ul>
+<hr>
+<h2 id="什么是-kimi-k2">
+  什么是 Kimi K2？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af-kimi-k2">#</a>
+</h2>
+<ul>
+<li>
+<p>Kimi K2 是一个<strong>混合专家模型（MoE）</strong>，总参数量为 <strong>1 万亿</strong>，但每次推理仅激活 <strong>320 亿</strong>参数，使其在保持强大性能的同时具备良好的计算效率。</p>
+</li>
+<li>
+<p>更重要的是，Kimi K2 不仅是一个对话模型。它被设计用于<strong>智能体行为</strong>——如规划、推理、使用工具，并自主执行多步任务。</p>
+</li>
+<li>
+<p>Moonshot AI 发布了两个开源版本：</p>
+<ul>
+<li><code>Kimi-K2-Base</code>：原始预训练模型，适合研究和微调</li>
+<li><code>Kimi-K2-Instruct</code>：经过后训练、具备指令跟随能力的模型，适用于反射性任务</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="架构设计">
+  架构设计
+  <a class="anchor" href="#%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1">#</a>
+</h2>
+<ul>
+<li>
+<p>Kimi K2 采用了类似 DeepSeek V3 的 MoE 架构，但在专家数量、注意力头数量等方面有所不同：使用了<strong>更多专家、更少注意力头</strong>，并引入了更优的负载均衡机制，防止少数专家主导训练（即“专家塌陷”）。</p>
+</li>
+<li>
+<p>模型采用 <strong>32/1024 的稀疏激活结构</strong>，即每次仅激活 32 位专家。尽管稀疏度极高（推理时仅激活约 3% 的参数），K2 在各类任务上依然表现出色。</p>
+</li>
+<li>
+<p>以下是简化示意图（来自 <a href="https://x.com/rasbt/status/1944056316424577525/photo/1">Sebastian Raschka</a>）：</p>
+</li>
+<li>
+<p>这种架构使 Kimi K2 能扩展至万亿参数规模，同时保持计算可行性。路由机制确保模型不同部分各司其职，训练动态则确保每位专家都能被充分利用。</p>
+</li>
+</ul>
+<hr>
+<h2 id="预训练">
+  预训练
+  <a class="anchor" href="#%e9%a2%84%e8%ae%ad%e7%bb%83">#</a>
+</h2>
+<h3 id="muonclip-优化器">
+  MuonClip 优化器
+  <a class="anchor" href="#muonclip-%e4%bc%98%e5%8c%96%e5%99%a8">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>Token 效率与稳定性结合</strong>：K2 引入了 <strong>MuonClip</strong>，将高效的 Muon 优化器与 <strong>QK-Clip 机制</strong>结合。Muon 提高了每个 token 的学习效率，但在大规模训练中会出现注意力 logits 不稳定增长的问题。QK-Clip 通过在 logits 超过阈值时对查询和键权重进行重缩放，抑制其增长。重要的是，这种重缩放不会改变当前步骤的前向/反向计算，从而保留了优化动态。该机制有效防止了训练过程中的损失爆炸，使 K2 能在 <strong>15.5T tokens 上稳定训练，未出现发散</strong>。</p>
+</li>
+<li>
+<p><strong>基于公式的裁剪机制</strong>：对于每个注意力头（h），其最大注意力 logits 为：</p>
+<p>[
+S^{h}<em>{\max} = \frac{1}{\sqrt{d}} \max</em>{X \in B} \max_{i,j} Q^{h}_i {K^h_j}^\top
+]</p>
+<p>当 ( S^{h}_{\max} &gt; \tau ) 时，权重将被重缩放：</p>
+<p>[
+W^h_q \leftarrow W^h_q \cdot \sqrt{\gamma_h}, \quad W^h_k \leftarrow W^h_k \cdot \sqrt{\gamma_h}
+]</p>
+<p>其中 ( \gamma_h = \min(1, \tau/S^{h}_{\max}) )。这种<strong>按头裁剪</strong>机制最小化了不必要的干预，同时保证了 logits 的有界性。</p>
+</li>
+</ul>
+<hr>
+<h3 id="token-效用与合成改写">
+  Token 效用与合成改写
+  <a class="anchor" href="#token-%e6%95%88%e7%94%a8%e4%b8%8e%e5%90%88%e6%88%90%e6%94%b9%e5%86%99">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>知识改写</strong>：K2 不采用多轮重复训练（易导致过拟合），而是引入<strong>合成改写流水线</strong>，包括：风格与视角多样的提示、块级自回归重写以保持全局一致性、语义保真度检查以确保对齐。通过改写，知识 token 被有效放大，同时不牺牲准确性。例如，SimpleQA 的准确率从多轮训练的 23.8% 提升至 28.9%。</p>
+</li>
+<li>
+<p><strong>数学增强</strong>：数学语料被改写为逐步“学习笔记”，灵感来自 SwallowMath。这种方式迫使模型内化推理步骤，提升其在竞赛级问题上的表现。此外，多语言数学资源被翻译为英文，增强了多样性与推理鲁棒性。</p>
+</li>
+</ul>
+<hr>
+<h3 id="模型架构">
+  模型架构
+  <a class="anchor" href="#%e6%a8%a1%e5%9e%8b%e6%9e%b6%e6%9e%84">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>万亿参数 MoE 的稀疏扩展</strong>：K2 使用 384 位专家，稀疏度为 48（每 token 激活 8 位）。实验表明，在相同 FLOPs 下，更高稀疏度可降低验证损失，相比稀疏度为 8 的模型，<strong>FLOPs 减少 1.69 倍</strong>。</p>
+</li>
+<li>
+<p><strong>注意力头权衡</strong>：K2 将注意力头数量减半至 64（相比 DeepSeek-V3 的翻倍策略）。实验显示，性能提升仅 0.5–1.2%，但在 128k token 长度下推理 FLOPs 增加高达 83%。因此，K2 优先考虑<strong>长上下文效率</strong>而非微小性能提升。</p>
+</li>
+</ul>
+<hr>
+<h3 id="训练基础设施">
+  训练基础设施
+  <a class="anchor" href="#%e8%ae%ad%e7%bb%83%e5%9f%ba%e7%a1%80%e8%ae%be%e6%96%bd">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>集群与并行策略</strong>：训练在 <strong>NVIDIA H800 集群</strong>上进行，每节点 2TB 内存，采用 16 路流水线并行、16 路专家并行和 ZeRO-1 数据并行。</p>
+</li>
+<li>
+<p><strong>内存优化</strong>：采用 FP8-E4M3 激活压缩、选择性重计算（SwiGLU/LayerNorm）以及 CPU 激活卸载，使万亿参数模型在有限 GPU 内存下稳定训练。</p>
+</li>
+<li>
+<p><strong>训练配方</strong>：共处理 15.5T tokens，前 10T tokens 使用恒定学习率 2e-4，后 5.5T 使用余弦衰减，最后进行退火阶段。上下文长度通过 <strong>YaRN</strong> 从 4k 扩展至 32k 再到 128k。训练曲线全程无波动。</p>
+</li>
+</ul>
+<hr>
+<h2 id="后训练">
+  后训练
+  <a class="anchor" href="#%e5%90%8e%e8%ae%ad%e7%bb%83">#</a>
+</h2>
+<h3 id="基于智能体数据的监督微调sft">
+  基于智能体数据的监督微调（SFT）
+  <a class="anchor" href="#%e5%9f%ba%e4%ba%8e%e6%99%ba%e8%83%bd%e4%bd%93%e6%95%b0%e6%8d%ae%e7%9a%84%e7%9b%91%e7%9d%a3%e5%be%ae%e8%b0%83sft">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>指令多样性</strong>：通过人工标注、提示工程改写和评判模型自动过滤，合成了多样化的指令微调数据集。</p>
+</li>
+<li>
+<p><strong>智能体合成流水线</strong>：借鉴 ACEBench，K2 构建了<strong>混合流水线</strong>，结合模拟环境与真实执行沙箱（如带单元测试的编程任务）。流程包括：(1) 生成合成与真实工具规范（20k+ 工具，3k+ MCP）；(2) 创建多样化智能体与工具集；(3) 生成基于评分标准的任务；(4) 模拟多轮轨迹并进行评分验证。这确保了<strong>覆盖率与真实性</strong>。</p>
+</li>
+</ul>
+<hr>
+<h3 id="强化学习rl">
+  强化学习（RL）
+  <a class="anchor" href="#%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0rl">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>双重奖励信号</strong>：RL 使用可验证任务（数学、逻辑、编程等）与自评评分奖励（如创造力、安全性等主观领域）。评判模型持续优化评分权重，将主观判断锚定在可验证性能上。</p>
+</li>
+<li>
+<p><strong>训练创新</strong>：引入预算控制机制惩罚冗长输出，PTX 损失集成保留高质量预训练知识，温度衰减策略平衡探索与收敛。最终，RL 不仅提升了准确性，也增强了<strong>与人类价值观的对齐</strong>。</p>
+</li>
+</ul>
+<hr>
+<h3 id="rl-基础设施">
+  RL 基础设施
+  <a class="anchor" href="#rl-%e5%9f%ba%e7%a1%80%e8%ae%be%e6%96%bd">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>检查点引擎</strong>：采用分布式检查点系统，在节点间广播完整参数状态，避免通过 NFS 重分发参数，减少同步开销，在万亿参数规模下实现<strong>30 秒内更新</strong>。</p>
+</li>
+<li>
+<p><strong>智能体 rollout</strong>：通过<strong>部分 rollout</strong>、环境并行化和延迟摊销加速长程任务。RL 框架类似 Gym 接口，支持任意新环境的无缝集成。</p>
+</li>
+</ul>
+<hr>
+<h2 id="评测结果">
+  评测结果
+  <a class="anchor" href="#%e8%af%84%e6%b5%8b%e7%bb%93%e6%9e%9c">#</a>
+</h2>
+<h3 id="编程与工程能力">
+  编程与工程能力
+  <a class="anchor" href="#%e7%bc%96%e7%a8%8b%e4%b8%8e%e5%b7%a5%e7%a8%8b%e8%83%bd%e5%8a%9b">#</a>
+</h3>
+<ul>
+<li>SWE-bench Verified（单轮智能体）：<strong>65.8%</strong>，接近 Claude 4 Opus（72.5%）</li>
+<li>LiveCodeBench v6：<strong>53.7%</strong>，超越 GPT-4.1 和 Claude Sonnet</li>
+<li>OJBench：<strong>27.1%</strong>，优于 Gemini 2.5 Flash（19.5%）</li>
+</ul>
+<p>这些结果使 K2 成为当前<strong>最强的开源编程模型</strong>之一。</p>
+<hr>
+<h3 id="智能体工具使用">
+  智能体工具使用
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e4%bd%93%e5%b7%a5%e5%85%b7%e4%bd%bf%e7%94%a8">#</a>
+</h3>
+<ul>
+<li>Tau2-Bench（多轮工具编排）：<strong>66.1 Pass@1</strong></li>
+<li>AceBench：<strong>76.5 准确率</strong>，超越 DeepSeek-V3 和 Claude Sonnet</li>
+</ul>
+<p>展现出强大的** grounded 工具使用推理能力**，是智能体智能的核心支柱。</p>
+<hr>
+<h3 id="数学与-stem">
+  数学与 STEM
+  <a class="anchor" href="#%e6%95%b0%e5%ad%a6%e4%b8%8e-stem">#</a>
+</h3>
+<ul>
+<li>AIME 2025：<strong>49.5%</strong>，远超 Qwen3（24.7%）</li>
+<li>GPQA-Diamond：<strong>75.1%</strong>，与 Claude Opus 相当</li>
+<li>HMMT 2025：<strong>38.8%</strong>，开源模型中最佳</li>
+</ul>
+<p>验证了“学习笔记改写”与“RL 可验证任务集成”的有效性。</p>
+<hr>
+<h3 id="通用与长上下文能力">
+  通用与长上下文能力
+  <a class="anchor" href="#%e9%80%9a%e7%94%a8%e4%b8%8e%e9%95%bf%e4%b8%8a%e4%b8%8b%e6%96%87%e8%83%bd%e5%8a%9b">#</a>
+</h3>
+<ul>
+<li>MMLU：<strong>89.5%</strong>，与专有模型相当</li>
+<li>MMLU-Redux：<strong>92.7%</strong>，开源模型中最佳</li>
+<li>LongBench v2：<strong>49.1%</strong>，与 GPT-4.1 竞争力相当</li>
+<li>DROP：<strong>93.5%</strong> 事实推理准确率</li>
+</ul>
+<p>K2 不仅是专用模型，更是<strong>推理、事实性和长上下文任务上的强通用模型</strong>。</p>
+<hr>
+<h2 id="muonclip-优化总结">
+  MuonClip 优化总结
+  <a class="anchor" href="#muonclip-%e4%bc%98%e5%8c%96%e6%80%bb%e7%bb%93">#</a>
+</h2>
+<ul>
+<li>
+<p>训练万亿参数模型极具挑战，大多数模型因注意力机制不稳定（尤其是 logits 爆炸）而失败。</p>
+</li>
+<li>
+<p>Kimi K2 引入了自定义优化器 <strong>MuonClip</strong>，这是 Muon 优化器的改进版，专为大规模 MoE 模型设计。</p>
+</li>
+<li>
+<p>其核心创新是 <strong>qk-clip</strong>，在每一步训练中动态重缩放注意力查询和键，确保 logits 保持在安全范围内。</p>
+</li>
+</ul>
+<hr>
+<h2 id="智能体智能作为一种新范式">
+  智能体智能作为一种新范式
+  <a class="anchor" href="#%e6%99%ba%e8%83%bd%e4%bd%93%e6%99%ba%e8%83%bd%e4%bd%9c%e4%b8%ba%e4%b8%80%e7%a7%8d%e6%96%b0%e8%8c%83%e5%bc%8f">#</a>
+</h2>
+<p>智能体智能将大语言模型的<strong>操作基础</strong>从被动完成引擎转变为<strong>自适应、自主系统</strong>。通过<strong>工具发现</strong>、<strong>自我评估</strong>、<strong>基于评分标准的对齐机制</strong>以及<strong>混合真实/合成环境</strong>，K2 等模型指向了新一代 AI 的方向：能够持续扩展其能力边界。</p>
+<p>智能体模型不再受限于静态预训练数据的边际收益递减，而是生成自身的<strong>行动轨迹</strong>和<strong>错误驱动的改进</strong>，成为<strong>自我维持的学习者</strong>。这不仅对研究具有重要意义（在智能体数据缺乏的情况下，扩展法则可能趋于平缓），也对现实部署至关重要——自主性、可靠性和工具使用能力不可或缺。</p>
+<p>K2 表明，构建此类系统需要在<strong>优化（MuonClip）</strong>、<strong>数据策划（合成改写与工具流水线）</strong>、<strong>强化学习（RLVR + 评分奖励）<strong>和</strong>基础设施（检查点引擎、智能体 rollout）<strong>等方面进行创新。它不仅是一个模型，更是未来 AI 系统的框架——模糊</strong>静态基础模型</strong>与<strong>交互式、演化中的智能体</strong>之间的界限。</p>
+<hr>
+<h2 id="参考资料">
+  参考资料
+  <a class="anchor" href="#%e5%8f%82%e8%80%83%e8%b5%84%e6%96%99">#</a>
+</h2>
+<ul>
+<li><a href="https://www.interconnects.ai/p/kimi-k2-and-when-deepseek-moments">Kimi K2 和“DeepSeek 时刻”何时成为常态</a></li>
+<li><a href="https://github.com/MoonshotAI/Kimi-K2">Kimi K2 GitHub</a></li>
+</ul>
+<hr>
+<h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
 </h1>
+<ol>
+<li><a href="https://aman.ai/primers/ai/kimi-K2/">Kimi K2</a></li>
+</ol>
 <p><a href="https://mp.weixin.qq.com/s/_PaLe6Wi0jH3FCsEN2m9lw">最新重量级报告，Kimi 开源 K2技术「Make Kimi Great Again」</a>    翻译 最上面的总结</p>
-<p><a href="https://aman.ai/primers/ai/kimi-K2/">Kimi K2</a></p>
-<p><a href="https://yuanchaofa.com/post/kimi-k2-and-kimi-k2-thinking-notes.html">Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力训练的完整流程（含MuonClip优化、Agentic 数据合成等）</a></p>
-<p><a href="https://mp.weixin.qq.com/s/PcUj0Z8lJrx-MDZDSwcjlg">Kimi-K2 和 Kimi-K2-Thinking 深度解读：从预训练优化到 Agentic 能力训练的完整流程</a></p>
 </article>
  
       
@@ -2158,8 +2528,40 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#论文">论文</a></li>
-    <li><a href="#分析">分析</a></li>
+    <li><a href="#论文">论文</a>
+      <ul>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#什么是-kimi-k2">什么是 Kimi K2？</a></li>
+        <li><a href="#架构设计">架构设计</a></li>
+        <li><a href="#预训练">预训练</a>
+          <ul>
+            <li><a href="#muonclip-优化器">MuonClip 优化器</a></li>
+            <li><a href="#token-效用与合成改写">Token 效用与合成改写</a></li>
+            <li><a href="#模型架构">模型架构</a></li>
+            <li><a href="#训练基础设施">训练基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#后训练">后训练</a>
+          <ul>
+            <li><a href="#基于智能体数据的监督微调sft">基于智能体数据的监督微调（SFT）</a></li>
+            <li><a href="#强化学习rl">强化学习（RL）</a></li>
+            <li><a href="#rl-基础设施">RL 基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#评测结果">评测结果</a>
+          <ul>
+            <li><a href="#编程与工程能力">编程与工程能力</a></li>
+            <li><a href="#智能体工具使用">智能体工具使用</a></li>
+            <li><a href="#数学与-stem">数学与 STEM</a></li>
+            <li><a href="#通用与长上下文能力">通用与长上下文能力</a></li>
+          </ul>
+        </li>
+        <li><a href="#muonclip-优化总结">MuonClip 优化总结</a></li>
+        <li><a href="#智能体智能作为一种新范式">智能体智能作为一种新范式</a></li>
+        <li><a href="#参考资料">参考资料</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
 
