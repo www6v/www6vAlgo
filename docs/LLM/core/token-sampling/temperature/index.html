@@ -4,54 +4,26 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  介绍
+  Token Sampling Methods
   #
 
-Kimi K2 代表了开源大型语言模型的重大进步，由月之暗面（Moonshot AI）开发，特别专注于智能体（agentic）智能。这个拥有 1.04 万亿参数的专家混合（MoE）模型旨在通过自主感知、规划、推理和行动，改变 AI 系统与复杂环境的交互方式。
- 全面的智能体数据合成管道，使 Kimi K2 能够大规模学习工具使用能力
-该模型解决了 AI 研究从静态模仿学习向动态、交互式智能的根本性转变。Kimi K2 的设计目标是，不仅限于重现训练数据中的模式，还能通过经验获取新技能，并在实时环境中调整其行为。
-
-  架构和预训练创新
-  #
-
-
-  MuonClip 优化器
-  #
-
-Kimi K2 的核心技术贡献之一是 MuonClip 优化器，它解决了大规模模型训练中的关键稳定性问题。MuonClip 在令牌高效的 Muon 优化器基础上，引入了 QK-Clip 机制，可防止训练不稳定，特别是可能导致训练中断的注意力对数（logit）爆炸。
-QK-Clip 机制通过在更新后重新缩放查询（query）和键（key）投影权重来限制注意力对数增长：
-$$
-\text{QK-Clip}(Q, K) = \text{rescale}(Q, K) \text{ when } |QK^T| &gt; \text{threshold}
-$$
-这项创新使得模型在 15.5 万亿个令牌上实现了稳定训练，没有出现一次损失峰值，这对于如此规模的模型而言是一项了不起的成就。
-
-  专家混合架构
-  #
-
-Kimi K2 采用了超稀疏的 MoE 架构，共有 384 个专家，每个令牌仅激活 8 个专家。这种设计选择遵循了经验性的扩展定律，该定律表明在固定的计算预算下，稀疏性的增加可以提高性能。关键架构规格包括：">
+Token Sampling Methods">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/temperature/">
   <meta property="og:site_name" content="LLM 算法">
-  <meta property="og:title" content="kimi k2">
-  <meta property="og:description" content="介绍 # Kimi K2 代表了开源大型语言模型的重大进步，由月之暗面（Moonshot AI）开发，特别专注于智能体（agentic）智能。这个拥有 1.04 万亿参数的专家混合（MoE）模型旨在通过自主感知、规划、推理和行动，改变 AI 系统与复杂环境的交互方式。
-全面的智能体数据合成管道，使 Kimi K2 能够大规模学习工具使用能力
-该模型解决了 AI 研究从静态模仿学习向动态、交互式智能的根本性转变。Kimi K2 的设计目标是，不仅限于重现训练数据中的模式，还能通过经验获取新技能，并在实时环境中调整其行为。
-架构和预训练创新 # MuonClip 优化器 # Kimi K2 的核心技术贡献之一是 MuonClip 优化器，它解决了大规模模型训练中的关键稳定性问题。MuonClip 在令牌高效的 Muon 优化器基础上，引入了 QK-Clip 机制，可防止训练不稳定，特别是可能导致训练中断的注意力对数（logit）爆炸。
-QK-Clip 机制通过在更新后重新缩放查询（query）和键（key）投影权重来限制注意力对数增长：
-$$ \text{QK-Clip}(Q, K) = \text{rescale}(Q, K) \text{ when } |QK^T| &gt; \text{threshold} $$
-这项创新使得模型在 15.5 万亿个令牌上实现了稳定训练，没有出现一次损失峰值，这对于如此规模的模型而言是一项了不起的成就。
-专家混合架构 # Kimi K2 采用了超稀疏的 MoE 架构，共有 384 个专家，每个令牌仅激活 8 个专家。这种设计选择遵循了经验性的扩展定律，该定律表明在固定的计算预算下，稀疏性的增加可以提高性能。关键架构规格包括：">
+  <meta property="og:title" content="Token Sampling Methods">
+  <meta property="og:description" content="Token Sampling Methods # Token Sampling Methods">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
-<title>kimi k2 | LLM 算法</title>
+<title>Token Sampling Methods | LLM 算法</title>
 <link rel="icon" href="/www6vAlgo/favicon.png" >
 <link rel="manifest" href="/www6vAlgo/manifest.json">
-<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/temperature/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.509e55d1188cd900b08d52850fcb6fd7ed486c8927c63aa360b9c672fc453f79.js" integrity="sha256-UJ5V0RiM2QCwjVKFD8tv1&#43;1IbIknxjqjYLnGcvxFP3k=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/index.xml" title="LLM 算法" />
+  <script defer src="/www6vAlgo/en.search.min.b94ea58e4f137d5b036d89585f625421662b9d9656f45aacb6360ff94d838cbe.js" integrity="sha256-uU6ljk8TfVsDbYlYX2JUIWYrnZZW9FqstjYP&#43;U2DjL4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/temperature/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1385,7 +1357,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-00115c923a3b56db78447633045b86e5" class="toggle" checked />
+    <input type="checkbox" id="section-00115c923a3b56db78447633045b86e5" class="toggle"  />
     <label for="section-00115c923a3b56db78447633045b86e5" class="flex justify-between">
       <a role="button" class="">Reasoning</a>
     </label>
@@ -1743,7 +1715,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-d9743338127b6aab5ee87bc9bc97be5e" class="toggle" checked />
+    <input type="checkbox" id="section-d9743338127b6aab5ee87bc9bc97be5e" class="toggle"  />
     <label for="section-d9743338127b6aab5ee87bc9bc97be5e" class="flex justify-between">
       <a role="button" class="">kimi</a>
     </label>
@@ -1759,7 +1731,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">kimi k2</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">(翻译)kimi k2</a>
   
 
           
@@ -1795,25 +1767,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/" class="active">kimi k2</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-1.5/" class="">Kimi1.5</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/" class="">Kimi1.5</a>
   
 
           
@@ -1958,7 +1912,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="toggle"  />
+    <input type="checkbox" id="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="toggle" checked />
     <label for="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="flex justify-between">
       <a role="button" class="">Core</a>
     </label>
@@ -2010,43 +1964,121 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Core/Hallucination/" class="">(原理)幻觉问题</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Core/ImpossibleTriangle/" class="">(原理)不可能三角</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/www6vAlgo/docs/LLM/Core/Eval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-49880184e06fd9cedeebad822a47bb36" class="toggle" checked />
+    <label for="section-49880184e06fd9cedeebad822a47bb36" class="flex justify-between">
+      <a role="button" class="">Token Sampling</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/" class="">(翻译)token sampling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/temperature/" class="active">Token Sampling Methods</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-dcc7208d3f790b5592723fa605667723" class="toggle"  />
+    <label for="section-dcc7208d3f790b5592723fa605667723" class="flex justify-between">
+      <a role="button" class="">Challenge</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/Hallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/" class="">(原理)不可能三角</a>
   
 
           
@@ -2102,7 +2134,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>kimi k2</h3>
+  <h3>Token Sampling Methods</h3>
 
   <label for="toc-control">
     
@@ -2118,47 +2150,7 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li>
-      <ul>
-        <li><a href="#介绍">介绍</a></li>
-        <li><a href="#架构和预训练创新">架构和预训练创新</a>
-          <ul>
-            <li><a href="#muonclip-优化器">MuonClip 优化器</a></li>
-            <li><a href="#专家混合架构">专家混合架构</a></li>
-          </ul>
-        </li>
-        <li><a href="#全面训练基础设施">全面训练基础设施</a>
-          <ul>
-            <li><a href="#并行策略">并行策略</a></li>
-            <li><a href="#内存优化技术">内存优化技术</a></li>
-          </ul>
-        </li>
-        <li><a href="#高级数据合成和后训练">高级数据合成和后训练</a>
-          <ul>
-            <li><a href="#大规模智能体数据合成">大规模智能体数据合成</a></li>
-            <li><a href="#强化学习框架">强化学习框架</a></li>
-          </ul>
-        </li>
-        <li><a href="#性能结果">性能结果</a>
-          <ul>
-            <li><a href="#代理和编码卓越表现">代理和编码卓越表现</a></li>
-            <li><a href="#数学和推理能力">数学和推理能力</a></li>
-            <li><a href="#开放式评估成功">开放式评估成功</a></li>
-          </ul>
-        </li>
-        <li><a href="#训练稳定性和效率">训练稳定性和效率</a></li>
-        <li><a href="#技术贡献和意义">技术贡献和意义</a>
-          <ul>
-            <li><a href="#优化器创新">优化器创新</a></li>
-            <li><a href="#基础设施工程">基础设施工程</a></li>
-            <li><a href="#数据质量和规模">数据质量和规模</a></li>
-          </ul>
-        </li>
-        <li><a href="#局限性与未来方向">局限性与未来方向</a></li>
-        <li><a href="#对开源ai的影响">对开源AI的影响</a></li>
-      </ul>
-    </li>
-    <li><a href="#参考">参考</a></li>
+    <li><a href="#token-sampling-methods">Token Sampling Methods</a></li>
   </ul>
 </nav>
 
@@ -2171,184 +2163,11 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h2 id="介绍">
-  介绍
-  <a class="anchor" href="#%e4%bb%8b%e7%bb%8d">#</a>
-</h2>
-<p>Kimi K2 代表了开源大型语言模型的重大进步，由月之暗面（Moonshot AI）开发，特别专注于智能体（agentic）智能。这个拥有 1.04 万亿参数的专家混合（MoE）模型旨在通过自主感知、规划、推理和行动，改变 AI 系统与复杂环境的交互方式。</p>
-<p><img src="https://paper-assets.alphaxiv.org/figures/2507.20534v1/x1.png" alt="Kimi K2 智能体数据合成管道" /> <em>全面的<u>智能体数据合成管道</u>，使 Kimi K2 能够大规模<u>学习工具使用能力</u></em></p>
-<p>该模型解决了 AI 研究从静态模仿学习向动态、交互式智能的根本性转变。Kimi K2 的设计目标是，不仅限于重现训练数据中的模式，还能通过经验获取新技能，并在实时环境中调整其行为。</p>
-<h2 id="架构和预训练创新">
-  架构和预训练创新
-  <a class="anchor" href="#%e6%9e%b6%e6%9e%84%e5%92%8c%e9%a2%84%e8%ae%ad%e7%bb%83%e5%88%9b%e6%96%b0">#</a>
-</h2>
-<h3 id="muonclip-优化器">
-  MuonClip 优化器
-  <a class="anchor" href="#muonclip-%e4%bc%98%e5%8c%96%e5%99%a8">#</a>
-</h3>
-<p>Kimi K2 的核心技术贡献之一是 <u>MuonClip 优化器</u>，它解决了大规模模型训练中的关键稳定性问题。MuonClip 在令牌高效的 Muon 优化器基础上，引入了 QK-Clip 机制，可防止训练不稳定，特别是可能导致训练中断的注意力对数（logit）爆炸。</p>
-<p>QK-Clip 机制通过在更新后重新缩放查询（query）和键（key）投影权重来限制注意力对数增长：</p>
-<p>$$
-\text{QK-Clip}(Q, K) = \text{rescale}(Q, K) \text{ when } |QK^T| &gt; \text{threshold}
-$$</p>
-<p>这项创新使得模型在 15.5 万亿个令牌上实现了稳定训练，没有出现一次损失峰值，这对于如此规模的模型而言是一项了不起的成就。</p>
-<h3 id="专家混合架构">
-  专家混合架构
-  <a class="anchor" href="#%e4%b8%93%e5%ae%b6%e6%b7%b7%e5%90%88%e6%9e%b6%e6%9e%84">#</a>
-</h3>
-<p>Kimi K2 采用了<u>超稀疏的 MoE 架构，共有 384 个专家，每个令牌仅激活 8 个专家</u>。这种设计选择遵循了经验性的扩展定律，该定律表明在固定的计算预算下，稀疏性的增加可以提高性能。关键架构规格包括：</p>
-<ul>
-<li><strong>总参数量</strong>：1.04 万亿</li>
-<li><strong>每次前向传播激活参数</strong>：326 亿</li>
-<li><strong>注意力头数</strong>：64（低于通常的 128 个，以最小化推理开销）</li>
-<li><strong>上下文长度</strong>：高达 128k 令牌（通过 YaRN 扩展）</li>
-</ul>
-<p>该模型采用了类似于 DeepSeek-V3 的多头潜在注意力（MLA），但针对训练效率和推理性能进行了优化。</p>
-<h2 id="全面训练基础设施">
-  全面训练基础设施
-  <a class="anchor" href="#%e5%85%a8%e9%9d%a2%e8%ae%ad%e7%bb%83%e5%9f%ba%e7%a1%80%e8%ae%be%e6%96%bd">#</a>
-</h2>
-<h3 id="并行策略">
-  并行策略
-  <a class="anchor" href="#%e5%b9%b6%e8%a1%8c%e7%ad%96%e7%95%a5">#</a>
-</h3>
-<p>Kimi K2 的训练基础设施展示了针对万亿参数模型训练的复杂工程解决方案。该系统采用了灵活的并行策略，结合了：</p>
-<ul>
-<li>具有虚拟阶段的 <strong>16 路流水线并行（PP）</strong></li>
-<li>具有通信重叠的 <strong>16 路专家并行（EP）</strong></li>
-<li>用于梯度同步的 <strong>ZeRO-1 数据并行</strong></li>
-</ul>
-<p>这种配置允许在任何 32 的倍数节点上进行训练，提供了卓越的可扩展性。</p>
-<h3 id="内存优化技术">
-  内存优化技术
-  <a class="anchor" href="#%e5%86%85%e5%ad%98%e4%bc%98%e5%8c%96%e6%8a%80%e6%9c%af">#</a>
-</h3>
-<p>为了管理庞大的内存需求，实施了几种优化技术：</p>
-<ul>
-<li><strong>选择性重计算</strong>：LayerNorm、SwiGLU 和 MLA/MoE 投影</li>
-<li><strong>FP8 存储</strong>：用于不那么敏感的激活</li>
-<li><strong>CPU 卸载</strong>：将激活异步流式传输到 CPU 内存</li>
-<li><strong>激活减少</strong>：系统性地减少峰值内存使用</li>
-</ul>
-<h2 id="高级数据合成和后训练">
-  高级数据合成和后训练
-  <a class="anchor" href="#%e9%ab%98%e7%ba%a7%e6%95%b0%e6%8d%ae%e5%90%88%e6%88%90%e5%92%8c%e5%90%8e%e8%ae%ad%e7%bb%83">#</a>
-</h2>
-<h3 id="大规模智能体数据合成">
-  大规模智能体数据合成
-  <a class="anchor" href="#%e5%a4%a7%e8%a7%84%e6%a8%a1%e6%99%ba%e8%83%bd%e4%bd%93%e6%95%b0%e6%8d%ae%e5%90%88%e6%88%90">#</a>
-</h3>
-<p>Kimi K2 最重要的创新之一是其用于工具使用的全面<u>智能体数据合成管道</u>。该系统通过以下方式以空前规模生成训练数据：</p>
-<p><strong>工具库</strong>：包含 3,000 多个真实模型控制协议（MCP）工具和 20,000 多个分层演进的合成工具，每个工具都具有清晰的接口和规范。</p>
-<p><img src="https://paper-assets.alphaxiv.org/figures/2507.20534v1/x10.png" alt="工具库结构" /> <em>生成多样化工具规范和智能体场景的系统方法</em></p>
-<p><strong>模拟框架</strong>：多轮场景，包含LLM生成的用户画像、具有受控随机性的复杂工具执行环境以及真实的反馈机制。</p>
-<p><strong>质量控制</strong>：基于LLM的评判器根据任务评分标准过滤轨迹，实现大规模拒绝采样以确保高质量的训练数据。</p>
-<h3 id="强化学习框架">
-  强化学习框架
-  <a class="anchor" href="#%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0%e6%a1%86%e6%9e%b6">#</a>
-</h3>
-<p>Kimi K2 实现了一个超越传统方法的全面强化学习系统：</p>
-<p><strong>可验证奖励训练场（Verifiable Rewards Gym）</strong>：一个可扩展的框架，支持跨多个领域的强化学习，包括数学、编程、指令遵循和安全评估。</p>
-<p><strong>自我批评评分奖励（Self-Critique Rubric Reward）</strong>：对于缺乏客观验证的任务，模型通过自我生成的反馈进行学习。系统将 K2 同时用作行动者和批评者，批评者根据学习到的评分标准提供排名。</p>
-<p><strong>高级强化学习技术</strong>：</p>
-<ul>
-<li><strong>预算控制</strong>：每样本令牌限制及截断惩罚</li>
-<li><strong>PTX 损失</strong>：对高质量样本的辅助损失，防止遗忘</li>
-<li><strong>温度衰减</strong>：从探索到利用的渐进式转变</li>
-</ul>
-<h2 id="性能结果">
-  性能结果
-  <a class="anchor" href="#%e6%80%a7%e8%83%bd%e7%bb%93%e6%9e%9c">#</a>
-</h2>
-<h3 id="代理和编码卓越表现">
-  代理和编码卓越表现
-  <a class="anchor" href="#%e4%bb%a3%e7%90%86%e5%92%8c%e7%bc%96%e7%a0%81%e5%8d%93%e8%b6%8a%e8%a1%a8%e7%8e%b0">#</a>
-</h3>
-<p>Kimi K2 在代理智能基准测试中展现出卓越的性能：</p>
-<p><img src="https://paper-assets.alphaxiv.org/figures/2507.20534v1/x19.png" alt="Performance Comparison" /> <em>全面的性能比较显示 Kimi K2 在代理和编码任务中的领先地位</em></p>
-<ul>
-<li><strong>SWE-bench 已验证</strong>：65.8%（单次尝试）和 71.6%（多次尝试）</li>
-<li><strong>LiveCodeBench v6</strong>：53.7%，领先所有开源模型</li>
-<li><strong>Tau2-Bench</strong>：66.1% 微观 Pass@1 平均值</li>
-<li><strong>ACEBench</strong>：76.5% 准确率</li>
-</ul>
-<h3 id="数学和推理能力">
-  数学和推理能力
-  <a class="anchor" href="#%e6%95%b0%e5%ad%a6%e5%92%8c%e6%8e%a8%e7%90%86%e8%83%bd%e5%8a%9b">#</a>
-</h3>
-<p>该模型在数学推理和逻辑任务中表现出色：</p>
-<ul>
-<li><strong>AIME 2024/2025</strong>：分别为 69.6% 和 49.5%</li>
-<li><strong>GPQA-Diamond</strong>：75.1%</li>
-<li><strong>ZebraLogic</strong>：89.0%</li>
-<li><strong>MATH</strong>：70.22%（基础模型）</li>
-</ul>
-<h3 id="开放式评估成功">
-  开放式评估成功
-  <a class="anchor" href="#%e5%bc%80%e6%94%be%e5%bc%8f%e8%af%84%e4%bc%b0%e6%88%90%e5%8a%9f">#</a>
-</h3>
-<p><img src="https://paper-assets.alphaxiv.org/figures/2507.20534v1/x14.png" alt="Open-Ended Evaluation Results" /> <em>Kimi K2 在与领先模型的正面比较中表现出色</em></p>
-<p>Kimi K2 在 LMSYS Arena 上排名开源模型第一，总排名第五，对阵 ChatGPT-4o-latest 的胜率为 65.4%，对阵 Claude Sonnet 4 的胜率为 64.6%，对阵 DeepSeek-V3-0324 的胜率为 59.6%。</p>
-<h2 id="训练稳定性和效率">
-  训练稳定性和效率
-  <a class="anchor" href="#%e8%ae%ad%e7%bb%83%e7%a8%b3%e5%ae%9a%e6%80%a7%e5%92%8c%e6%95%88%e7%8e%87">#</a>
-</h2>
-<p>MuonClip 优化器的有效性通过稳定的训练曲线得到证明：</p>
-<p><img src="https://paper-assets.alphaxiv.org/figures/2507.20534v1/x15.png" alt="Training Stability" /> <em>带和不带 QK-Clip 机制的训练稳定性比较</em></p>
-<p>QK-Clip 的集成防止了通常困扰令牌高效优化器的注意力 logits 爆炸，从而使整个 15.5 万亿令牌语料库的训练平稳进行。</p>
-<h2 id="技术贡献和意义">
-  技术贡献和意义
-  <a class="anchor" href="#%e6%8a%80%e6%9c%af%e8%b4%a1%e7%8c%ae%e5%92%8c%e6%84%8f%e4%b9%89">#</a>
-</h2>
-<h3 id="优化器创新">
-  优化器创新
-  <a class="anchor" href="#%e4%bc%98%e5%8c%96%e5%99%a8%e5%88%9b%e6%96%b0">#</a>
-</h3>
-<p>MuonClip 解决了扩展令牌高效优化器的一个根本性挑战。QK-Clip 机制提供了一种有原则的方法，可以在保持训练稳定性的同时，保留激进优化策略的优势。</p>
-<h3 id="基础设施工程">
-  基础设施工程
-  <a class="anchor" href="#%e5%9f%ba%e7%a1%80%e8%ae%be%e6%96%bd%e5%b7%a5%e7%a8%8b">#</a>
-</h3>
-<p>训练基础设施展示了几项工程创新：</p>
-<p><img src="https://paper-assets.alphaxiv.org/figures/2507.20534v1/x13.png" alt="Infrastructure Optimization" /> <em>具有同位训练和推理引擎的高效 RL 基础设施</em></p>
-<ul>
-<li><strong>同位架构</strong>：训练和推理引擎位于同一工作节点上</li>
-<li><strong>动态资源管理</strong>：根据需要释放和分配 GPU 资源</li>
-<li><strong>快速参数更新</strong>：万亿参数模型参数同步时间少于 30 秒</li>
-</ul>
-<h3 id="数据质量和规模">
-  数据质量和规模
-  <a class="anchor" href="#%e6%95%b0%e6%8d%ae%e8%b4%a8%e9%87%8f%e5%92%8c%e8%a7%84%e6%a8%a1">#</a>
-</h3>
-<p>智能体数据合成管道代表了在为复杂交互行为生成高质量训练数据方面取得了重大进展。真实世界工具、合成环境和复杂质量过滤的结合，创造了能够捕捉实际工具使用细微差别的训练数据。</p>
-<h2 id="局限性与未来方向">
-  局限性与未来方向
-  <a class="anchor" href="#%e5%b1%80%e9%99%90%e6%80%a7%e4%b8%8e%e6%9c%aa%e6%9d%a5%e6%96%b9%e5%90%91">#</a>
-</h2>
-<p>尽管Kimi K2取得了令人印象深刻的成果，但作者承认存在以下几个局限性：</p>
-<ul>
-<li><strong>Token 生成</strong>：对于复杂任务可能会产生过多的token</li>
-<li><strong>工具使用开销</strong>：当不必要地启用工具使用时，性能可能会下降</li>
-<li><strong>评估限制</strong>：当前的基准测试可能无法完全捕捉模型的智能体能力</li>
-</ul>
-<p>这些局限性指明了未来的发展方向，包括更复杂的推理策略和改进的工具选择机制。</p>
-<h2 id="对开源ai的影响">
-  对开源AI的影响
-  <a class="anchor" href="#%e5%af%b9%e5%bc%80%e6%ba%90ai%e7%9a%84%e5%bd%b1%e5%93%8d">#</a>
-</h2>
-<p>Kimi K2作为开源模型的发布，对AI社区做出了重大贡献。通过提供基础和指令微调检查点，月之暗面（Moonshot AI）使研究人员和开发者能够：</p>
-<ul>
-<li>在最先进的智能体能力基础上进行构建</li>
-<li>试验新的训练技术和架构</li>
-<li>在各种应用中部署强大的AI智能体</li>
-<li>促进先进AI技术的民主化</li>
-</ul>
-<p>该模型在保持开放访问性的同时，与专有系统具有竞争力的性能，这可能会加速智能体AI研究和应用的创新。</p>
-<h1 id="参考">
-  参考
-  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+  <article class="markdown book-article"><h1 id="token-sampling-methods">
+  Token Sampling Methods
+  <a class="anchor" href="#token-sampling-methods">#</a>
 </h1>
-<p><a href="https://www.alphaxiv.org/zh/overview/2507.20534v1">https://www.alphaxiv.org/zh/overview/2507.20534v1</a></p>
+<p><a href="https://candied-skunk-1ca.notion.site/4200b90adfd246ab93bfb1b330aa1bb2?pvs=4">Token Sampling Methods</a></p>
 </article>
  
       
@@ -2390,47 +2209,7 @@ $$</p>
   
 <nav id="TableOfContents">
   <ul>
-    <li>
-      <ul>
-        <li><a href="#介绍">介绍</a></li>
-        <li><a href="#架构和预训练创新">架构和预训练创新</a>
-          <ul>
-            <li><a href="#muonclip-优化器">MuonClip 优化器</a></li>
-            <li><a href="#专家混合架构">专家混合架构</a></li>
-          </ul>
-        </li>
-        <li><a href="#全面训练基础设施">全面训练基础设施</a>
-          <ul>
-            <li><a href="#并行策略">并行策略</a></li>
-            <li><a href="#内存优化技术">内存优化技术</a></li>
-          </ul>
-        </li>
-        <li><a href="#高级数据合成和后训练">高级数据合成和后训练</a>
-          <ul>
-            <li><a href="#大规模智能体数据合成">大规模智能体数据合成</a></li>
-            <li><a href="#强化学习框架">强化学习框架</a></li>
-          </ul>
-        </li>
-        <li><a href="#性能结果">性能结果</a>
-          <ul>
-            <li><a href="#代理和编码卓越表现">代理和编码卓越表现</a></li>
-            <li><a href="#数学和推理能力">数学和推理能力</a></li>
-            <li><a href="#开放式评估成功">开放式评估成功</a></li>
-          </ul>
-        </li>
-        <li><a href="#训练稳定性和效率">训练稳定性和效率</a></li>
-        <li><a href="#技术贡献和意义">技术贡献和意义</a>
-          <ul>
-            <li><a href="#优化器创新">优化器创新</a></li>
-            <li><a href="#基础设施工程">基础设施工程</a></li>
-            <li><a href="#数据质量和规模">数据质量和规模</a></li>
-          </ul>
-        </li>
-        <li><a href="#局限性与未来方向">局限性与未来方向</a></li>
-        <li><a href="#对开源ai的影响">对开源AI的影响</a></li>
-      </ul>
-    </li>
-    <li><a href="#参考">参考</a></li>
+    <li><a href="#token-sampling-methods">Token Sampling Methods</a></li>
   </ul>
 </nav>
 

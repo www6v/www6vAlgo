@@ -80,6 +80,8 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeepLearning/</loc>
     <lastmod>2022-06-11T15:57:10+00:00</lastmod>
   </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/</loc>
+  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2-thinking/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/</loc>
@@ -103,9 +105,6 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/PPO1/</loc>
     <lastmod>2024-06-01T22:12:32+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/</loc>
-    <lastmod>2024-02-06T18:35:28+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/</loc>
     <lastmod>2024-01-17T18:45:59+00:00</lastmod>
@@ -173,7 +172,7 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Dense/LlamaFamily/</loc>
     <lastmod>2023-02-24T22:14:52+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/Hallucination/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/challenge/Hallucination/</loc>
     <lastmod>2023-02-06T16:43:35+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/MoE/</loc>
@@ -197,7 +196,7 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/</loc>
     <lastmod>2023-02-16T13:57:57+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/ImpossibleTriangle/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/</loc>
     <lastmod>2023-01-25T10:05:55+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/veRLConfig/</loc>
@@ -242,9 +241,14 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/Embedding/</loc>
     <lastmod>2023-04-18T06:29:28+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-1.5/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/challenge/</loc>
+    <lastmod>2023-02-06T16:43:35+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/RLVR/</loc>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/</loc>
     <lastmod>2024-04-04T17:28:27+00:00</lastmod>
@@ -388,5 +392,7 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/tags/Transformer/</loc>
     <lastmod>2023-02-16T13:57:57+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/temperature/</loc>
   </url>
 </urlset>

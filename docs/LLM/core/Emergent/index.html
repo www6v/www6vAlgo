@@ -147,7 +147,8 @@ Emergent Abilities of Large Language Models （https://arxiv.org/abs/2206.07682�
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Core/Emergent/">
   <meta property="og:site_name" content="LLM 算法">
   <meta property="og:title" content="(原理)涌现现象">
-  <meta property="og:description" content="Emergent Abilities # 🔗 文章：Emergent Abilities of Large Language Models (2022.10) (arxiv.org) 🔑关键词和摘要 Keywords: LLMs, Emergent Ability, Scaling abstract 不可预测 不能从小模型的的性能外推 是否能通过继续扩大模型规模来获得更多涌现能力 ⚙️研究设计和结论 定义 通常的涌现现象 大模型的涌现现象 小模型接近随机 大模型突然出现 相变 实验框架 performance vs 1. FLOPs, model parameters Training datasets 叠甲：emergent 与很多因素都有关，本文并不是说到哪个 scale 就会出现 emergent，而是说 emergent 现象普遍存在。 实验1 Few-shot Prompting 测试数据说明: A: 三位数加法，两位数乘法 B: [dɪfərənt], 复原 “different,” C: 从 e l h l o 复原 hello D: 波斯语问答 E: 针对GPT-3 对抗标的问答 … 结果 这些 task，以 few-shot 形式展示过以后，都有 emergent 不同模型 emergent scale 不一样 有的 task，只有 540B 的 PaLM emerge了 实验2 增强语言模型能力的 emerge 现象 已知的一些大模型技巧在何种规模下发挥作用？ 大模型技巧 思维链 Chain-of-thought: Let’s think step by step. 指令微调 请写一段XXX的描述 草稿本方法： 计算 15&#43;16, 让模型在草稿本上写“5&#43;6=11，进位1” 这些增强语言模型能力的方法都有一定程度的涌现 联想：之前的 prompt tuning，parameter efficient tuning，都是某种随着模型规模扩大的涌现？ 讨论 Emergent 现象的解释 多步能力说 每个子能力达到 90% -&gt; 一无是处 每个子能力达到 95% -&gt; 能完成一些任务了 指标缺陷说 奇怪的现象：交叉熵损失不是 emergent 的，而是在逐步下降 Emergent 的阈值可能会越来越小 更干净的数据，更好的训练技巧，更优秀的模型结构都可以是 Emergent阈值变小 未来方向： 继续扩大 model scale，远未达到上限 一些新结构的 scaling 数据的 scaling 理解 prompt 机制 更前沿的 task，用来指导 emergent 理解 emergence 📚论文贡献 优点 第一次正式提出 emergent 实验 做了充分的实验表明该现象在各种数据集上广泛存在 甚至验证了一些“方法”的涌现 提出了一些解释该现象的观点，并提出质疑 改进点 还是不知道为啥 emerge 实验采用各种不同模型，无法得出哪个计算量级对哪种能力有 emerge 参考 # 清华博士带你思考大语言模型LLM的涌现现象（Emergent） 有脑图 Emergent Abilities of Large Language Models （https://arxiv.org/abs/2206.07682）">
+  <meta property="og:description" content="Emergent Abilities # 🔗 文章：Emergent Abilities of Large Language Models (2022.10) (arxiv.org) 🔑关键词和摘要 Keywords: LLMs, Emergent Ability, Scaling abstract 不可预测 不能从小模型的的性能外推 是否能通过继续扩大模型规模来获得更多涌现能力 ⚙️研究设计和结论 定义 通常的涌现现象 大模型的涌现现象 小模型接近随机 大模型突然出现 相变 实验框架 performance vs 1. FLOPs, model parameters Training datasets 叠甲：emergent 与很多因素都有关，本文并不是说到哪个 scale 就会出现 emergent，而是说 emergent 现象普遍存在。 实验1 Few-shot Prompting 测试数据说明: A: 三位数加法，两位数乘法 B: [dɪfərənt], 复原 “different,” C: 从 e l h l o 复原 hello D: 波斯语问答 E: 针对GPT-3 对抗标的问答 … 结果 这些 task，以 few-shot 形式展示过以后，都有 emergent 不同模型 emergent scale 不一样 有的 task，只有 540B 的 PaLM emerge了 实验2 增强语言模型能力的 emerge 现象 已知的一些大模型技巧在何种规模下发挥作用？ 大模型技巧 思维链 Chain-of-thought: Let’s think step by step. 指令微调 请写一段XXX的描述 草稿本方法： 计算 15&#43;16, 让模型在草稿本上写“5&#43;6=11，进位1” 这些增强语言模型能力的方法都有一定程度的涌现 联想：之前的 prompt tuning，parameter efficient tuning，都是某种随着模型规模扩大的涌现？ 讨论 Emergent 现象的解释 多步能力说 每个子能力达到 90% -&gt; 一无是处 每个子能力达到 95% -&gt; 能完成一些任务了 指标缺陷说 奇怪的现象：交叉熵损失不是 emergent 的，而是在逐步下降 Emergent 的阈值可能会越来越小 更干净的数据，更好的训练技巧，更优秀的模型结构都可以是 Emergent阈值变小 未来方向： 继续扩大 model scale，远未达到上限 一些新结构的 scaling 数据的 scaling 理解 prompt 机制 更前沿的 task，用来指导 emergent 理解 emergence 📚论文贡献 优点 第一次正式提出 emergent 实验 做了充分的实验表明该现象在各种数据集上广泛存在 甚至验证了一些“方法”的涌现 提出了一些解释该现象的观点，并提出质疑 改进点 还是不知道为啥 emerge 实验采用各种不同模型，无法得出哪个计算量级对哪种能力有 emerge 参考 # 清华博士带你思考大语言模型LLM的涌现现象（Emergent） 有脑图
+Emergent Abilities of Large Language Models （https://arxiv.org/abs/2206.07682）">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
 <title>(原理)涌现现象 | LLM 算法</title>
@@ -156,7 +157,7 @@ Emergent Abilities of Large Language Models （https://arxiv.org/abs/2206.07682�
 <link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Core/Emergent/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.509e55d1188cd900b08d52850fcb6fd7ed486c8927c63aa360b9c672fc453f79.js" integrity="sha256-UJ5V0RiM2QCwjVKFD8tv1&#43;1IbIknxjqjYLnGcvxFP3k=" crossorigin="anonymous"></script>
+  <script defer src="/www6vAlgo/en.search.min.b94ea58e4f137d5b036d89585f625421662b9d9656f45aacb6360ff94d838cbe.js" integrity="sha256-uU6ljk8TfVsDbYlYX2JUIWYrnZZW9FqstjYP&#43;U2DjL4=" crossorigin="anonymous"></script>
 <link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Core/Emergent/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
@@ -1865,7 +1866,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">kimi k2</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">(翻译)kimi k2</a>
   
 
           
@@ -1901,25 +1902,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/" class="">kimi k2</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-1.5/" class="">Kimi1.5</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/" class="">Kimi1.5</a>
   
 
           
@@ -2116,43 +2099,121 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Core/Hallucination/" class="">(原理)幻觉问题</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Core/ImpossibleTriangle/" class="">(原理)不可能三角</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/www6vAlgo/docs/LLM/Core/Eval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-49880184e06fd9cedeebad822a47bb36" class="toggle"  />
+    <label for="section-49880184e06fd9cedeebad822a47bb36" class="flex justify-between">
+      <a role="button" class="">Token Sampling</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/" class="">(翻译)token sampling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/temperature/" class="">Token Sampling Methods</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-dcc7208d3f790b5592723fa605667723" class="toggle"  />
+    <label for="section-dcc7208d3f790b5592723fa605667723" class="flex justify-between">
+      <a role="button" class="">Challenge</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/Hallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/" class="">(原理)不可能三角</a>
   
 
           
@@ -2375,7 +2436,7 @@ https://github.com/alex-shpak/hugo-book
 </h1>
 <ol>
 <li>
-<p><a href="https://www.bilibili.com/video/BV1qX4y1i78J/">清华博士带你思考大语言模型LLM的涌现现象（Emergent）</a>  有脑图
+<p><a href="https://www.bilibili.com/video/BV1qX4y1i78J/">清华博士带你思考大语言模型LLM的涌现现象（Emergent）</a>  有脑图<br>
 Emergent Abilities of Large Language Models （https://arxiv.org/abs/2206.07682）</p>
 </li>
 <li>

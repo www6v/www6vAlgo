@@ -3,31 +3,22 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="
-  幻觉[3]
-  #
-
-Hallucination in large language models usually refers to the model generating unfaithful, fabricated, inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to cases when the model makes mistakes. Here, I would like to narrow down the problem of hallucination to cases where the model output is fabricated and not grounded by either the provided context or world knowledge.
-大型语言模型中的幻觉通常是指模型生成不忠实、捏造、不一致或无意义的内容。作为一个术语，幻觉在某种程度上被推广到模型犯错的情况。在这里，我想将幻觉问题缩小到模型输出是捏造的， 而不是基于所提供的上下文或世界知识的情况。
-There are two types of hallucination:
-幻觉有两种类型：">
+<meta name="description" content="">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Core/Hallucination/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/challenge/">
   <meta property="og:site_name" content="LLM 算法">
-  <meta property="og:title" content="(原理)幻觉问题">
-  <meta property="og:description" content="幻觉[3] # Hallucination in large language models usually refers to the model generating unfaithful, fabricated, inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to cases when the model makes mistakes. Here, I would like to narrow down the problem of hallucination to cases where the model output is fabricated and not grounded by either the provided context or world knowledge. 大型语言模型中的幻觉通常是指模型生成不忠实、捏造、不一致或无意义的内容。作为一个术语，幻觉在某种程度上被推广到模型犯错的情况。在这里，我想将幻觉问题缩小到模型输出是捏造的， 而不是基于所提供的上下文或世界知识的情况。
-There are two types of hallucination: 幻觉有两种类型：">
+  <meta property="og:title" content="Challenge">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
-<title>(原理)幻觉问题 | LLM 算法</title>
+<title>Challenge | LLM 算法</title>
 <link rel="icon" href="/www6vAlgo/favicon.png" >
 <link rel="manifest" href="/www6vAlgo/manifest.json">
-<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Core/Hallucination/">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/challenge/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.509e55d1188cd900b08d52850fcb6fd7ed486c8927c63aa360b9c672fc453f79.js" integrity="sha256-UJ5V0RiM2QCwjVKFD8tv1&#43;1IbIknxjqjYLnGcvxFP3k=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Core/Hallucination/index.xml" title="LLM 算法" />
+  <script defer src="/www6vAlgo/en.search.min.b94ea58e4f137d5b036d89585f625421662b9d9656f45aacb6360ff94d838cbe.js" integrity="sha256-uU6ljk8TfVsDbYlYX2JUIWYrnZZW9FqstjYP&#43;U2DjL4=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/challenge/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1735,7 +1726,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">kimi k2</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">(翻译)kimi k2</a>
   
 
           
@@ -1771,25 +1762,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-k2/" class="">kimi k2</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/kimi-1.5/" class="">Kimi1.5</a>
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/" class="">Kimi1.5</a>
   
 
           
@@ -1934,7 +1907,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="toggle" checked />
+    <input type="checkbox" id="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="toggle"  />
     <label for="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="flex justify-between">
       <a role="button" class="">Core</a>
     </label>
@@ -1986,43 +1959,121 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/LLM/Core/Hallucination/" class="active">(原理)幻觉问题</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/LLM/Core/ImpossibleTriangle/" class="">(原理)不可能三角</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
     <a href="/www6vAlgo/docs/LLM/Core/Eval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-49880184e06fd9cedeebad822a47bb36" class="toggle"  />
+    <label for="section-49880184e06fd9cedeebad822a47bb36" class="flex justify-between">
+      <a role="button" class="">Token Sampling</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/" class="">(翻译)token sampling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/temperature/" class="">Token Sampling Methods</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-dcc7208d3f790b5592723fa605667723" class="toggle" checked />
+    <label for="section-dcc7208d3f790b5592723fa605667723" class="flex justify-between">
+      <a role="button" class="active">Challenge</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/Hallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/" class="">(原理)不可能三角</a>
   
 
           
@@ -2078,7 +2129,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>(原理)幻觉问题</h3>
+  <h3>Challenge</h3>
 
   <label for="toc-control">
     
@@ -2092,43 +2143,7 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#幻觉3">幻觉[3]</a></li>
-    <li><a href="#anti-hallucination-methods3">Anti-Hallucination Methods[3]</a>
-      <ul>
-        <li>
-          <ul>
-            <li><a href="#rag--edits-and-attribution">RAG → Edits and Attribution</a></li>
-            <li><a href="#chain-of-actions">Chain of Actions</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#survey">Survey</a>
-      <ul>
-        <li>
-          <ul>
-            <li><a href="#论文">论文</a></li>
-            <li><a href="#论文-1">论文</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#幻觉-vs-事实性1">幻觉 vs 事实性[1]</a></li>
-    <li><a href="#解决方案2">解决方案[2]</a></li>
-    <li><a href="#参考">参考</a>
-      <ul>
-        <li>
-          <ul>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#survey-1">survey</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</nav>
+<nav id="TableOfContents"></nav>
 
 
 
@@ -2139,147 +2154,7 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="幻觉3">
-  幻觉[3]
-  <a class="anchor" href="#%e5%b9%bb%e8%a7%893">#</a>
-</h1>
-<p>Hallucination in large language models usually refers to the model generating unfaithful, fabricated, inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to cases when the model makes mistakes. Here, I would like to narrow down the problem of hallucination to cases where the model output is fabricated and <strong>not grounded</strong> by either the provided context or world knowledge.
-大型语言模型中的幻觉通常是指模型生成不忠实、捏造、不一致或无意义的内容。作为一个术语，幻觉在某种程度上被推广到模型犯错的情况。在这里，我想将幻觉问题缩小到模型输出是捏造的， <strong>而不是</strong>基于所提供的上下文或世界知识的情况。</p>
-<p>There are two types of hallucination:
-幻觉有两种类型：</p>
-<ol>
-<li><strong>In-context hallucination</strong>: The model output should be consistent with the source content in context.
-上下文幻觉：模型输出应与上下文中的源内容一致。</li>
-<li><strong>Extrinsic hallucination</strong>: The model output should be grounded by the pre-training dataset. However, given the size of the pre-training dataset, it is too expensive to retrieve and identify conflicts per generation. If we consider the pre-training data corpus as a proxy for world knowledge, we essentially try to ensure the model output is factual and verifiable by external world knowledge. Equally importantly, when the model does not know about a fact, it should say so.
-外在幻觉：模型输出应以训练前数据集为基础。但是，考虑到预训练数据集的大小，检索和识别每代冲突的成本太高。如果我们将预训练数据语料库视为世界知识的代理，我们基本上会尝试确保模型输出是真实的，并且可以通过外部世界知识进行验证。同样重要的是，当模型不知道某个事实时，它应该这么说。</li>
-</ol>
-<h1 id="anti-hallucination-methods3">
-  Anti-Hallucination Methods[3]
-  <a class="anchor" href="#anti-hallucination-methods3">#</a>
-</h1>
-<h3 id="rag--edits-and-attribution">
-  RAG → Edits and Attribution
-  <a class="anchor" href="#rag--edits-and-attribution">#</a>
-</h3>
-<p><strong>Self-RAG</strong> (“Self-reflective retrieval-augmented generation”; <a href="https://arxiv.org/abs/2310.11511">Asai et al. 2024</a>) trains a LM end-to-end to learn to reflect on its own generation by outputting both task output and intermittent special <em>reflection tokens</em>. They created a supervision dataset for a critic model and a generator model by prompting GPT-4 and then distilled that into an in-house model to reduce inference cost.
-<strong>Self-RAG</strong>（“自反射检索增强一代”;<a href="https://arxiv.org/abs/2310.11511">Asai 等人，2024</a> 年）通过输出任务输出和间歇性特殊<em>反射令牌</em> ，端到端训练 LM 以学习反射自己的生成。他们通过提示 GPT-4 为 critic 模型和生成器模型创建了一个监督数据集，然后将其提炼成内部模型以降低推理成本。</p>
-<h3 id="chain-of-actions">
-  Chain of Actions
-  <a class="anchor" href="#chain-of-actions">#</a>
-</h3>
-<p>Without grounding by external retrieved knowledge, we can design a process for using the model itself to do verification and revision to reduce hallucination.
-在没有外部检索知识的基础的情况下，我们可以设计一个流程，使用模型本身进行验证和修改，以减少幻觉。</p>
-<p><a href="https://arxiv.org/abs/2309.11495">Dhuliawala et al. (2023)</a> proposed a method named <strong>Chain-of-Verification</strong> (<strong>CoVe</strong>) based on a chain of actions to plan and execute verification. [10]
-<a href="https://arxiv.org/abs/2309.11495">Dhuliawala 等人（2023 年）</a> 提出了一种名为<strong>验证链</strong> （<strong>CoVe</strong>） 的方法，该方法基于一系列行动来计划和执行验证。</p>
-<p><strong>RECITE</strong> (“Recitation-augmented generation”; <a href="https://arxiv.org/abs/2210.01296">Sun et al. 2023</a>) relies on recitation as an intermediate step to improve factual correctness of model generation and reduce hallucination. The motivation is to utilize Transformer memory as an information retrieval mechanism. Within RECITE’s recite-and-answer scheme, the LLM is asked to first recite relevant information and then generate the output. Precisely, we can use few-shot in-context prompting to teach the model to generate recitation and then generate answers conditioned on recitation. Further it can be combined with self-consistency ensemble consuming multiple samples and extended to support multi-hop QA.
-<strong>RECITE</strong> （“朗诵增强生成”;<a href="https://arxiv.org/abs/2210.01296">Sun 等人，2023</a> 年）依靠背诵作为中间步骤来提高模型生成的事实正确性并减少幻觉。动机是利用 Transformer 内存作为信息检索机制。在 RECITE 的背诵和回答方案中，要求 LLM 首先背诵相关信息，然后生成输出。准确地说，我们可以使用小镜头上下文提示来教模型生成背诵，然后生成以背诵为条件的答案。此外，它可以与使用多个样本的自一致性集成相结合，并扩展以支持多跳 QA。</p>
-<p>todo</p>
-<h1 id="survey">
-  Survey
-  <a class="anchor" href="#survey">#</a>
-</h1>
-<h3 id="论文">
-  论文
-  <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
-</h3>
-<ul>
-<li>论文地址
-<a href="https://arxiv.org/abs/2309.05922">A Survey of Hallucination in Large Foundation Models</a> Paper</li>
-</ul>
-<p>1xx. <a href="https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;mid=2648403602&amp;idx=1&amp;sn=f2365b05630094f8d0de7ff784abe233">大模型前沿热点最新综述：大模型微调遗忘、Agent智能体、幻觉及RAG检索增强模型推介</a> 大模型微调遗忘   幻觉</p>
-<h3 id="论文-1">
-  论文
-  <a class="anchor" href="#%e8%ae%ba%e6%96%87-1">#</a>
-</h3>
-<ul>
-<li>论文地址
-<a href="https://arxiv.org/abs/2309.01219">Siren&rsquo;s Song in the AI Ocean: A Survey on Hallucination in Large Language Models</a> Paper
-1xx. <a href="https://mp.weixin.qq.com/s?__biz=MzU5NDg2MjgxMg==&amp;mid=2247485189&amp;idx=1&amp;sn=95d6eb333dde007f262a2955b90bc7ec">人工智能海洋中的塞壬之歌：大型语言模型LLM中的幻觉研究综述（一） </a>
-1xx.  <a href="https://mp.weixin.qq.com/s/eGMwNz0F1dQsNDnsLNYr8Q">大型语言模型的幻觉研究｜减轻及避免大模型LLM幻觉（二）</a></li>
-</ul>
-<p>1xx. <a href="https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;mid=2648403341&amp;idx=1&amp;sn=86cdaaf2c3a73439d2591a2f3dd0b9e0">值得一读的大模型生成幻觉研究综述：大模型幻觉的起因、评估以及减轻策略总结 </a></p>
-<h1 id="幻觉-vs-事实性1">
-  幻觉 vs 事实性[1]
-  <a class="anchor" href="#%e5%b9%bb%e8%a7%89-vs-%e4%ba%8b%e5%ae%9e%e6%80%a71">#</a>
-</h1>
-<p><strong>幻觉</strong>主要是指LLM生成毫无根据或毫无根据的内容，幻觉可以理解为模型倾向于&quot;生成与某些来源相关的无意义或不真实的内容&quot;。这与<strong>事实性问题</strong>不同，后者强调模型学习、获取和利用事实性知识的能力。</p>
-<p>举例说明两者的<strong>区别</strong>：</p>
-<p>如果一个LLM在被要求创作&quot;一个关于兔子和狼交朋友的童话故事&quot;时，创作出了一个关于&quot;兔子和狗交朋友&quot;的故事，那么它就表现出了幻觉。不过，这并不一定是事实性错误。
-如果生成的内容包含准确的信息，但与提示的具体内容有出入，那就是<strong>幻觉</strong>，而<strong>不是事实性问题</strong>。
-例如，如果LLM的输出包含了比提示指定更多的细节或不同的元素，但事实仍然正确，这就是<strong>幻觉</strong>。</p>
-<p>相反，如果LLM避免给出直接答案，而是说&quot;我不知道&quot;，或者给出了一个准确的答案，但遗漏了一些正确的细节，那么这就是<strong>事实性问题</strong>，而<strong>不是幻觉</strong>。</p>
-<p>此外，值得注意的是，<strong>幻觉有时会产生一些内容，虽然与原始输入内容有偏差，但在事实方面仍然是准确的</strong>。</p>
-<h1 id="解决方案2">
-  解决方案[2]
-  <a class="anchor" href="#%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%882">#</a>
-</h1>
-<ul>
-<li>
-<p>Prompt 工程 *</p>
-<ul>
-<li>Few-shot</li>
-</ul>
-</li>
-<li>
-<p>外部知识 *</p>
-<ul>
-<li>RAG</li>
-</ul>
-</li>
-<li>
-<p>后处理 *</p>
-<ul>
-<li>实事检查 *</li>
-<li>人工检查  *</li>
-</ul>
-</li>
-<li>
-<p>提升数据质量</p>
-<ul>
-<li>Pretraining的数据质量</li>
-<li>SFT的数据质量</li>
-</ul>
-</li>
-<li>
-<p>模型能力提升 *</p>
-<ul>
-<li>微调</li>
-</ul>
-</li>
-</ul>
-<h1 id="参考">
-  参考
-  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
-</h1>
-<ol>
-<li>
-<p><a href="https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;mid=2648404394&amp;idx=1&amp;sn=d7cfcf2cd9aa6756d3cbff938f5f4cf2">再看大模型事实性的界定、错误的起因、评估及前沿缓解方案：Survey on Factuality in LLMS</a></p>
-</li>
-<li>
-<p><a href="https://www.bilibili.com/video/BV1VXYxegErf/">降低大模型幻觉的5种方案</a> v<br>
-<a href="https://www.bilibili.com/video/BV1QUx9eFENq/">减少大模型幻觉，你必须要掌握的 6 个方法！</a> v</p>
-</li>
-<li>
-<p><a href="https://lilianweng.github.io/posts/2024-07-07-hallucination/">Extrinsic Hallucinations in LLMs</a> ***</p>
-<p><a href="https://minddev.io/blog/2024-07-07-hallucination">【译】LLM中的外部幻觉</a></p>
-</li>
-</ol>
-<h3 id="work">
-  Work
-  <a class="anchor" href="#work">#</a>
-</h3>
-<ol start="10">
-<li><a href="https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;mid=2648403998&amp;idx=1&amp;sn=400cc902434bc04df508a55e192d2455">再看大模型幻觉问题如何缓解 ：Chain-of-Verification-一种基于链式验证思想的自我修正工作解读 </a></li>
-</ol>
-<p>1xx. <a href="https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;mid=2648405983&amp;idx=2&amp;sn=95dc9c7a12bed99b63c775d4b90519d8">也看缓解大模型幻觉的多阶段RAG框架：加入混合检索、过程理由生成与验证的方案 </a></p>
-<h3 id="survey-1">
-  survey
-  <a class="anchor" href="#survey-1">#</a>
-</h3>
-<p>1xx. <a href="https://zhuanlan.zhihu.com/p/642648601">大模型的幻觉问题调研: LLM Hallucination Survey</a></p>
-<p>1xx. <a href="https://mp.weixin.qq.com/s?__biz=MzAxMjc3MjkyMg==&amp;mid=2648405791&amp;idx=2&amp;sn=d7dada69e6d5ab5fba1333d234b947ef">网络安全领域微调模型SecGPT：兼看大模型幻觉的度量方式、评估benchmark及RAG增强不同方式 </a> 大模型幻觉综述</p>
-<p>1xx. <a href="https://mp.weixin.qq.com/s/N7NOsLHr8HYCMp5XGCBDjg">LLM之幻觉（一）：大语言模型幻觉解决方案综述</a></p>
-</article>
+  <article class="markdown book-article"></article>
  
       
 
@@ -2304,10 +2179,6 @@ https://github.com/alex-shpak/hugo-book
 
       
   
-  <div class="book-comments">
-
-</div>
-  
  
 
       <label for="menu-control" class="hidden book-menu-overlay"></label>
@@ -2318,43 +2189,7 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#幻觉3">幻觉[3]</a></li>
-    <li><a href="#anti-hallucination-methods3">Anti-Hallucination Methods[3]</a>
-      <ul>
-        <li>
-          <ul>
-            <li><a href="#rag--edits-and-attribution">RAG → Edits and Attribution</a></li>
-            <li><a href="#chain-of-actions">Chain of Actions</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#survey">Survey</a>
-      <ul>
-        <li>
-          <ul>
-            <li><a href="#论文">论文</a></li>
-            <li><a href="#论文-1">论文</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li><a href="#幻觉-vs-事实性1">幻觉 vs 事实性[1]</a></li>
-    <li><a href="#解决方案2">解决方案[2]</a></li>
-    <li><a href="#参考">参考</a>
-      <ul>
-        <li>
-          <ul>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#survey-1">survey</a></li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</nav>
+<nav id="TableOfContents"></nav>
 
 
  
