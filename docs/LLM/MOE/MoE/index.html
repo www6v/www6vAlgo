@@ -1,0 +1,3135 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  Mixture of Experts (MoE) 文章重点归纳
+  #
+
+
+  Overview
+  #
+
+
+MoE通过条件计算范式解决模型扩展瓶颈，针对不同输入选择性激活参数子集，实现近乎线性参数扩展而无需成比例增加计算成本
+MoE概念起源于1991年Jacobs等人的工作，建立了&quot;门控&quot;和&quot;专家&quot;的基础原则
+关键演进里程碑:
+
+稀疏门控革命 (2017): Shazeer等人引入top-k路由机制，大幅降低计算量同时保持性能，使得训练数十亿参数神经网络成为可能
+简化扩展 (2021): Fedus等人简化MoE架构，使用top-1路由，大幅降低通信开销
+结构化稀疏性 (2022): Dropless MoE将稀疏MoE计算重构为块稀疏矩阵乘法，移除令牌&quot;丢弃&quot;需求
+
+
+现代影响: 当前模型如Mixtral-8×7B、DeepSeek-V2、Gemini 1.5和Claude 3将MoE原则应用于多模态对齐和融合
+MoE已从集成学习技术演变为可扩展智能的核心架构原则，实现计算支出与信息复杂度的一致性
+
+
+  Mixture-of-Experts: The Classic Approach
+  #
+
+
+MoE是集成学习技术，将复杂预测问题分为子任务，训练专家在特定子任务上表现最佳
+架构元素:
+
+数据集分区: 将预测问题分为子任务，基于特征与标签之间的关系相关性
+专家模型: 专门处理特定子任务的神经网络层
+门控网络 (路由器): 估计输入数据与各专家的兼容性，输出softmax分布
+池化方法: 聚合机制，基于门控网络和专家输出进行预测
+
+
+专家和门控网络联合训练以最小化整体损失函数
+MoE的核心优势是效率，通过动态选择每个输入的参数子集(专家)，实现更大模型同时保持计算成本可控
+
+
+  Hands-On Exercise: How does an MoE model work?
+  #
+
+
+演示配置: 2个专家，2个令牌，稀疏激活
+工作流程:
+
+MoE块接收两个令牌(蓝色、橙色)
+门控网络处理X₁(蓝色)并确定激活专家₂
+专家₂处理X₁(蓝色)
+门控网络处理X₂(橙色)并确定激活专家₁
+专家₁处理X₂(橙色)
+ReLU激活函数处理专家输出并产生最终输出
+
+
+主要优势:
+
+规模: 通过添加更多专家轻松扩展模型
+效率: 门控网络只为每个令牌选择部分专家计算，大幅降低计算成本
+
+
+
+
+  The Deep Learning Way: Sparsely-Gated MoE
+  #
+
+
+2017年Shazeer等人提出适用于深度学习的MoE扩展
+传统密集模型面临训练成本二次方增长问题，而条件计算存在挑战:
+
+GPU/TPU在算术操作上优于网络分支
+条件计算会减少批次大小
+网络带宽限制计算效率
+需要损失项以达到所需稀疏度
+
+
+稀疏门控MoE层:
+
+由多个专家网络和可训练门控网络组成
+门控网络动态选择少量专家处理每个输入
+通过噪声Top-K门控机制添加高斯噪声，确保门控稀疏性
+门控网络和专家通过反向传播联合训练
+
+
+该架构已成为LLM领域的游戏规则改变者，使模型容量扩展而计算复杂度几乎保持不变
+
+
+  The &ldquo;How&rdquo; Behind MoE
+  #
+
+
+MoE成功背后的机制尚不完全清楚
+专家模型初始化和训练方式相同，门控网络通常配置为均匀分配数据
+有趣的是，专家能够&quot;专业化&quot;于不同任务，且不会崩溃为单一模型
+Chen等人研究指出，&ldquo;基础问题的聚类结构和专家的非线性对MoE成功至关重要&rdquo;
+这一简单而有效的MoE方法仍有待深入理解
+
+
+  Expert Capacity and Capacity Factor
+  #
+
+
+专家容量定义了每个专家在训练/推理步骤中可处理的令牌/样本/激活的上限
+容量公式 (来自Switch Transformer): expert_capacity = (T/N) × α
+
+T = 批次中的令牌数
+N = 专家数量
+α = 容量因子(超参数)
+
+
+历史演进:
+
+早期条件计算研究缺乏明确容量概念
+2017年稀疏门控MoE揭示了显式负载控制需求
+2020年GShard在系统层面处理容量
+2021年Switch Transformer正式定义专家容量公式和容量因子
+
+
+专家容量的作用:
+
+作为控制机制保持平衡令牌路由
+作为稳定性约束防止计算过载
+通过容量因子(α &gt; 1.0)提供安全缓冲
+在分布式训练中作为通信边界
+
+
+实用考虑:
+
+选择容量因子(默认: top-1路由α=1.25，top-2路由α=1.0)
+持续监控路由分布和丢弃率
+适当硬件和内存配置
+动态容量调整
+
+
+
+
+  Load Balancing
+  #
+
+
+负载平衡确保MoE模型中所有专家被均匀使用，防止一些专家过载而其他专家未充分利用
+负载不平衡影响: &ldquo;富者更富&quot;效应—少数专家获得更多令牌，快速改进，而其他专家停滞不前
+总负载计算 (Switch Transformer):
+
+令牌分配比例: f_i = (1/T) ∑ 1{expert(x)=i}
+路由概率平均: P_i = (1/T) ∑ p_i(x)
+专家i的总负载: Load_i = f_i × P_i
+
+
+负载平衡损失函数:
+
+辅助负载平衡项: L_bal = λN ∑(f_i P_i)
+其中λ控制正则化强度
+
+
+潜在解决方案:
+
+正则化项: 添加惩罚不均匀专家使用
+门控网络设计: 采用带高斯噪声的top-k门控
+专家容量约束: 定义每专家容量上限
+MegaBlocks方法: 通过块级并行性和结构化稀疏性改进负载平衡
+
+
+
+
+  Expert Choice Routing
+  #
+
+
+传统MoE模型面临专家利用不足问题，某些专家过载而其他专家训练不足
+专家选择(EC)路由 (Zhou等人，2022):
+
+颠覆了路由逻辑—从&quot;令牌选择专家&quot;变为&quot;专家选择令牌&rdquo;
+专家根据其容量和亲和力独立选择要处理的令牌
+
+
+工作流程:
+
+令牌到专家评分: 计算令牌-专家分数矩阵S
+专家容量定义: C_e = 容量因子 × (T/E)
+专家令牌选择: 每个专家独立选择top-k令牌
+排列和数据混洗: 重组令牌以实现计算效率
+专家计算和输出重组: 专家处理分配的令牌并重新组合
+
+
+优势:
+
+负载平衡效率高
+专家专业化改善
+减少丢弃和填充开销
+增强可扩展性
+动态令牌优先级
+
+
+挑战:
+
+路由复杂性增加
+通信开销
+超参数敏感性
+梯度路由挑战
+专家专业化漂移
+实际实现复杂性
+
+
+
+
+  Mixture-of-Experts Beyond MLP Layers
+  #
+
+
+传统上，MoE层主要集成到Transformer架构的前馈(MLP)块中
+动机扩展:
+
+专家不应仅限于MLP层—现在扩展到注意力、连接器和编码器
+启用跨模态的语义专业化
+解决不同模态或架构组件需要不同专业化的问题
+
+
+注意力层中的MoE:
+
+**MoA(注意力混合)**概念: 用一组注意力专家替代单一自注意力机制
+每个专家专注于不同的令牌依赖关系或上下文类型
+
+
+模态编码器和连接器中的MoE:
+
+视觉编码器: CuMo集成稀疏Top-K MoE块到视觉编码器
+连接器和适配器: 专家专门化的适配器改进模态对齐
+
+
+跨模态和多模态MoE:
+
+作为跨模态融合机制，如在CLIP风格架构中
+联合MoE架构: 注意力和前馈层都是专家式的，创建分层稀疏模式
+
+
+理论和实践意义:
+
+路由复杂性增加
+负载平衡变成多维
+专家可转移性提高
+
+
+
+
+  Routing Beyond Tokens: Structural and Hierarchical Routing Paradigms
+  #
+
+
+早期MoE框架将每个令牌视为独立路由单元，忽略结构关系
+动机:
+
+语义和结构一致性: 相关令牌应由相同专家处理
+避免令牌碎片化: 独立路由碎片化语义相关令牌
+捕捉令牌间依赖关系
+效率和可解释性
+可扩展性和负载平衡
+
+
+结构和概念感知路由:
+
+基于聚类的路由: 门控网络学习隐式令牌聚类
+概念驱动的专业化: 专家与输入空间的概念区域关联
+
+
+分层路由架构:
+
+多级专家图: 全局路由器选择专家组，局部路由器在组内选择最终专家
+分层负载平衡: 递归定义组级负载
+
+
+基于图和注意力的路由:
+
+**令牌图(GoT)**框架: 将路由建模为消息传递过程
+
+
+自适应和令牌组路由:
+
+动态令牌分组: 令牌自适应决定激活多少专家
+
+
+优势与挑战:
+
+优势: 专业化改善、路由动态稳定、可解释性高、效率提升
+限制: 潜在专业化、计算开销、负载平衡挑战
+开放问题: 专家标记、扩展到万亿参数模型、语义连贯性评估
+
+
+
+
+  Limitations and Disadvantages of Mixture-of-Experts Architectures
+  #
+
+
+训练不稳定和负载不平衡:
+
+某些专家接收大部分路由分配，其他专家未充分利用
+需要辅助负载平衡损失和专家选择路由
+
+
+通信开销和硬件依赖:
+
+分布式环境中引入大量all-to-all通信开销
+需要自定义内核和高速TPU互连，限制在商品硬件上的应用
+
+
+路由复杂性和梯度碎片化:
+
+门控机制添加显著复杂性和非可微性
+离散性质破坏梯度流，导致梯度碎片化
+
+
+模型容量利用不足:
+
+每个令牌只激活总参数的小部分(通常1-2个专家)
+巨大参数库中大部分在大多数前向传递中闲置
+
+
+推理不稳定性和延迟变化:
+
+相同输入序列可能激活不同专家，导致不可预测的延迟
+批量推理放大此问题，集体同步延迟主导运行时间
+
+
+高VRAM和内存驻留要求:
+
+所有专家必须同时加载到GPU内存中
+内存占用与完整密集模型相当，尽管每前向传递只使用少数专家
+限制推理批处理大小和并行吞吐量
+
+
+
+
+  Expert Parallelism
+  #
+
+
+**专家并行(EP)**是一种模型并行策略，将不同专家子网络分布到不同设备上
+定位:
+
+与数据并行(DP)、张量并行(TP)、流水线并行(PP)并列
+EP是一种特定于MoE架构的模型并行形式
+
+
+动机:
+
+参数规模: 分布大量参数跨设备
+FLOP/激活效率: 仅路由到少量专家，每输入执行更少FLOPs
+内存效率: 专家不全部激活，减少每设备峰值内存占用
+可扩展性: 扩展专家数量而不线性增加每令牌计算预算
+
+
+设备分区、令牌路由和通信机制:
+
+概念概述: 专家跨多个设备分区，令牌动态路由
+通信流程: 令牌分组→all-to-all分派→本地专家计算→all-to-all收集→组合
+负载平衡: 辅助负载平衡损失确保均匀令牌分布
+通信-计算权衡: 优化通信时间与计算时间比率
+混合并行策略: 结合DP&#43;TP&#43;EP实现三维扩展
+
+
+容量管理和自适应令牌-专家分配:
+
+容量因子: 每专家最大令牌处理数
+令牌丢弃: 超出容量的令牌被丢弃或重新分配
+动态容量调整: 基于路由统计自动调整每专家容量
+路由策略: 包括噪声Top-k门控、负载平衡路由、专家选择路由等
+
+
+
+
+  What&rsquo;s Next?
+  #
+
+
+理论理解: 需要更深入理解MoE架构及其工作原理
+门控机制设计: 探索更有效的门控机制和专家模型，专家选择路由提供有希望的方向
+领域扩展: 探索MoE在强化学习、表格数据等领域应用
+未来前景: MoE范式将通过将复杂任务分为由专业专家模型处理的更简单子任务，继续推动深度学习边界
+
+
+  Popular MoE Models
+  #
+
+
+GPT-4 (据传):
+
+可能是8路MoE模型，总计约1.76T参数
+16个专家，每个约111B参数，每前向传递路由2个专家
+每前向传递仅使用约280B参数(560 TFLOPs)，而密集模型需要1.8T参数(3,700 TFLOPs)
+训练于约13T令牌，使用8路张量并行和15路流水线并行
+
+
+Mixtral 8x7B:
+
+Mistral的8x7B MoE模型(56B参数)
+每层8个专家，每令牌选择2个专家
+Apache 2.0许可下免费使用
+性能超过Llama 2 70B，推理速度快6倍
+匹配或超过GPT-3.5，在多语言任务上表现优异
+32K上下文长度
+
+
+OpenMoE:
+
+最早的开源MoE实现之一
+Colossal AI提供PyTorch OpenMoE实现，包括训练和推理的专家并行
+
+
+
+
+  Learning Resources
+  #
+
+
+A Visual Guide to Mixture of Experts (MoE):
+
+深入探讨MoE架构
+详细讨论各专家学习内容、专家间路由方法、视觉MoE
+
+
+
+
+  参考
+  #
+
+MoE   qwen-max 总结">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/MoE/MoE/">
+  <meta property="og:site_name" content="LLM 算法">
+  <meta property="og:title" content="(原理)MoE">
+  <meta property="og:description" content="Mixture of Experts (MoE) 文章重点归纳 # Overview # MoE通过条件计算范式解决模型扩展瓶颈，针对不同输入选择性激活参数子集，实现近乎线性参数扩展而无需成比例增加计算成本 MoE概念起源于1991年Jacobs等人的工作，建立了&#34;门控&#34;和&#34;专家&#34;的基础原则 关键演进里程碑: 稀疏门控革命 (2017): Shazeer等人引入top-k路由机制，大幅降低计算量同时保持性能，使得训练数十亿参数神经网络成为可能 简化扩展 (2021): Fedus等人简化MoE架构，使用top-1路由，大幅降低通信开销 结构化稀疏性 (2022): Dropless MoE将稀疏MoE计算重构为块稀疏矩阵乘法，移除令牌&#34;丢弃&#34;需求 现代影响: 当前模型如Mixtral-8×7B、DeepSeek-V2、Gemini 1.5和Claude 3将MoE原则应用于多模态对齐和融合 MoE已从集成学习技术演变为可扩展智能的核心架构原则，实现计算支出与信息复杂度的一致性 Mixture-of-Experts: The Classic Approach # MoE是集成学习技术，将复杂预测问题分为子任务，训练专家在特定子任务上表现最佳 架构元素: 数据集分区: 将预测问题分为子任务，基于特征与标签之间的关系相关性 专家模型: 专门处理特定子任务的神经网络层 门控网络 (路由器): 估计输入数据与各专家的兼容性，输出softmax分布 池化方法: 聚合机制，基于门控网络和专家输出进行预测 专家和门控网络联合训练以最小化整体损失函数 MoE的核心优势是效率，通过动态选择每个输入的参数子集(专家)，实现更大模型同时保持计算成本可控 Hands-On Exercise: How does an MoE model work? # 演示配置: 2个专家，2个令牌，稀疏激活 工作流程: MoE块接收两个令牌(蓝色、橙色) 门控网络处理X₁(蓝色)并确定激活专家₂ 专家₂处理X₁(蓝色) 门控网络处理X₂(橙色)并确定激活专家₁ 专家₁处理X₂(橙色) ReLU激活函数处理专家输出并产生最终输出 主要优势: 规模: 通过添加更多专家轻松扩展模型 效率: 门控网络只为每个令牌选择部分专家计算，大幅降低计算成本 The Deep Learning Way: Sparsely-Gated MoE # 2017年Shazeer等人提出适用于深度学习的MoE扩展 传统密集模型面临训练成本二次方增长问题，而条件计算存在挑战: GPU/TPU在算术操作上优于网络分支 条件计算会减少批次大小 网络带宽限制计算效率 需要损失项以达到所需稀疏度 稀疏门控MoE层: 由多个专家网络和可训练门控网络组成 门控网络动态选择少量专家处理每个输入 通过噪声Top-K门控机制添加高斯噪声，确保门控稀疏性 门控网络和专家通过反向传播联合训练 该架构已成为LLM领域的游戏规则改变者，使模型容量扩展而计算复杂度几乎保持不变 The “How” Behind MoE # MoE成功背后的机制尚不完全清楚 专家模型初始化和训练方式相同，门控网络通常配置为均匀分配数据 有趣的是，专家能够&#34;专业化&#34;于不同任务，且不会崩溃为单一模型 Chen等人研究指出，“基础问题的聚类结构和专家的非线性对MoE成功至关重要” 这一简单而有效的MoE方法仍有待深入理解 Expert Capacity and Capacity Factor # 专家容量定义了每个专家在训练/推理步骤中可处理的令牌/样本/激活的上限 容量公式 (来自Switch Transformer): expert_capacity = (T/N) × α T = 批次中的令牌数 N = 专家数量 α = 容量因子(超参数) 历史演进: 早期条件计算研究缺乏明确容量概念 2017年稀疏门控MoE揭示了显式负载控制需求 2020年GShard在系统层面处理容量 2021年Switch Transformer正式定义专家容量公式和容量因子 专家容量的作用: 作为控制机制保持平衡令牌路由 作为稳定性约束防止计算过载 通过容量因子(α &gt; 1.0)提供安全缓冲 在分布式训练中作为通信边界 实用考虑: 选择容量因子(默认: top-1路由α=1.25，top-2路由α=1.0) 持续监控路由分布和丢弃率 适当硬件和内存配置 动态容量调整 Load Balancing # 负载平衡确保MoE模型中所有专家被均匀使用，防止一些专家过载而其他专家未充分利用 负载不平衡影响: “富者更富&#34;效应—少数专家获得更多令牌，快速改进，而其他专家停滞不前 总负载计算 (Switch Transformer): 令牌分配比例: f_i = (1/T) ∑ 1{expert(x)=i} 路由概率平均: P_i = (1/T) ∑ p_i(x) 专家i的总负载: Load_i = f_i × P_i 负载平衡损失函数: 辅助负载平衡项: L_bal = λN ∑(f_i P_i) 其中λ控制正则化强度 潜在解决方案: 正则化项: 添加惩罚不均匀专家使用 门控网络设计: 采用带高斯噪声的top-k门控 专家容量约束: 定义每专家容量上限 MegaBlocks方法: 通过块级并行性和结构化稀疏性改进负载平衡 Expert Choice Routing # 传统MoE模型面临专家利用不足问题，某些专家过载而其他专家训练不足 专家选择(EC)路由 (Zhou等人，2022): 颠覆了路由逻辑—从&#34;令牌选择专家&#34;变为&#34;专家选择令牌” 专家根据其容量和亲和力独立选择要处理的令牌 工作流程: 令牌到专家评分: 计算令牌-专家分数矩阵S 专家容量定义: C_e = 容量因子 × (T/E) 专家令牌选择: 每个专家独立选择top-k令牌 排列和数据混洗: 重组令牌以实现计算效率 专家计算和输出重组: 专家处理分配的令牌并重新组合 优势: 负载平衡效率高 专家专业化改善 减少丢弃和填充开销 增强可扩展性 动态令牌优先级 挑战: 路由复杂性增加 通信开销 超参数敏感性 梯度路由挑战 专家专业化漂移 实际实现复杂性 Mixture-of-Experts Beyond MLP Layers # 传统上，MoE层主要集成到Transformer架构的前馈(MLP)块中 动机扩展: 专家不应仅限于MLP层—现在扩展到注意力、连接器和编码器 启用跨模态的语义专业化 解决不同模态或架构组件需要不同专业化的问题 注意力层中的MoE: **MoA(注意力混合)**概念: 用一组注意力专家替代单一自注意力机制 每个专家专注于不同的令牌依赖关系或上下文类型 模态编码器和连接器中的MoE: 视觉编码器: CuMo集成稀疏Top-K MoE块到视觉编码器 连接器和适配器: 专家专门化的适配器改进模态对齐 跨模态和多模态MoE: 作为跨模态融合机制，如在CLIP风格架构中 联合MoE架构: 注意力和前馈层都是专家式的，创建分层稀疏模式 理论和实践意义: 路由复杂性增加 负载平衡变成多维 专家可转移性提高 Routing Beyond Tokens: Structural and Hierarchical Routing Paradigms # 早期MoE框架将每个令牌视为独立路由单元，忽略结构关系 动机: 语义和结构一致性: 相关令牌应由相同专家处理 避免令牌碎片化: 独立路由碎片化语义相关令牌 捕捉令牌间依赖关系 效率和可解释性 可扩展性和负载平衡 结构和概念感知路由: 基于聚类的路由: 门控网络学习隐式令牌聚类 概念驱动的专业化: 专家与输入空间的概念区域关联 分层路由架构: 多级专家图: 全局路由器选择专家组，局部路由器在组内选择最终专家 分层负载平衡: 递归定义组级负载 基于图和注意力的路由: **令牌图(GoT)**框架: 将路由建模为消息传递过程 自适应和令牌组路由: 动态令牌分组: 令牌自适应决定激活多少专家 优势与挑战: 优势: 专业化改善、路由动态稳定、可解释性高、效率提升 限制: 潜在专业化、计算开销、负载平衡挑战 开放问题: 专家标记、扩展到万亿参数模型、语义连贯性评估 Limitations and Disadvantages of Mixture-of-Experts Architectures # 训练不稳定和负载不平衡: 某些专家接收大部分路由分配，其他专家未充分利用 需要辅助负载平衡损失和专家选择路由 通信开销和硬件依赖: 分布式环境中引入大量all-to-all通信开销 需要自定义内核和高速TPU互连，限制在商品硬件上的应用 路由复杂性和梯度碎片化: 门控机制添加显著复杂性和非可微性 离散性质破坏梯度流，导致梯度碎片化 模型容量利用不足: 每个令牌只激活总参数的小部分(通常1-2个专家) 巨大参数库中大部分在大多数前向传递中闲置 推理不稳定性和延迟变化: 相同输入序列可能激活不同专家，导致不可预测的延迟 批量推理放大此问题，集体同步延迟主导运行时间 高VRAM和内存驻留要求: 所有专家必须同时加载到GPU内存中 内存占用与完整密集模型相当，尽管每前向传递只使用少数专家 限制推理批处理大小和并行吞吐量 Expert Parallelism # **专家并行(EP)**是一种模型并行策略，将不同专家子网络分布到不同设备上 定位: 与数据并行(DP)、张量并行(TP)、流水线并行(PP)并列 EP是一种特定于MoE架构的模型并行形式 动机: 参数规模: 分布大量参数跨设备 FLOP/激活效率: 仅路由到少量专家，每输入执行更少FLOPs 内存效率: 专家不全部激活，减少每设备峰值内存占用 可扩展性: 扩展专家数量而不线性增加每令牌计算预算 设备分区、令牌路由和通信机制: 概念概述: 专家跨多个设备分区，令牌动态路由 通信流程: 令牌分组→all-to-all分派→本地专家计算→all-to-all收集→组合 负载平衡: 辅助负载平衡损失确保均匀令牌分布 通信-计算权衡: 优化通信时间与计算时间比率 混合并行策略: 结合DP&#43;TP&#43;EP实现三维扩展 容量管理和自适应令牌-专家分配: 容量因子: 每专家最大令牌处理数 令牌丢弃: 超出容量的令牌被丢弃或重新分配 动态容量调整: 基于路由统计自动调整每专家容量 路由策略: 包括噪声Top-k门控、负载平衡路由、专家选择路由等 What’s Next? # 理论理解: 需要更深入理解MoE架构及其工作原理 门控机制设计: 探索更有效的门控机制和专家模型，专家选择路由提供有希望的方向 领域扩展: 探索MoE在强化学习、表格数据等领域应用 未来前景: MoE范式将通过将复杂任务分为由专业专家模型处理的更简单子任务，继续推动深度学习边界 Popular MoE Models # GPT-4 (据传): 可能是8路MoE模型，总计约1.76T参数 16个专家，每个约111B参数，每前向传递路由2个专家 每前向传递仅使用约280B参数(560 TFLOPs)，而密集模型需要1.8T参数(3,700 TFLOPs) 训练于约13T令牌，使用8路张量并行和15路流水线并行 Mixtral 8x7B: Mistral的8x7B MoE模型(56B参数) 每层8个专家，每令牌选择2个专家 Apache 2.0许可下免费使用 性能超过Llama 2 70B，推理速度快6倍 匹配或超过GPT-3.5，在多语言任务上表现优异 32K上下文长度 OpenMoE: 最早的开源MoE实现之一 Colossal AI提供PyTorch OpenMoE实现，包括训练和推理的专家并行 Learning Resources # A Visual Guide to Mixture of Experts (MoE): 深入探讨MoE架构 详细讨论各专家学习内容、专家间路由方法、视觉MoE 参考 # MoE qwen-max 总结">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="website">
+<title>(原理)MoE | LLM 算法</title>
+<link rel="icon" href="/www6vAlgo/favicon.png" >
+<link rel="manifest" href="/www6vAlgo/manifest.json">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/MoE/MoE/">
+<link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
+  <script defer src="/www6vAlgo/fuse.min.js"></script>
+  <script defer src="/www6vAlgo/en.search.min.0c771aedd1c362ad6ceff749412c9041582bd34ab29d91942530da8ecc00581b.js" integrity="sha256-DHca7dHDYq1s7/dJQSyQQVgr00qynZGUJTDajswAWBs=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/MoE/MoE/index.xml" title="LLM 算法" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/www6vAlgo/"><span>LLM 算法</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="toggle"  />
+    <label for="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="flex justify-between">
+      <a role="button" class="">DeepLearning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca800fece441ac3e580321c74f3e9d49" class="toggle"  />
+    <label for="section-ca800fece441ac3e580321c74f3e9d49" class="flex justify-between">
+      <a role="button" class="">basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeepLearning/" class="">Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/" class="">(原理&amp;实战)前向/反向传播</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/" class="">(原理&amp;实战)交叉熵损失</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/" class="">(原理)过拟合</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/Pytorch/" class="">(实战)PyTorch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="toggle"  />
+    <label for="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="flex justify-between">
+      <a role="button" class="">正则化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/" class="">(原理&amp;实战)权重衰减</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/" class="">(原理&amp;实战)Dropout</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1424866912bd75b061251f3b3e940596" class="toggle"  />
+    <label for="section-1424866912bd75b061251f3b3e940596" class="flex justify-between">
+      <a role="button" class="">网络优化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/" class="">(原理)学习率</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/" class="">(原理)Batchsize</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/" class="">规范化 Norm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/" class="">(原理)梯度优化</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d175a581e6d1d294c2886df9f4e638fd" class="toggle"  />
+    <label for="section-d175a581e6d1d294c2886df9f4e638fd" class="flex justify-between">
+      <a role="button" class="">Transformer</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Transformer/" class="">(原理)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/SelfAttention/" class="">(原理)Self-Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/ModelGQA/" class="">(原理)GQA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/" class="">(实战)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/" class="">Tokenizer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="toggle"  />
+    <label for="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="flex justify-between">
+      <a role="button" class="">Embedding</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/survey/" class="">(Survey)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/Embedding/" class="">(原理)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-47d8239bc563cf0526676851b768f952" class="toggle"  />
+    <label for="section-47d8239bc563cf0526676851b768f952" class="flex justify-between">
+      <a role="button" class="">机器学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/" class="">机器学习-数据</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/" class="">机器学习-模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle"  />
+    <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
+      <a role="button" class="">强化学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
+    <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a4b91a8ec30520aa20445e5046653468" class="toggle"  />
+    <label for="section-a4b91a8ec30520aa20445e5046653468" class="flex justify-between">
+      <a role="button" class="">PPO family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-792edea28c7fa6c149b193954c187e3e" class="toggle"  />
+    <label for="section-792edea28c7fa6c149b193954c187e3e" class="flex justify-between">
+      <a role="button" class="">GRPO Family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="">(原理)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/compare/" class="">(原理) 综述</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/unified/" class="">unified paradigm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/RLVR/" class="">RLVR</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-6e820217fb4ea1d6cfba6041f84f71d5" class="toggle"  />
+    <label for="section-6e820217fb4ea1d6cfba6041f84f71d5" class="flex justify-between">
+      <a role="button" class="">Deep Research</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f7109e1e6e5f757bc2eb5a41da8bed9a" class="toggle"  />
+    <label for="section-f7109e1e6e5f757bc2eb5a41da8bed9a" class="flex justify-between">
+      <a role="button" class="">Search</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Deep-Research/Search/Search-R1/" class="">Search-R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Deep-Research/Search/websailer/" class="">WebSailor</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Deep-Research/Search/Kimi-Researcher/" class="">Kimi-Researcher</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-da74d49476c904de0c477669d9aed65c" class="toggle"  />
+    <label for="section-da74d49476c904de0c477669d9aed65c" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Deep-Research/Survey/Survey/" class="">Survey</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-cd468af946713c742ccdb635ec20a709" class="toggle"  />
+    <label for="section-cd468af946713c742ccdb635ec20a709" class="flex justify-between">
+      <a role="button" class="">Agentic RL</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-99414e52e25eeac060b84b3a14f1049c" class="toggle"  />
+    <label for="section-99414e52e25eeac060b84b3a14f1049c" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Agentic-RL/survey/survey/" class="">(Survey)Agentic RL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e5627b4d6fcbd271891b0c243d5abda5" class="toggle"  />
+    <label for="section-e5627b4d6fcbd271891b0c243d5abda5" class="flex justify-between">
+      <a role="button" class="">Tool</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Agentic-RL/Tool/OTC/" class="">OTC</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Agentic-RL/Tool/ReTool/" class="">ReTool</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/Agentic-RL/Tool/ToolRL/" class="">ToolRL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d720d571cb3e63953708e846bc3c9da9" class="toggle"  />
+    <label for="section-d720d571cb3e63953708e846bc3c9da9" class="flex justify-between">
+      <a role="button" class="">Framework</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/framework/verl/" class="">HybridFlow[veRL]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/framework/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-74da2f7bc7a3fb6c948028291efa6462" class="toggle" checked />
+    <label for="section-74da2f7bc7a3fb6c948028291efa6462" class="flex justify-between">
+      <a role="button" class="">LLM</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-50717b22c392318484ed92082d544dd2" class="toggle"  />
+    <label for="section-50717b22c392318484ed92082d544dd2" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LargeModelSurvey/" class="">(综述)大模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LargeModel/" class="">大模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LeaderBoard/" class="">大模型 排行榜</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fb69e8f04a6f9bb8fb43ebdb9607c2d9" class="toggle"  />
+    <label for="section-fb69e8f04a6f9bb8fb43ebdb9607c2d9" class="flex justify-between">
+      <a role="button" class="">Dense</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Family/" class="">GPT 系列</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Llama/" class="">LLaMA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/LlamaFamily/" class="">LLaMA 家族</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Llama3-1/" class="">Llama3.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/BERT/" class="">(原理)BERT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00115c923a3b56db78447633045b86e5" class="toggle"  />
+    <label for="section-00115c923a3b56db78447633045b86e5" class="flex justify-between">
+      <a role="button" class="">Reasoning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-eb6efb7e57d9b3bd5d67d76eb45cf382" class="toggle"  />
+    <label for="section-eb6efb7e57d9b3bd5d67d76eb45cf382" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/" class="">(Survey) Test-Time Scaling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningPostTraining/" class="">(Survey)Reasoning LLM Post-Training</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1a4f5c4ee7bee807e0e4278f7f7d8719" class="toggle"  />
+    <label for="section-1a4f5c4ee7bee807e0e4278f7f7d8719" class="flex justify-between">
+      <a role="button" class="">Qwen</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen3 Report</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/qwen-next/" class="">(原理)Qwen3-Next</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-4a652c2712b37ada613861578ed20563" class="toggle"  />
+    <label for="section-4a652c2712b37ada613861578ed20563" class="flex justify-between">
+      <a role="button" class="">Deepseek</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-48f04557895a93e37ea069284a46fb42" class="toggle"  />
+    <label for="section-48f04557895a93e37ea069284a46fb42" class="flex justify-between">
+      <a role="button" class="">Post-training</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekDistill/" class="">(实战)Deepseek 蒸馏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekSFT/" class="">(实战)Deepseek R1 SFT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3e1c0837357e9aacf6d05cbed5dc4d1f" class="toggle"  />
+    <label for="section-3e1c0837357e9aacf6d05cbed5dc4d1f" class="flex justify-between">
+      <a role="button" class="">R1</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekExplain2/" class="">解读 DeepSeek[邱锡鹏]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekExplain1/" class="">解读 DeepSeek[刘知远]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/ReasoningLLM/" class="">(原理)Reasoning LLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekR1/" class="">(原理) DeepSeek R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e90ca9a2107f4bd9f4516a445b1bdcf" class="toggle"  />
+    <label for="section-1e90ca9a2107f4bd9f4516a445b1bdcf" class="flex justify-between">
+      <a role="button" class="">V3</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/V3/DeepSeek/" class="">DeepSeek V3</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d9743338127b6aab5ee87bc9bc97be5e" class="toggle"  />
+    <label for="section-d9743338127b6aab5ee87bc9bc97be5e" class="flex justify-between">
+      <a role="button" class="">kimi</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">(翻译)kimi k2</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2-thinking/" class="">Kimi K2 Thinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/" class="">Kimi1.5</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-6d0afc3f46dbf37aaf932c7a930559a9" class="toggle"  />
+    <label for="section-6d0afc3f46dbf37aaf932c7a930559a9" class="flex justify-between">
+      <a role="button" class="">Overthinking</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Overthinking/survey/" class="">(Survey)Overthinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5366419f34f701d933f9513a09b5b014" class="toggle"  />
+    <label for="section-5366419f34f701d933f9513a09b5b014" class="flex justify-between">
+      <a role="button" class="">快慢思考</a>
+    </label>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-69a7d42415bc536b90d48518db8c889c" class="toggle" checked />
+    <label for="section-69a7d42415bc536b90d48518db8c889c" class="flex justify-between">
+      <a role="button" class="">MOE</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MoE/ModelMOE/" class="">(原理)Visual  MOE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MoE/ModelMOECode/" class="">(代码)MOE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MoE/MoE/" class="active">(原理)MoE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="toggle"  />
+    <label for="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/ScalingLaw/" class="">Scaling Law</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/Emergent/" class="">(原理)涌现现象</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/Eval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-49880184e06fd9cedeebad822a47bb36" class="toggle"  />
+    <label for="section-49880184e06fd9cedeebad822a47bb36" class="flex justify-between">
+      <a role="button" class="">Token Sampling</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/" class="">(翻译)token sampling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/temperature/" class="">Token Sampling Methods</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-dcc7208d3f790b5592723fa605667723" class="toggle"  />
+    <label for="section-dcc7208d3f790b5592723fa605667723" class="flex justify-between">
+      <a role="button" class="">Challenge</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/Hallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/" class="">(原理)不可能三角</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>(原理)MoE</h3>
+
+  <label for="toc-control">
+    
+    <img src="/www6vAlgo/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#mixture-of-experts-moe-文章重点归纳">Mixture of Experts (MoE) 文章重点归纳</a>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#mixture-of-experts-the-classic-approach">Mixture-of-Experts: The Classic Approach</a></li>
+        <li><a href="#hands-on-exercise-how-does-an-moe-model-work">Hands-On Exercise: How does an MoE model work?</a></li>
+        <li><a href="#the-deep-learning-way-sparsely-gated-moe">The Deep Learning Way: Sparsely-Gated MoE</a></li>
+        <li><a href="#the-how-behind-moe">The &ldquo;How&rdquo; Behind MoE</a></li>
+        <li><a href="#expert-capacity-and-capacity-factor"><u>Expert Capacity and Capacity Factor</u></a></li>
+        <li><a href="#load-balancing"><u>Load Balancing</u></a></li>
+        <li><a href="#expert-choice-routing"><u>Expert Choice Routing</u></a></li>
+        <li><a href="#mixture-of-experts-beyond-mlp-layers">Mixture-of-Experts Beyond MLP Layers</a></li>
+        <li><a href="#routing-beyond-tokens-structural-and-hierarchical-routing-paradigms">Routing Beyond Tokens: Structural and Hierarchical Routing Paradigms</a></li>
+        <li><a href="#limitations-and-disadvantages-of-mixture-of-experts-architectures"><u>Limitations and Disadvantages of Mixture-of-Experts Architectures</u></a></li>
+        <li><a href="#expert-parallelism"><u>Expert Parallelism</u></a></li>
+        <li><a href="#whats-next">What&rsquo;s Next?</a></li>
+        <li><a href="#popular-moe-models">Popular MoE Models</a></li>
+        <li><a href="#learning-resources">Learning Resources</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="mixture-of-experts-moe-文章重点归纳">
+  Mixture of Experts (MoE) 文章重点归纳
+  <a class="anchor" href="#mixture-of-experts-moe-%e6%96%87%e7%ab%a0%e9%87%8d%e7%82%b9%e5%bd%92%e7%ba%b3">#</a>
+</h1>
+<h2 id="overview">
+  Overview
+  <a class="anchor" href="#overview">#</a>
+</h2>
+<ul>
+<li>MoE通过<strong>条件计算</strong>范式解决模型扩展瓶颈，针对不同输入选择性激活参数子集，实现近乎线性参数扩展而无需成比例增加计算成本</li>
+<li>MoE概念起源于1991年Jacobs等人的工作，建立了&quot;门控&quot;和&quot;专家&quot;的基础原则</li>
+<li><strong>关键演进里程碑</strong>:
+<ul>
+<li><strong>稀疏门控革命</strong> (2017): Shazeer等人引入top-k路由机制，大幅降低计算量同时保持性能，使得训练数十亿参数神经网络成为可能</li>
+<li><strong>简化扩展</strong> (2021): Fedus等人简化MoE架构，使用top-1路由，大幅降低通信开销</li>
+<li><strong>结构化稀疏性</strong> (2022): Dropless MoE将稀疏MoE计算重构为块稀疏矩阵乘法，移除令牌&quot;丢弃&quot;需求</li>
+</ul>
+</li>
+<li><strong>现代影响</strong>: 当前模型如Mixtral-8×7B、DeepSeek-V2、Gemini 1.5和Claude 3将MoE原则应用于多模态对齐和融合</li>
+<li>MoE已从集成学习技术演变为可扩展智能的核心架构原则，实现计算支出与信息复杂度的一致性</li>
+</ul>
+<h2 id="mixture-of-experts-the-classic-approach">
+  Mixture-of-Experts: The Classic Approach
+  <a class="anchor" href="#mixture-of-experts-the-classic-approach">#</a>
+</h2>
+<ul>
+<li>MoE是集成学习技术，将复杂预测问题分为子任务，训练专家在特定子任务上表现最佳</li>
+<li><strong>架构元素</strong>:
+<ul>
+<li><strong>数据集分区</strong>: 将预测问题分为子任务，基于特征与标签之间的关系相关性</li>
+<li><strong>专家模型</strong>: 专门处理特定子任务的神经网络层</li>
+<li><strong>门控网络</strong> (路由器): 估计输入数据与各专家的兼容性，输出softmax分布</li>
+<li><strong>池化方法</strong>: 聚合机制，基于门控网络和专家输出进行预测</li>
+</ul>
+</li>
+<li>专家和门控网络联合训练以最小化整体损失函数</li>
+<li>MoE的核心优势是效率，通过动态选择每个输入的参数子集(专家)，实现更大模型同时保持计算成本可控</li>
+</ul>
+<h2 id="hands-on-exercise-how-does-an-moe-model-work">
+  Hands-On Exercise: How does an MoE model work?
+  <a class="anchor" href="#hands-on-exercise-how-does-an-moe-model-work">#</a>
+</h2>
+<ul>
+<li>演示配置: 2个专家，2个令牌，稀疏激活</li>
+<li><strong>工作流程</strong>:
+<ol>
+<li>MoE块接收两个令牌(蓝色、橙色)</li>
+<li>门控网络处理X₁(蓝色)并确定激活专家₂</li>
+<li>专家₂处理X₁(蓝色)</li>
+<li>门控网络处理X₂(橙色)并确定激活专家₁</li>
+<li>专家₁处理X₂(橙色)</li>
+<li>ReLU激活函数处理专家输出并产生最终输出</li>
+</ol>
+</li>
+<li><strong>主要优势</strong>:
+<ul>
+<li><strong>规模</strong>: 通过添加更多专家轻松扩展模型</li>
+<li><strong>效率</strong>: 门控网络只为每个令牌选择部分专家计算，大幅降低计算成本</li>
+</ul>
+</li>
+</ul>
+<h2 id="the-deep-learning-way-sparsely-gated-moe">
+  The Deep Learning Way: Sparsely-Gated MoE
+  <a class="anchor" href="#the-deep-learning-way-sparsely-gated-moe">#</a>
+</h2>
+<ul>
+<li>2017年Shazeer等人提出适用于深度学习的MoE扩展</li>
+<li>传统密集模型面临训练成本二次方增长问题，而条件计算存在挑战:
+<ul>
+<li>GPU/TPU在算术操作上优于网络分支</li>
+<li>条件计算会减少批次大小</li>
+<li>网络带宽限制计算效率</li>
+<li>需要损失项以达到所需稀疏度</li>
+</ul>
+</li>
+<li><strong>稀疏门控MoE层</strong>:
+<ul>
+<li>由多个专家网络和可训练门控网络组成</li>
+<li>门控网络动态选择少量专家处理每个输入</li>
+<li>通过<strong>噪声Top-K门控</strong>机制添加高斯噪声，确保门控稀疏性</li>
+<li>门控网络和专家通过反向传播联合训练</li>
+</ul>
+</li>
+<li>该架构已成为LLM领域的游戏规则改变者，使模型容量扩展而计算复杂度几乎保持不变</li>
+</ul>
+<h2 id="the-how-behind-moe">
+  The &ldquo;How&rdquo; Behind MoE
+  <a class="anchor" href="#the-how-behind-moe">#</a>
+</h2>
+<ul>
+<li>MoE成功背后的机制尚不完全清楚</li>
+<li>专家模型初始化和训练方式相同，门控网络通常配置为均匀分配数据</li>
+<li>有趣的是，专家能够&quot;专业化&quot;于不同任务，且不会崩溃为单一模型</li>
+<li>Chen等人研究指出，&ldquo;基础问题的聚类结构和专家的非线性对MoE成功至关重要&rdquo;</li>
+<li>这一简单而有效的MoE方法仍有待深入理解</li>
+</ul>
+<h2 id="expert-capacity-and-capacity-factor">
+  <u>Expert Capacity and Capacity Factor</u>
+  <a class="anchor" href="#expert-capacity-and-capacity-factor">#</a>
+</h2>
+<ul>
+<li><strong>专家容量</strong>定义了每个专家在训练/推理步骤中可处理的令牌/样本/激活的上限</li>
+<li><strong>容量公式</strong> (来自Switch Transformer): <code>expert_capacity = (T/N) × α</code>
+<ul>
+<li>T = 批次中的令牌数</li>
+<li>N = 专家数量</li>
+<li>α = 容量因子(超参数)</li>
+</ul>
+</li>
+<li><strong>历史演进</strong>:
+<ul>
+<li>早期条件计算研究缺乏明确容量概念</li>
+<li>2017年稀疏门控MoE揭示了显式负载控制需求</li>
+<li>2020年GShard在系统层面处理容量</li>
+<li>2021年Switch Transformer正式定义专家容量公式和容量因子</li>
+</ul>
+</li>
+<li><strong>专家容量的作用</strong>:
+<ul>
+<li>作为控制机制保持平衡令牌路由</li>
+<li>作为稳定性约束防止计算过载</li>
+<li>通过容量因子(α &gt; 1.0)提供安全缓冲</li>
+<li>在分布式训练中作为通信边界</li>
+</ul>
+</li>
+<li><strong>实用考虑</strong>:
+<ul>
+<li>选择容量因子(默认: top-1路由α=1.25，top-2路由α=1.0)</li>
+<li>持续监控路由分布和丢弃率</li>
+<li>适当硬件和内存配置</li>
+<li>动态容量调整</li>
+</ul>
+</li>
+</ul>
+<h2 id="load-balancing">
+  <u>Load Balancing</u>
+  <a class="anchor" href="#load-balancing">#</a>
+</h2>
+<ul>
+<li>负载平衡确保MoE模型中所有专家被均匀使用，防止一些专家过载而其他专家未充分利用</li>
+<li><strong>负载不平衡影响</strong>: &ldquo;富者更富&quot;效应—少数专家获得更多令牌，快速改进，而其他专家停滞不前</li>
+<li><strong>总负载计算</strong> (Switch Transformer):
+<ul>
+<li>令牌分配比例: <code>f_i = (1/T) ∑ 1{expert(x)=i}</code></li>
+<li>路由概率平均: <code>P_i = (1/T) ∑ p_i(x)</code></li>
+<li>专家i的总负载: <code>Load_i = f_i × P_i</code></li>
+</ul>
+</li>
+<li><strong>负载平衡损失函数</strong>:
+<ul>
+<li>辅助负载平衡项: <code>L_bal = λN ∑(f_i P_i)</code></li>
+<li>其中λ控制正则化强度</li>
+</ul>
+</li>
+<li><strong>潜在解决方案</strong>:
+<ul>
+<li><strong>正则化项</strong>: 添加惩罚不均匀专家使用</li>
+<li><strong>门控网络设计</strong>: 采用带高斯噪声的top-k门控</li>
+<li><strong>专家容量约束</strong>: 定义每专家容量上限</li>
+<li><strong>MegaBlocks方法</strong>: 通过块级并行性和结构化稀疏性改进负载平衡</li>
+</ul>
+</li>
+</ul>
+<h2 id="expert-choice-routing">
+  <u>Expert Choice Routing</u>
+  <a class="anchor" href="#expert-choice-routing">#</a>
+</h2>
+<ul>
+<li>传统MoE模型面临专家利用不足问题，某些专家过载而其他专家训练不足</li>
+<li><strong>专家选择(EC)路由</strong> (Zhou等人，2022):
+<ul>
+<li>颠覆了路由逻辑—从&quot;令牌选择专家&quot;变为&quot;专家选择令牌&rdquo;</li>
+<li>专家根据其容量和亲和力独立选择要处理的令牌</li>
+</ul>
+</li>
+<li><strong>工作流程</strong>:
+<ol>
+<li><strong>令牌到专家评分</strong>: 计算令牌-专家分数矩阵S</li>
+<li><strong>专家容量定义</strong>: <code>C_e = 容量因子 × (T/E)</code></li>
+<li><strong>专家令牌选择</strong>: 每个专家独立选择top-k令牌</li>
+<li><strong>排列和数据混洗</strong>: 重组令牌以实现计算效率</li>
+<li><strong>专家计算和输出重组</strong>: 专家处理分配的令牌并重新组合</li>
+</ol>
+</li>
+<li><strong>优势</strong>:
+<ul>
+<li>负载平衡效率高</li>
+<li>专家专业化改善</li>
+<li>减少丢弃和填充开销</li>
+<li>增强可扩展性</li>
+<li>动态令牌优先级</li>
+</ul>
+</li>
+<li><strong>挑战</strong>:
+<ul>
+<li>路由复杂性增加</li>
+<li>通信开销</li>
+<li>超参数敏感性</li>
+<li>梯度路由挑战</li>
+<li>专家专业化漂移</li>
+<li>实际实现复杂性</li>
+</ul>
+</li>
+</ul>
+<h2 id="mixture-of-experts-beyond-mlp-layers">
+  Mixture-of-Experts Beyond MLP Layers
+  <a class="anchor" href="#mixture-of-experts-beyond-mlp-layers">#</a>
+</h2>
+<ul>
+<li>传统上，MoE层主要集成到Transformer架构的<strong>前馈(MLP)块</strong>中</li>
+<li><strong>动机扩展</strong>:
+<ul>
+<li>专家不应仅限于MLP层—现在扩展到注意力、连接器和编码器</li>
+<li>启用跨模态的<strong>语义专业化</strong></li>
+<li>解决不同模态或架构组件需要不同专业化的问题</li>
+</ul>
+</li>
+<li><strong>注意力层中的MoE</strong>:
+<ul>
+<li>**MoA(注意力混合)**概念: 用一组注意力专家替代单一自注意力机制</li>
+<li>每个专家专注于不同的令牌依赖关系或上下文类型</li>
+</ul>
+</li>
+<li><strong>模态编码器和连接器中的MoE</strong>:
+<ul>
+<li><strong>视觉编码器</strong>: CuMo集成稀疏Top-K MoE块到视觉编码器</li>
+<li><strong>连接器和适配器</strong>: 专家专门化的适配器改进模态对齐</li>
+</ul>
+</li>
+<li><strong>跨模态和多模态MoE</strong>:
+<ul>
+<li>作为<strong>跨模态融合机制</strong>，如在CLIP风格架构中</li>
+<li><strong>联合MoE架构</strong>: 注意力和前馈层都是专家式的，创建分层稀疏模式</li>
+</ul>
+</li>
+<li><strong>理论和实践意义</strong>:
+<ul>
+<li>路由复杂性增加</li>
+<li>负载平衡变成多维</li>
+<li>专家可转移性提高</li>
+</ul>
+</li>
+</ul>
+<h2 id="routing-beyond-tokens-structural-and-hierarchical-routing-paradigms">
+  Routing Beyond Tokens: Structural and Hierarchical Routing Paradigms
+  <a class="anchor" href="#routing-beyond-tokens-structural-and-hierarchical-routing-paradigms">#</a>
+</h2>
+<ul>
+<li>早期MoE框架将<strong>每个令牌视为独立路由单元</strong>，忽略结构关系</li>
+<li><strong>动机</strong>:
+<ul>
+<li>语义和结构一致性: 相关令牌应由相同专家处理</li>
+<li>避免令牌碎片化: 独立路由碎片化语义相关令牌</li>
+<li>捕捉令牌间依赖关系</li>
+<li>效率和可解释性</li>
+<li>可扩展性和负载平衡</li>
+</ul>
+</li>
+<li><strong>结构和概念感知路由</strong>:
+<ul>
+<li><strong>基于聚类的路由</strong>: 门控网络学习隐式令牌聚类</li>
+<li><strong>概念驱动的专业化</strong>: 专家与输入空间的概念区域关联</li>
+</ul>
+</li>
+<li><strong>分层路由架构</strong>:
+<ul>
+<li><strong>多级专家图</strong>: 全局路由器选择专家组，局部路由器在组内选择最终专家</li>
+<li><strong>分层负载平衡</strong>: 递归定义组级负载</li>
+</ul>
+</li>
+<li><strong>基于图和注意力的路由</strong>:
+<ul>
+<li>**令牌图(GoT)**框架: 将路由建模为消息传递过程</li>
+</ul>
+</li>
+<li><strong>自适应和令牌组路由</strong>:
+<ul>
+<li><strong>动态令牌分组</strong>: 令牌自适应决定激活多少专家</li>
+</ul>
+</li>
+<li><strong>优势与挑战</strong>:
+<ul>
+<li>优势: 专业化改善、路由动态稳定、可解释性高、效率提升</li>
+<li>限制: 潜在专业化、计算开销、负载平衡挑战</li>
+<li>开放问题: 专家标记、扩展到万亿参数模型、语义连贯性评估</li>
+</ul>
+</li>
+</ul>
+<h2 id="limitations-and-disadvantages-of-mixture-of-experts-architectures">
+  <u>Limitations and Disadvantages of Mixture-of-Experts Architectures</u>
+  <a class="anchor" href="#limitations-and-disadvantages-of-mixture-of-experts-architectures">#</a>
+</h2>
+<ul>
+<li><strong>训练不稳定和负载不平衡</strong>:
+<ul>
+<li>某些专家接收大部分路由分配，其他专家未充分利用</li>
+<li>需要辅助负载平衡损失和专家选择路由</li>
+</ul>
+</li>
+<li><strong>通信开销和硬件依赖</strong>:
+<ul>
+<li>分布式环境中引入<strong>大量all-to-all通信开销</strong></li>
+<li>需要自定义内核和高速TPU互连，限制在商品硬件上的应用</li>
+</ul>
+</li>
+<li><strong>路由复杂性和梯度碎片化</strong>:
+<ul>
+<li>门控机制添加显著复杂性和非可微性</li>
+<li>离散性质破坏梯度流，导致梯度碎片化</li>
+</ul>
+</li>
+<li><strong>模型容量利用不足</strong>:
+<ul>
+<li>每个令牌只激活总参数的小部分(通常1-2个专家)</li>
+<li>巨大参数库中大部分在大多数前向传递中闲置</li>
+</ul>
+</li>
+<li><strong>推理不稳定性和延迟变化</strong>:
+<ul>
+<li>相同输入序列可能激活不同专家，导致不可预测的延迟</li>
+<li>批量推理放大此问题，集体同步延迟主导运行时间</li>
+</ul>
+</li>
+<li><strong>高VRAM和内存驻留要求</strong>:
+<ul>
+<li>所有专家必须同时加载到GPU内存中</li>
+<li>内存占用与完整密集模型相当，尽管每前向传递只使用少数专家</li>
+<li>限制推理批处理大小和并行吞吐量</li>
+</ul>
+</li>
+</ul>
+<h2 id="expert-parallelism">
+  <u>Expert Parallelism</u>
+  <a class="anchor" href="#expert-parallelism">#</a>
+</h2>
+<ul>
+<li>**专家并行(EP)**是一种模型并行策略，将不同专家子网络分布到不同设备上</li>
+<li><strong>定位</strong>:
+<ul>
+<li>与数据并行(DP)、张量并行(TP)、流水线并行(PP)并列</li>
+<li>EP是一种特定于MoE架构的模型并行形式</li>
+</ul>
+</li>
+<li><strong>动机</strong>:
+<ul>
+<li><strong>参数规模</strong>: 分布大量参数跨设备</li>
+<li><strong>FLOP/激活效率</strong>: 仅路由到少量专家，每输入执行更少FLOPs</li>
+<li><strong>内存效率</strong>: 专家不全部激活，减少每设备峰值内存占用</li>
+<li><strong>可扩展性</strong>: 扩展专家数量而不线性增加每令牌计算预算</li>
+</ul>
+</li>
+<li><strong>设备分区、令牌路由和通信机制</strong>:
+<ul>
+<li><strong>概念概述</strong>: 专家跨多个设备分区，令牌动态路由</li>
+<li><strong>通信流程</strong>: 令牌分组→all-to-all分派→本地专家计算→all-to-all收集→组合</li>
+<li><strong>负载平衡</strong>: 辅助负载平衡损失确保均匀令牌分布</li>
+<li><strong>通信-计算权衡</strong>: 优化通信时间与计算时间比率</li>
+<li><strong>混合并行策略</strong>: 结合DP+TP+EP实现三维扩展</li>
+</ul>
+</li>
+<li><strong>容量管理和自适应令牌-专家分配</strong>:
+<ul>
+<li><strong>容量因子</strong>: 每专家最大令牌处理数</li>
+<li><strong>令牌丢弃</strong>: 超出容量的令牌被丢弃或重新分配</li>
+<li><strong>动态容量调整</strong>: 基于路由统计自动调整每专家容量</li>
+<li><strong>路由策略</strong>: 包括噪声Top-k门控、负载平衡路由、专家选择路由等</li>
+</ul>
+</li>
+</ul>
+<h2 id="whats-next">
+  What&rsquo;s Next?
+  <a class="anchor" href="#whats-next">#</a>
+</h2>
+<ul>
+<li><strong>理论理解</strong>: 需要更深入理解MoE架构及其工作原理</li>
+<li><strong>门控机制设计</strong>: 探索更有效的门控机制和专家模型，专家选择路由提供有希望的方向</li>
+<li><strong>领域扩展</strong>: 探索MoE在强化学习、表格数据等领域应用</li>
+<li><strong>未来前景</strong>: MoE范式将通过将复杂任务分为由专业专家模型处理的更简单子任务，继续推动深度学习边界</li>
+</ul>
+<h2 id="popular-moe-models">
+  Popular MoE Models
+  <a class="anchor" href="#popular-moe-models">#</a>
+</h2>
+<ul>
+<li><strong>GPT-4</strong> (据传):
+<ul>
+<li>可能是8路MoE模型，总计约1.76T参数</li>
+<li>16个专家，每个约111B参数，每前向传递路由2个专家</li>
+<li>每前向传递仅使用约280B参数(560 TFLOPs)，而密集模型需要1.8T参数(3,700 TFLOPs)</li>
+<li>训练于约13T令牌，使用8路张量并行和15路流水线并行</li>
+</ul>
+</li>
+<li><strong>Mixtral 8x7B</strong>:
+<ul>
+<li>Mistral的8x7B MoE模型(56B参数)</li>
+<li>每层8个专家，每令牌选择2个专家</li>
+<li>Apache 2.0许可下免费使用</li>
+<li>性能超过Llama 2 70B，推理速度快6倍</li>
+<li>匹配或超过GPT-3.5，在多语言任务上表现优异</li>
+<li>32K上下文长度</li>
+</ul>
+</li>
+<li><strong>OpenMoE</strong>:
+<ul>
+<li>最早的开源MoE实现之一</li>
+<li>Colossal AI提供PyTorch OpenMoE实现，包括训练和推理的专家并行</li>
+</ul>
+</li>
+</ul>
+<h2 id="learning-resources">
+  Learning Resources
+  <a class="anchor" href="#learning-resources">#</a>
+</h2>
+<ul>
+<li><strong>A Visual Guide to Mixture of Experts (MoE)</strong>:
+<ul>
+<li>深入探讨MoE架构</li>
+<li>详细讨论各专家学习内容、专家间路由方法、视觉MoE</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h2>
+<p><a href="https://aman.ai/primers/ai/mixture-of-experts/">MoE</a>   qwen-max 总结</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#mixture-of-experts-moe-文章重点归纳">Mixture of Experts (MoE) 文章重点归纳</a>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#mixture-of-experts-the-classic-approach">Mixture-of-Experts: The Classic Approach</a></li>
+        <li><a href="#hands-on-exercise-how-does-an-moe-model-work">Hands-On Exercise: How does an MoE model work?</a></li>
+        <li><a href="#the-deep-learning-way-sparsely-gated-moe">The Deep Learning Way: Sparsely-Gated MoE</a></li>
+        <li><a href="#the-how-behind-moe">The &ldquo;How&rdquo; Behind MoE</a></li>
+        <li><a href="#expert-capacity-and-capacity-factor"><u>Expert Capacity and Capacity Factor</u></a></li>
+        <li><a href="#load-balancing"><u>Load Balancing</u></a></li>
+        <li><a href="#expert-choice-routing"><u>Expert Choice Routing</u></a></li>
+        <li><a href="#mixture-of-experts-beyond-mlp-layers">Mixture-of-Experts Beyond MLP Layers</a></li>
+        <li><a href="#routing-beyond-tokens-structural-and-hierarchical-routing-paradigms">Routing Beyond Tokens: Structural and Hierarchical Routing Paradigms</a></li>
+        <li><a href="#limitations-and-disadvantages-of-mixture-of-experts-architectures"><u>Limitations and Disadvantages of Mixture-of-Experts Architectures</u></a></li>
+        <li><a href="#expert-parallelism"><u>Expert Parallelism</u></a></li>
+        <li><a href="#whats-next">What&rsquo;s Next?</a></li>
+        <li><a href="#popular-moe-models">Popular MoE Models</a></li>
+        <li><a href="#learning-resources">Learning Resources</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
