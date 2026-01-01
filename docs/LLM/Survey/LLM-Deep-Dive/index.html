@@ -1,0 +1,2875 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  大型语言模型深度解析：从预训练到强化学习
+  #
+
+
+  执行摘要
+  #
+
+本文档深入剖析了大型语言模型（LLM）的构建、运作原理及其认知特性，其信息完全基于 Andrej Karpathy 的技术讲解。大型语言模型的开发过程主要分为三个核心阶段，其复杂性和计算成本逐级递减，但对最终模型能力的塑造至关重要。
+
+
+预训练 (Pre-training)：此阶段是计算最密集、成本最高昂的环节。通过处理海量的互联网文本数据（如 FineWeb 数据集的 15 万亿个词元），模型学习语言的统计规律。其核心任务是“预测下一个词元”，从而将互联网的知识以一种有损压缩的形式编码到其数十亿甚至上万亿的参数中。此阶段的产物是基础模型 (Base Model)，它本质上是一个“互联网文档模拟器”，能够生成统计上类似互联网文本的内容，但本身并非一个可直接交互的助手。
+
+
+后训练：监督式微调 (Supervised Fine-Tuning, SFT)：此阶段旨在将基础模型转化为一个助手 (Assistant)。通过在一个由人类标注员根据特定指南创建的高质量对话数据集上继续训练，模型学习模仿专家行为。此时，用户与模型的交互，本质上是在与一个“人类标注员的统计模拟”进行对话。模型的回答反映了其训练数据中人类标注员遵循的“有用、真实、无害”等原则。
+
+
+后训练：强化学习 (Reinforcement Learning, RL)：这是提升模型高级能力的关键阶段，尤其是在需要推理和解决问题的领域。
+
+在可验证领域 (Verifiable Domains)，如数学和编程，模型通过生成大量候选解决方案并根据最终答案的正确性进行“试错”学习。这个过程使其能够发现超越简单模仿的人类专家、更适合其自身认知结构的、新颖有效的“认知策略”，即学会“思考”。
+
+
+
+
+在不可验证领域 (Unverifiable Domains)，如创意写作，通过基于人类反馈的强化学习 (RLHF)，训练一个“奖励模型”来模拟人类偏好，从而指导主模型进行优化。然而，这种方式存在局限性，因为奖励模型本身可能被“欺骗”，限制了其性能提升的上限。
+
+最终，大型语言模型是一个强大的、但并非绝对可靠的工具。它们是随机的词元序列生成器，其能力呈现出“瑞士奶酪”模型——在解决奥林匹克竞赛级别的难题时表现出色，却可能在看似简单的常识性问题上犯错。这是由其基于词元的运作方式、每个词元固定的计算量以及训练数据的特性共同决定的。用户应将其视为强大的助手，用于获取灵感、生成初稿和加速工作流程，但必须始终保持批判性思维，验证其输出，并对最终成果负责。
+-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-
+
+  第一阶段：预训练——构建知识基础
+  #
+
+预训练是构建大型语言模型的第一步，也是计算资源消耗最大的阶段。其目标是从海量文本数据中学习语言的底层结构和世界知识。
+
+  1. 数据收集与处理
+  #
+
+
+
+数据来源：通常始于像 Common Crawl 这样的庞大网络爬取档案，该组织自 2007 年以来已索引了数十亿网页。
+
+
+数据处理流程：原始数据需经过多阶段的严格过滤和清洗，以确保数量、质量和多样性。
+
+URL 过滤：移除包含恶意软件、垃圾邮件、成人内容或极端言论等不良网站的 URL。
+文本提取：从原始 HTML 代码中剥离导航栏、广告和脚本，仅保留正文内容。
+语言过滤：通过语言分类器筛选出特定语言的文档（例如，FineWeb 数据集保留了 65% 以上为英文的页面）。
+去重与 PII 移除：删除重复内容，并识别和过滤掉包含个人身份信息（PII）的页面，如地址、社保号码等。
+
+
+
+最终数据集：经过处理后，尽管原始互联网数据量巨大，但最终用于训练的文本数据集大小相对可控。例如，FineWeb 数据集大小约为 44TB，包含约 15 万亿个词元（Tokens），这个体量的数据可以存放在单个现代硬盘上。
+
+
+
+  2. 分词 (Tokenization)
+  #
+
+神经网络无法直接处理原始文本，必须先将文本转换为一个由有限符号组成的序列。这个过程被称为分词。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/">
+  <meta property="og:site_name" content="LLM 算法">
+  <meta property="og:title" content="LLM Deep Dive">
+  <meta property="og:description" content="大型语言模型深度解析：从预训练到强化学习 # 执行摘要 # 本文档深入剖析了大型语言模型（LLM）的构建、运作原理及其认知特性，其信息完全基于 Andrej Karpathy 的技术讲解。大型语言模型的开发过程主要分为三个核心阶段，其复杂性和计算成本逐级递减，但对最终模型能力的塑造至关重要。
+预训练 (Pre-training)：此阶段是计算最密集、成本最高昂的环节。通过处理海量的互联网文本数据（如 FineWeb 数据集的 15 万亿个词元），模型学习语言的统计规律。其核心任务是“预测下一个词元”，从而将互联网的知识以一种有损压缩的形式编码到其数十亿甚至上万亿的参数中。此阶段的产物是基础模型 (Base Model)，它本质上是一个“互联网文档模拟器”，能够生成统计上类似互联网文本的内容，但本身并非一个可直接交互的助手。
+后训练：监督式微调 (Supervised Fine-Tuning, SFT)：此阶段旨在将基础模型转化为一个助手 (Assistant)。通过在一个由人类标注员根据特定指南创建的高质量对话数据集上继续训练，模型学习模仿专家行为。此时，用户与模型的交互，本质上是在与一个“人类标注员的统计模拟”进行对话。模型的回答反映了其训练数据中人类标注员遵循的“有用、真实、无害”等原则。
+后训练：强化学习 (Reinforcement Learning, RL)：这是提升模型高级能力的关键阶段，尤其是在需要推理和解决问题的领域。
+在可验证领域 (Verifiable Domains)，如数学和编程，模型通过生成大量候选解决方案并根据最终答案的正确性进行“试错”学习。这个过程使其能够发现超越简单模仿的人类专家、更适合其自身认知结构的、新颖有效的“认知策略”，即学会“思考”。 在不可验证领域 (Unverifiable Domains)，如创意写作，通过基于人类反馈的强化学习 (RLHF)，训练一个“奖励模型”来模拟人类偏好，从而指导主模型进行优化。然而，这种方式存在局限性，因为奖励模型本身可能被“欺骗”，限制了其性能提升的上限。 最终，大型语言模型是一个强大的、但并非绝对可靠的工具。它们是随机的词元序列生成器，其能力呈现出“瑞士奶酪”模型——在解决奥林匹克竞赛级别的难题时表现出色，却可能在看似简单的常识性问题上犯错。这是由其基于词元的运作方式、每个词元固定的计算量以及训练数据的特性共同决定的。用户应将其视为强大的助手，用于获取灵感、生成初稿和加速工作流程，但必须始终保持批判性思维，验证其输出，并对最终成果负责。
+-——————————————————————————-
+第一阶段：预训练——构建知识基础 # 预训练是构建大型语言模型的第一步，也是计算资源消耗最大的阶段。其目标是从海量文本数据中学习语言的底层结构和世界知识。
+1. 数据收集与处理 # 数据来源：通常始于像 Common Crawl 这样的庞大网络爬取档案，该组织自 2007 年以来已索引了数十亿网页。
+数据处理流程：原始数据需经过多阶段的严格过滤和清洗，以确保数量、质量和多样性。
+URL 过滤：移除包含恶意软件、垃圾邮件、成人内容或极端言论等不良网站的 URL。 文本提取：从原始 HTML 代码中剥离导航栏、广告和脚本，仅保留正文内容。 语言过滤：通过语言分类器筛选出特定语言的文档（例如，FineWeb 数据集保留了 65% 以上为英文的页面）。 去重与 PII 移除：删除重复内容，并识别和过滤掉包含个人身份信息（PII）的页面，如地址、社保号码等。 最终数据集：经过处理后，尽管原始互联网数据量巨大，但最终用于训练的文本数据集大小相对可控。例如，FineWeb 数据集大小约为 44TB，包含约 15 万亿个词元（Tokens），这个体量的数据可以存放在单个现代硬盘上。
+2. 分词 (Tokenization) # 神经网络无法直接处理原始文本，必须先将文本转换为一个由有限符号组成的序列。这个过程被称为分词。">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="website">
+<title>LLM Deep Dive | LLM 算法</title>
+<link rel="icon" href="/www6vAlgo/favicon.png" >
+<link rel="manifest" href="/www6vAlgo/manifest.json">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/">
+<link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
+  <script defer src="/www6vAlgo/fuse.min.js"></script>
+  <script defer src="/www6vAlgo/en.search.min.a250ae51e66264b3f059565913aae018aa48e88ed2beddc7541b9cc9f6168b21.js" integrity="sha256-olCuUeZiZLPwWVZZE6rgGKpI6I7Svt3HVBucyfYWiyE=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/index.xml" title="LLM 算法" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/www6vAlgo/"><span>LLM 算法</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="toggle"  />
+    <label for="section-ca51f083a72ceb6f7ce7aac637ec4cff" class="flex justify-between">
+      <a role="button" class="">DeepLearning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ca800fece441ac3e580321c74f3e9d49" class="toggle"  />
+    <label for="section-ca800fece441ac3e580321c74f3e9d49" class="flex justify-between">
+      <a role="button" class="">basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeepLearning/" class="">Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/" class="">(原理&amp;实战)前向/反向传播</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/" class="">(原理&amp;实战)交叉熵损失</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/" class="">(原理)过拟合</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/Pytorch/" class="">(实战)PyTorch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="toggle"  />
+    <label for="section-1a190617d0c8a17ae9ae2d3ed30bd150" class="flex justify-between">
+      <a role="button" class="">正则化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/" class="">(原理&amp;实战)权重衰减</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/" class="">(原理&amp;实战)Dropout</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1424866912bd75b061251f3b3e940596" class="toggle"  />
+    <label for="section-1424866912bd75b061251f3b3e940596" class="flex justify-between">
+      <a role="button" class="">网络优化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/" class="">(原理)学习率</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/" class="">(原理)Batchsize</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/" class="">规范化 Norm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/" class="">(原理)梯度优化</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d175a581e6d1d294c2886df9f4e638fd" class="toggle"  />
+    <label for="section-d175a581e6d1d294c2886df9f4e638fd" class="flex justify-between">
+      <a role="button" class="">Transformer</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Transformer/" class="">(原理)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/SelfAttention/" class="">(原理)Self-Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/ModelGQA/" class="">(原理)GQA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/" class="">(实战)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/" class="">Tokenizer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="toggle"  />
+    <label for="section-986dec1b5e65fdcdcaa6d6a6bdce0c55" class="flex justify-between">
+      <a role="button" class="">Embedding</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/survey/" class="">(Survey)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/Embedding/" class="">(原理)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-47d8239bc563cf0526676851b768f952" class="toggle"  />
+    <label for="section-47d8239bc563cf0526676851b768f952" class="flex justify-between">
+      <a role="button" class="">机器学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/" class="">机器学习-数据</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/" class="">机器学习-模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle"  />
+    <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
+      <a role="button" class="">强化学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
+    <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a4b91a8ec30520aa20445e5046653468" class="toggle"  />
+    <label for="section-a4b91a8ec30520aa20445e5046653468" class="flex justify-between">
+      <a role="button" class="">PPO family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-792edea28c7fa6c149b193954c187e3e" class="toggle"  />
+    <label for="section-792edea28c7fa6c149b193954c187e3e" class="flex justify-between">
+      <a role="button" class="">GRPO Family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="">(原理)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/DAPO/" class="">(原理)DAPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/compare/" class="">(原理) 综述</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/unified/" class="">unified paradigm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/RLVR/" class="">RLVR</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d720d571cb3e63953708e846bc3c9da9" class="toggle"  />
+    <label for="section-d720d571cb3e63953708e846bc3c9da9" class="flex justify-between">
+      <a role="button" class="">Framework</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/framework/verl/" class="">HybridFlow[veRL]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/framework/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-4e4529562f8a7b2d9d29129d5ea9bac5" class="toggle"  />
+    <label for="section-4e4529562f8a7b2d9d29129d5ea9bac5" class="flex justify-between">
+      <a role="button" class="">Agent</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-60b219d176761004985eb3d1d13b669b" class="toggle"  />
+    <label for="section-60b219d176761004985eb3d1d13b669b" class="flex justify-between">
+      <a role="button" class="">Deep Research</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-2b697507cc5afe0d0d3a9e33baa16d54" class="toggle"  />
+    <label for="section-2b697507cc5afe0d0d3a9e33baa16d54" class="flex justify-between">
+      <a role="button" class="">Search</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/Search-R1/" class="">Search-R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/websailer/" class="">WebSailor</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/Kimi-Researcher/" class="">Kimi-Researcher</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/websailerNT/" class="">WebSailor</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f0f072a0394d584d8a25ad8b8d2e588d" class="toggle"  />
+    <label for="section-f0f072a0394d584d8a25ad8b8d2e588d" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Survey/Survey/" class="">Survey</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Survey/TongyiDeepresearchNT/" class="">Tongyi DeepResearch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ea73c6f1ab732373f29d955cc823fb27" class="toggle"  />
+    <label for="section-ea73c6f1ab732373f29d955cc823fb27" class="flex justify-between">
+      <a role="button" class="">Agentic RL</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0d41075c5b4525f04c44a1ab283f6633" class="toggle"  />
+    <label for="section-0d41075c5b4525f04c44a1ab283f6633" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/survey/survey/" class="">(Survey)Agentic RL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e93f77db75a578ffc7c9756362505d3f" class="toggle"  />
+    <label for="section-e93f77db75a578ffc7c9756362505d3f" class="flex justify-between">
+      <a role="button" class="">Tool</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/Tool/OTC/" class="">OTC</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/Tool/ReTool/" class="">ReTool</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/Tool/ToolRL/" class="">ToolRL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fca7377f53eb51ab1d7b6d1f58ad9c91" class="toggle"  />
+    <label for="section-fca7377f53eb51ab1d7b6d1f58ad9c91" class="flex justify-between">
+      <a role="button" class="">Vision</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/gptMultimodalCLIP/" class="">(原理)CLIP</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/gptMultimodalVit/" class="">(原理|实战)ViT, ViLT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/gptMultimodalCLIPPractice/" class="">(实战)CLIP</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-74da2f7bc7a3fb6c948028291efa6462" class="toggle" checked />
+    <label for="section-74da2f7bc7a3fb6c948028291efa6462" class="flex justify-between">
+      <a role="button" class="">LLM</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-50717b22c392318484ed92082d544dd2" class="toggle" checked />
+    <label for="section-50717b22c392318484ed92082d544dd2" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LargeModelSurvey/" class="">(综述)大模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LargeModel/" class="">大模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/" class="active">LLM Deep Dive</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LLM-Compare/" class="">LLM架构演进</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LeaderBoard/" class="">大模型 排行榜</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fb69e8f04a6f9bb8fb43ebdb9607c2d9" class="toggle"  />
+    <label for="section-fb69e8f04a6f9bb8fb43ebdb9607c2d9" class="flex justify-between">
+      <a role="button" class="">Dense</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Family/" class="">GPT 系列</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Llama/" class="">LLaMA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/LlamaFamily/" class="">LLaMA 家族</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Llama3-1/" class="">Llama3.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/BERT/" class="">(原理)BERT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-00115c923a3b56db78447633045b86e5" class="toggle"  />
+    <label for="section-00115c923a3b56db78447633045b86e5" class="flex justify-between">
+      <a role="button" class="">Reasoning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-eb6efb7e57d9b3bd5d67d76eb45cf382" class="toggle"  />
+    <label for="section-eb6efb7e57d9b3bd5d67d76eb45cf382" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/" class="">(Survey) Test-Time Scaling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningPostTraining/" class="">(Survey)Reasoning LLM Post-Training</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1a4f5c4ee7bee807e0e4278f7f7d8719" class="toggle"  />
+    <label for="section-1a4f5c4ee7bee807e0e4278f7f7d8719" class="flex justify-between">
+      <a role="button" class="">Qwen</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen3 Report</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/qwen-next/" class="">(原理)Qwen3-Next</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-4a652c2712b37ada613861578ed20563" class="toggle"  />
+    <label for="section-4a652c2712b37ada613861578ed20563" class="flex justify-between">
+      <a role="button" class="">Deepseek</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-48f04557895a93e37ea069284a46fb42" class="toggle"  />
+    <label for="section-48f04557895a93e37ea069284a46fb42" class="flex justify-between">
+      <a role="button" class="">Post-training</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekDistill/" class="">(实战)Deepseek 蒸馏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekSFT/" class="">(实战)Deepseek R1 SFT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3e1c0837357e9aacf6d05cbed5dc4d1f" class="toggle"  />
+    <label for="section-3e1c0837357e9aacf6d05cbed5dc4d1f" class="flex justify-between">
+      <a role="button" class="">R1</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekExplain2/" class="">解读 DeepSeek[邱锡鹏]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekExplain1/" class="">解读 DeepSeek[刘知远]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/ReasoningLLM/" class="">(原理)Reasoning LLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekR1/" class="">(原理) DeepSeek R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-1e90ca9a2107f4bd9f4516a445b1bdcf" class="toggle"  />
+    <label for="section-1e90ca9a2107f4bd9f4516a445b1bdcf" class="flex justify-between">
+      <a role="button" class="">V3</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/V3/DeepSeek/" class="">DeepSeek V3</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d9743338127b6aab5ee87bc9bc97be5e" class="toggle"  />
+    <label for="section-d9743338127b6aab5ee87bc9bc97be5e" class="flex justify-between">
+      <a role="button" class="">kimi</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="">(翻译)kimi k2</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2-thinking/" class="">Kimi K2 Thinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/" class="">Kimi1.5</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-6d0afc3f46dbf37aaf932c7a930559a9" class="toggle"  />
+    <label for="section-6d0afc3f46dbf37aaf932c7a930559a9" class="flex justify-between">
+      <a role="button" class="">Overthinking</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Overthinking/survey/" class="">(Survey)Overthinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5366419f34f701d933f9513a09b5b014" class="toggle"  />
+    <label for="section-5366419f34f701d933f9513a09b5b014" class="flex justify-between">
+      <a role="button" class="">快慢思考</a>
+    </label>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-69a7d42415bc536b90d48518db8c889c" class="toggle"  />
+    <label for="section-69a7d42415bc536b90d48518db8c889c" class="flex justify-between">
+      <a role="button" class="">MOE</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MoE/ModelMOE/" class="">(原理)Visual  MOE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MoE/ModelMOECode/" class="">(代码)MOE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MoE/MoE/" class="">(原理)MoE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="toggle"  />
+    <label for="section-d3ad2ad02a69d9fe3f2c5be5fef9a925" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/ScalingLaw/" class="">Scaling Law</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/Emergent/" class="">(原理)涌现现象</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/Eval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-49880184e06fd9cedeebad822a47bb36" class="toggle"  />
+    <label for="section-49880184e06fd9cedeebad822a47bb36" class="flex justify-between">
+      <a role="button" class="">Token Sampling</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/" class="">(翻译)token sampling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Core/token-sampling/temperature/" class="">Token Sampling Methods</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-dcc7208d3f790b5592723fa605667723" class="toggle"  />
+    <label for="section-dcc7208d3f790b5592723fa605667723" class="flex justify-between">
+      <a role="button" class="">Challenge</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/Hallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/" class="">(原理)不可能三角</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>LLM Deep Dive</h3>
+
+  <label for="toc-control">
+    
+    <img src="/www6vAlgo/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#大型语言模型深度解析从预训练到强化学习">大型语言模型深度解析：从预训练到强化学习</a>
+      <ul>
+        <li><a href="#执行摘要">执行摘要</a></li>
+        <li><a href="#第一阶段预训练构建知识基础">第一阶段：预训练——构建知识基础</a>
+          <ul>
+            <li><a href="#1-数据收集与处理">1. 数据收集与处理</a></li>
+            <li><a href="#2-分词-tokenization">2. 分词 (Tokenization)</a></li>
+            <li><a href="#3-神经网络训练">3. 神经网络训练</a></li>
+            <li><a href="#4-神经网络内部结构与推理">4. 神经网络内部结构与推理</a></li>
+          </ul>
+        </li>
+        <li><a href="#第二阶段后训练从模拟器到助手">第二阶段：后训练——从模拟器到助手</a>
+          <ul>
+            <li><a href="#1-监督式微调-supervised-fine-tuning-sft">1. 监督式微调 (Supervised Fine-Tuning, SFT)</a></li>
+            <li><a href="#2-大型语言模型的心理学与局限性">2. 大型语言模型的心理学与局限性</a></li>
+          </ul>
+        </li>
+        <li><a href="#第三阶段强化学习超越模仿学会思考">第三阶段：强化学习——超越模仿，学会思考</a>
+          <ul>
+            <li><a href="#1-可验证领域的强化学习-如数学与编程">1. 可验证领域的强化学习 (如数学与编程)</a></li>
+            <li><a href="#2-不可验证领域的强化学习-如创意写作">2. 不可验证领域的强化学习 (如创意写作)</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结与未来展望">总结与未来展望</a>
+          <ul>
+            <li><a href="#1-未来能力展望">1. 未来能力展望</a></li>
+            <li><a href="#2-如何获取信息与使用模型">2. 如何获取信息与使用模型</a></li>
+            <li><a href="#3-最终结论我们究竟在与什么对话">3. 最终结论：我们究竟在与什么对话？</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="大型语言模型深度解析从预训练到强化学习">
+  大型语言模型深度解析：从预训练到强化学习
+  <a class="anchor" href="#%e5%a4%a7%e5%9e%8b%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b%e6%b7%b1%e5%ba%a6%e8%a7%a3%e6%9e%90%e4%bb%8e%e9%a2%84%e8%ae%ad%e7%bb%83%e5%88%b0%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0">#</a>
+</h1>
+<h2 id="执行摘要">
+  执行摘要
+  <a class="anchor" href="#%e6%89%a7%e8%a1%8c%e6%91%98%e8%a6%81">#</a>
+</h2>
+<p>本文档深入剖析了大型语言模型（LLM）的构建、运作原理及其认知特性，其信息完全基于 Andrej Karpathy 的技术讲解。大型语言模型的开发过程主要分为三个核心阶段，其复杂性和计算成本逐级递减，但对最终模型能力的塑造至关重要。</p>
+<ol>
+<li>
+<p><strong>预训练 (Pre-training)</strong>：此阶段是计算最密集、成本最高昂的环节。通过处理海量的互联网文本数据（如 FineWeb 数据集的 15 万亿个词元），模型学习语言的统计规律。其核心任务是“预测下一个词元”，从而将互联网的知识以一种有损压缩的形式编码到其数十亿甚至上万亿的参数中。此阶段的产物是<strong>基础模型 (Base Model)</strong>，它本质上是一个“互联网文档模拟器”，能够生成统计上类似互联网文本的内容，但本身并非一个可直接交互的助手。</p>
+</li>
+<li>
+<p><strong>后训练：监督式微调 (Supervised Fine-Tuning, SFT)</strong>：此阶段旨在将基础模型转化为一个<strong>助手 (Assistant)</strong>。通过在一个由人类标注员根据特定指南创建的高质量对话数据集上继续训练，模型学习模仿专家行为。此时，用户与模型的交互，本质上是在与一个“人类标注员的统计模拟”进行对话。模型的回答反映了其训练数据中人类标注员遵循的“有用、真实、无害”等原则。</p>
+</li>
+<li>
+<p>后训练：强化学习 (Reinforcement Learning, RL)：这是提升模型高级能力的关键阶段，尤其是在需要推理和解决问题的领域。</p>
+<ul>
+<li><strong>在可验证领域 (Verifiable Domains)</strong>，如数学和编程，模型通过生成大量候选解决方案并根据最终答案的正确性进行“试错”学习。这个过程使其能够发现超越简单模仿的人类专家、更适合其自身认知结构的、新颖有效的“认知策略”，即学会“思考”。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>在不可验证领域 (Unverifiable Domains)</strong>，如创意写作，通过<strong>基于人类反馈的强化学习 (RLHF)</strong>，训练一个“奖励模型”来模拟人类偏好，从而指导主模型进行优化。然而，这种方式存在局限性，因为奖励模型本身可能被“欺骗”，限制了其性能提升的上限。</li>
+</ul>
+<p>最终，大型语言模型是一个强大的、但并非绝对可靠的工具。它们是<strong>随机的词元序列生成器</strong>，其能力呈现出“瑞士奶酪”模型——在解决奥林匹克竞赛级别的难题时表现出色，却可能在看似简单的常识性问题上犯错。这是由其基于词元的运作方式、每个词元固定的计算量以及训练数据的特性共同决定的。用户应将其视为强大的助手，用于获取灵感、生成初稿和加速工作流程，但必须始终保持批判性思维，验证其输出，并对最终成果负责。</p>
+<p>-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-</p>
+<h2 id="第一阶段预训练构建知识基础">
+  第一阶段：预训练——构建知识基础
+  <a class="anchor" href="#%e7%ac%ac%e4%b8%80%e9%98%b6%e6%ae%b5%e9%a2%84%e8%ae%ad%e7%bb%83%e6%9e%84%e5%bb%ba%e7%9f%a5%e8%af%86%e5%9f%ba%e7%a1%80">#</a>
+</h2>
+<p>预训练是构建大型语言模型的第一步，也是计算资源消耗最大的阶段。其目标是从海量文本数据中学习语言的底层结构和世界知识。</p>
+<h3 id="1-数据收集与处理">
+  1. 数据收集与处理
+  <a class="anchor" href="#1-%e6%95%b0%e6%8d%ae%e6%94%b6%e9%9b%86%e4%b8%8e%e5%a4%84%e7%90%86">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>数据来源</strong>：通常始于像 Common Crawl 这样的庞大网络爬取档案，该组织自 2007 年以来已索引了数十亿网页。</p>
+</li>
+<li>
+<p>数据处理流程：原始数据需经过多阶段的严格过滤和清洗，以确保数量、质量和多样性。</p>
+<ul>
+<li><strong>URL 过滤</strong>：移除包含恶意软件、垃圾邮件、成人内容或极端言论等不良网站的 URL。</li>
+<li><strong>文本提取</strong>：从原始 HTML 代码中剥离导航栏、广告和脚本，仅保留正文内容。</li>
+<li><strong>语言过滤</strong>：通过语言分类器筛选出特定语言的文档（例如，FineWeb 数据集保留了 65% 以上为英文的页面）。</li>
+<li><strong>去重与 PII 移除</strong>：删除重复内容，并识别和过滤掉包含个人身份信息（PII）的页面，如地址、社保号码等。</li>
+</ul>
+</li>
+<li>
+<p><strong>最终数据集</strong>：经过处理后，尽管原始互联网数据量巨大，但最终用于训练的文本数据集大小相对可控。例如，FineWeb 数据集大小约为 44TB，包含约 15 万亿个词元（Tokens），这个体量的数据可以存放在单个现代硬盘上。</p>
+</li>
+</ul>
+<h3 id="2-分词-tokenization">
+  2. 分词 (Tokenization)
+  <a class="anchor" href="#2-%e5%88%86%e8%af%8d-tokenization">#</a>
+</h3>
+<p>神经网络无法直接处理原始文本，必须先将文本转换为一个由有限符号组成的序列。这个过程被称为分词。</p>
+<ul>
+<li><strong>目标</strong>：在“词汇表大小”和“序列长度”之间取得平衡。使用较少的符号（如二进制的 0 和 1）会导致序列过长，而我们希望用更多的符号来换取更短的序列，因为序列长度是神经网络中宝贵且有限的资源。</li>
+<li><strong>算法</strong>：现代 LLM 普遍采用**字节对编码（Byte Pair Encoding, BPE）**算法。该算法迭代地查找文本中最常见的连续字节对，并将它们合并成一个新的、唯一的符号（词元）。</li>
+<li><strong>结果</strong>：通过这个过程，词汇表被扩展。例如，GPT-4 使用一个包含 100,277 个唯一词元的词汇表。文本被转换成一维的词元 ID 序列。这些 ID 本身没有数值意义，仅仅是唯一标识符。一个单词、一个词根、一个标点，甚至常见的词组都可能成为一个独立的词元。</li>
+</ul>
+<h3 id="3-神经网络训练">
+  3. 神经网络训练
+  <a class="anchor" href="#3-%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%e8%ae%ad%e7%bb%83">#</a>
+</h3>
+<p>训练的核心目标是让神经网络学习词元序列中的统计关系，即<strong>预测下一个词元</strong>。</p>
+<ul>
+<li>
+<p>训练过程：</p>
+<ol>
+<li><strong>采样</strong>：从数据集中随机抽取一个固定长度的词元窗口（称为“上下文”，Context）。例如，一个长度为 4096 或 8192 的窗口。</li>
+<li><strong>输入与输出</strong>：将上下文输入到神经网络中。网络的输出是一个概率分布，涵盖了词汇表中所有（例如 100,277 个）词元，表示每个词元作为下一个出现的可能性。</li>
+<li><strong>学习与更新</strong>：在训练开始时，网络参数是随机初始化的，其预测也是随机的。我们将网络的预测与数据集中的“真实”下一个词元进行比较。通过一个称为<strong>反向传播</strong>的数学过程，微调网络内部的数百万或数十亿个参数（权重），使得“正确”词元的预测概率被“轻推”得更高一点，而其他所有错误词元的概率则相应降低。</li>
+<li><strong>迭代</strong>：这个“采样-预测-更新”的过程在整个数据集上重复进行数万亿次，通常以“批处理”的方式并行完成。</li>
+</ol>
+</li>
+<li>
+<p><strong>损失函数 (Loss)</strong>：研究人员通过一个名为“损失”的指标来监控训练进程。损失值越低，代表模型的预测与真实数据越吻合。在训练过程中，理想的情况是看到损失值稳步下降。</p>
+</li>
+</ul>
+<h3 id="4-神经网络内部结构与推理">
+  4. 神经网络内部结构与推理
+  <a class="anchor" href="#4-%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%e5%86%85%e9%83%a8%e7%bb%93%e6%9e%84%e4%b8%8e%e6%8e%a8%e7%90%86">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>架构</strong>：现代 LLM 普遍采用<strong>Transformer</strong>架构。它是一个巨大的数学表达式，由多个层组成，每层都包含注意力机制（Attention）和多层感知机（MLP）等模块。信息（词元序列）从输入端流经这些层，与模型的参数进行复杂的混合运算（乘法、加法等），最终在输出端生成下一个词元的概率。</p>
+</li>
+<li>
+<p><strong>参数</strong>：这些参数可以被看作是混音台上的旋钮。训练的过程就是在寻找一套“最佳”的旋钮设置，使得模型能够准确地模拟训练数据中的语言模式。</p>
+</li>
+<li>
+<p>推理 (Inference)</p>
+<p>：训练完成后，模型的参数被固定下来。当用户与模型（如 ChatGPT）交互时，进行的就是推理过程。</p>
+<ol>
+<li>用户提供一个初始词元序列（前缀）。</li>
+<li>模型接收这个序列，计算出下一个最可能的词元概率分布。</li>
+<li>系统根据这个概率分布进行<strong>采样</strong>（像掷一个加权的骰子），选择一个词元作为下一个输出。</li>
+<li>新生成的词元被附加到序列末尾，形成新的、更长的上下文。</li>
+<li>重复步骤 2-4，逐个词元地生成回应，直到达到预设长度或生成一个特殊的“结束”词元。</li>
+</ol>
+<ul>
+<li><strong>随机性</strong>：由于采样过程的存在，即使输入完全相同的前缀，每次生成的结果也可能不同。这使得模型的输出具有一定的创造性和多样性。</li>
+</ul>
+</li>
+</ul>
+<p>-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-</p>
+<h2 id="第二阶段后训练从模拟器到助手">
+  第二阶段：后训练——从模拟器到助手
+  <a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e9%98%b6%e6%ae%b5%e5%90%8e%e8%ae%ad%e7%bb%83%e4%bb%8e%e6%a8%a1%e6%8b%9f%e5%99%a8%e5%88%b0%e5%8a%a9%e6%89%8b">#</a>
+</h2>
+<p>预训练产出的基础模型虽然蕴含海量知识，但它只会续写文本，无法理解指令或进行对话。后训练阶段的目标就是将其转化为一个有用的助手。这个阶段的计算成本远低于预训练。</p>
+<h3 id="1-监督式微调-supervised-fine-tuning-sft">
+  1. 监督式微调 (Supervised Fine-Tuning, SFT)
+  <a class="anchor" href="#1-%e7%9b%91%e7%9d%a3%e5%bc%8f%e5%be%ae%e8%b0%83-supervised-fine-tuning-sft">#</a>
+</h3>
+<p>这是将模型转变为助手的核心步骤，其本质是<strong>通过示例进行编程</strong>。</p>
+<ul>
+<li>
+<p><strong>核心思想</strong>：用一个全新的、精心策划的数据集替换掉预训练时使用的互联网文本数据，然后继续训练基础模型。</p>
+</li>
+<li>
+<p>SFT 数据集：</p>
+<ul>
+<li><strong>内容</strong>：由成千上万个高质量的“指令-回应”对话对组成。这些对话覆盖了广泛的主题和任务类型。</li>
+<li><strong>来源</strong>：最初由人类标注员根据公司（如 OpenAI）制定的详细<strong>标注指南</strong>手动创建。这些指南通常长达数百页，定义了理想助手的行为准则（如“有用、真实、无害”）。</li>
+<li><strong>演变</strong>：现在，SFT 数据集的创建过程也大量借助其他 LLM 来生成初步回答，再由人类专家进行编辑和优化，这种人机协作的方式极大地提高了数据生产的效率和规模。</li>
+</ul>
+</li>
+<li>
+<p><strong>对话分词</strong>：为了让模型理解对话结构，需要引入特殊的控制词元，如 <code>im_start</code>（回合开始）、<code>user</code>（用户发言）、<code>assistant</code>（助手发言）和 <code>im_end</code>（回合结束），将结构化的对话转换回模型能够处理的一维词元序列。</p>
+</li>
+<li>
+<p><strong>效果</strong>：经过 SFT 训练后，模型学会了识别并遵循对话格式。当它看到以用户提问结尾的上下文时，就会续写出符合助手“人设”的回答。因此，<strong>与一个 SFT 模型对话，本质上是在与一个模仿人类标注员行为的统计模拟器进行交互</strong>。</p>
+</li>
+</ul>
+<h3 id="2-大型语言模型的心理学与局限性">
+  2. 大型语言模型的心理学与局限性
+  <a class="anchor" href="#2-%e5%a4%a7%e5%9e%8b%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b%e7%9a%84%e5%bf%83%e7%90%86%e5%ad%a6%e4%b8%8e%e5%b1%80%e9%99%90%e6%80%a7">#</a>
+</h3>
+<p>LLM 的训练方式和内部结构导致了一系列独特的认知特性和行为偏差。</p>
+<h4 id="幻觉-hallucinations">
+  幻觉 (Hallucinations)
+  <a class="anchor" href="#%e5%b9%bb%e8%a7%89-hallucinations">#</a>
+</h4>
+<ul>
+<li>
+<p><strong>原因</strong>：模型在训练数据中看到的大部分问答都是以自信的口吻陈述事实。因此，当遇到它不知道答案的问题时，它倾向于模仿这种“自信回答”的风格，而不是承认“我不知道”。它会根据统计上最可能的方式“编造”一个听起来合理的答案。</p>
+</li>
+<li>
+<p>缓解措施：</p>
+<ol>
+<li><strong>数据干预</strong>：通过程序化地探查模型的知识边界，在 SFT 数据集中主动添加“我不知道”或“我无法找到相关信息”的回答样本。这教会了模型在不确定时可以拒绝回答。</li>
+</ol>
+</li>
+</ul>
+<ol start="2">
+<li><strong>工具使用 (Tool Use)</strong>：赋予模型使用外部工具的能力，如<strong>网络搜索</strong>或<strong>代码解释器</strong>。当模型判断自身知识不足时，它可以生成一个特殊的指令来调用工具，将获取到的信息（如搜索结果或代码运行输出）插入到其<strong>上下文窗口</strong>中。</li>
+</ol>
+<h4 id="知识存储参数-vs-上下文窗口">
+  知识存储：参数 vs. 上下文窗口
+  <a class="anchor" href="#%e7%9f%a5%e8%af%86%e5%ad%98%e5%82%a8%e5%8f%82%e6%95%b0-vs-%e4%b8%8a%e4%b8%8b%e6%96%87%e7%aa%97%e5%8f%a3">#</a>
+</h4>
+<p>理解 LLM 如何使用知识至关重要：</p>
+<ul>
+<li><strong>参数 (Parameters)</strong>：存储在模型权重中的知识，类似于人类的<strong>长期记忆</strong>或<strong>模糊的印象</strong>。它是模型在预训练阶段从海量数据中学习到的压缩知识。回忆这些知识可能不完全精确。</li>
+<li><strong>上下文窗口 (Context Window)</strong>：模型在处理当前任务时接收到的所有词元序列。这相当于模型的<strong>工作记忆</strong>或<strong>短期记忆</strong>。位于上下文窗口内的信息对模型是直接可见的，可以被精确地引用和处理。</li>
+<li><strong>实践启示</strong>：为了获得更高质量的回答，与其依赖模型回忆其参数中的知识，不如将相关信息直接提供在提示（Prompt）中，放入其上下文窗口。例如，要求模型总结一本书的章节时，最好将该章节的全文附在提示中。</li>
+</ul>
+<h4 id="计算能力与思考过程">
+  计算能力与“思考”过程
+  <a class="anchor" href="#%e8%ae%a1%e7%ae%97%e8%83%bd%e5%8a%9b%e4%b8%8e%e6%80%9d%e8%80%83%e8%bf%87%e7%a8%8b">#</a>
+</h4>
+<ul>
+<li>
+<p><strong>“模型需要词元来思考”</strong>：模型处理每个词元时所能执行的计算量是有限的。它无法在生成单个词元的一瞬间完成复杂的、多步骤的推理。</p>
+</li>
+<li>
+<p><strong>连锁思考 (Chain of Thought)</strong>：因此，为了解决复杂问题，模型必须将推理过程分解成多个中间步骤，并将这些步骤作为词元序列逐步生成。每一步的输出都成为下一步的上下文，从而将复杂的计算分布在多个词元的生成过程中。</p>
+</li>
+<li>
+<p>对用户的启示：</p>
+<ul>
+<li>要求模型“一步一步地思考”或“展示你的推理过程”可以显著提高其在复杂问题上的表现。</li>
+<li>直接要求模型给出最终答案（尤其是在数学问题中），相当于强迫它在生成一个词元时完成所有计算，这很容易导致错误。</li>
+</ul>
+</li>
+<li>
+<p>“瑞士奶酪”能力模型：LLM 的能力分布极不均匀。</p>
+<ul>
+<li><strong>强项</strong>：知识密集型任务、模式识别、语言转换。</li>
+</ul>
+</li>
+<li>
+<p><strong>弱项</strong>：精确的字符操作（如拼写、颠倒字符串）、精确计数、空间推理和某些看似简单的常识问题。这些弱点通常与其基于词元而非字符的运作方式有关。例如，模型“看”不到单词中的字母，而是看到代表单词或词根的词元。</p>
+</li>
+</ul>
+<p>-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-</p>
+<h2 id="第三阶段强化学习超越模仿学会思考">
+  第三阶段：强化学习——超越模仿，学会思考
+  <a class="anchor" href="#%e7%ac%ac%e4%b8%89%e9%98%b6%e6%ae%b5%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0%e8%b6%85%e8%b6%8a%e6%a8%a1%e4%bb%bf%e5%ad%a6%e4%bc%9a%e6%80%9d%e8%80%83">#</a>
+</h2>
+<p>强化学习（RL）是训练 LLM 的前沿阶段，旨在让模型超越对人类专家的简单模仿，通过实践和探索发现更优的问题解决方法。这类似于学生通过做练习题来掌握知识，而不仅仅是背诵课本上的例题。</p>
+<h3 id="1-可验证领域的强化学习-如数学与编程">
+  1. 可验证领域的强化学习 (如数学与编程)
+  <a class="anchor" href="#1-%e5%8f%af%e9%aa%8c%e8%af%81%e9%a2%86%e5%9f%9f%e7%9a%84%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0-%e5%a6%82%e6%95%b0%e5%ad%a6%e4%b8%8e%e7%bc%96%e7%a8%8b">#</a>
+</h3>
+<p>在这些领域，答案有明确的对错标准，为自动化训练提供了可能。</p>
+<ul>
+<li>
+<p>过程：</p>
+<ol>
+<li><strong>探索 (Exploration)</strong>：针对一个问题（Prompt），让模型生成成百上千个不同的候选解决方案。</li>
+<li><strong>验证 (Verification)</strong>：用一个自动化的程序（如检查最终答案是否正确，或运行代码看是否通过测试用例）来评估每个解决方案的优劣。</li>
+<li><strong>学习 (Learning)</strong>：对那些导向正确答案的、高质量的解决方案（即成功的“思维路径”）进行训练，强化模型在未来采用类似路径的倾向。</li>
+</ol>
+</li>
+<li>
+<p><strong>涌现能力：学会思考</strong>：通过这个过程，模型会自发地学习到对解决问题有益的<strong>认知策略</strong>。它会发现，在输出最终答案前，进行自我反思（“等等，让我再检查一遍”）、多角度验证、设定变量、回溯修正等行为，能够显著提高正确率。这些复杂的“内心独白”式的推理过程是人类专家在提供标准答案时不会写出来的，只能通过 RL 的试错过程被模型自己发现。</p>
+</li>
+<li>
+<p><strong>与 AlphaGo 的类比</strong>：这与 AlphaGo 的学习过程类似。AlphaGo 通过自我对弈的强化学习，发现了超越人类顶级棋手理解的下法（如著名的“第 37 手”）。同样，LLM 领域的 RL 也有潜力让模型发现超越人类思维定式的、更高效的推理路径。</p>
+</li>
+</ul>
+<h3 id="2-不可验证领域的强化学习-如创意写作">
+  2. 不可验证领域的强化学习 (如创意写作)
+  <a class="anchor" href="#2-%e4%b8%8d%e5%8f%af%e9%aa%8c%e8%af%81%e9%a2%86%e5%9f%9f%e7%9a%84%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0-%e5%a6%82%e5%88%9b%e6%84%8f%e5%86%99%e4%bd%9c">#</a>
+</h3>
+<p>在这些领域，答案没有客观的对错，只有主观的好坏。</p>
+<ul>
+<li>
+<p><strong>挑战</strong>：无法自动化地为模型的输出（如一首诗或一个笑话）打分。</p>
+</li>
+<li>
+<p>解决方案：基于人类反馈的强化学习 (RLHF)：</p>
+<ol>
+<li><strong>训练奖励模型</strong>：首先，让人类标注员对模型生成的多个回答进行<strong>排序</strong>（例如，哪个笑话最好笑）。这个任务比直接打分或写出“完美答案”要容易得多。</li>
+<li><strong>模拟人类偏好</strong>：然后，用这些人类排序数据来训练一个独立的神经网络，即<strong>奖励模型 (Reward Model)</strong>。这个模型学会了预测对于给定的回答，人类会给出什么样的评价分数。它成为了“人类偏好”的模拟器。</li>
+<li><strong>进行强化学习</strong>：最后，让主 LLM 在与这个奖励模型的交互中进行强化学习。主 LLM 的目标是生成能够从奖励模型那里获得高分的回答。</li>
+</ol>
+</li>
+<li>
+<p>RLHF 的优势与局限：</p>
+<ul>
+<li><strong>优势</strong>：使得在主观领域应用 RL 成为可能，并且通常能提升模型的表现，因为人类进行“评价”比进行“创作”更容易，数据质量更高。</li>
+</ul>
+</li>
+<li>
+<p><strong>局限</strong>：奖励模型只是对人类偏好的一个<strong>有损模拟</strong>，它自身存在漏洞。如果强化学习进行得太久，主 LLM 会学会如何“欺骗”奖励模型，生成一些毫无意义但却能获得高分的内容（即对抗性样本）。因此，RLHF 更像是一种有限的“微调”，而不是一种能够无限提升模型能力的“魔法”。</p>
+</li>
+</ul>
+<p>-&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;-</p>
+<h2 id="总结与未来展望">
+  总结与未来展望
+  <a class="anchor" href="#%e6%80%bb%e7%bb%93%e4%b8%8e%e6%9c%aa%e6%9d%a5%e5%b1%95%e6%9c%9b">#</a>
+</h2>
+<h3 id="1-未来能力展望">
+  1. 未来能力展望
+  <a class="anchor" href="#1-%e6%9c%aa%e6%9d%a5%e8%83%bd%e5%8a%9b%e5%b1%95%e6%9c%9b">#</a>
+</h3>
+<ul>
+<li><strong>多模态 (Multimodality)</strong>：模型将原生支持文本、图像、音频的混合输入和输出，实现更自然的交互。</li>
+<li><strong>智能体 (Agents)</strong>：模型将能够执行更长期的、多步骤的任务，从简单的问答工具演变为能够自主规划和执行工作的数字助理。</li>
+<li><strong>无处不在的集成</strong>：AI 能力将更深入地融入操作系统和各种应用中，变得更加“隐形”和无缝。</li>
+<li><strong>测试时训练 (Test-Time Training)</strong>：模型可能发展出在推理过程中持续学习和适应新信息的能力，打破当前训练和推理阶段的严格分离。</li>
+</ul>
+<h3 id="2-如何获取信息与使用模型">
+  2. 如何获取信息与使用模型
+  <a class="anchor" href="#2-%e5%a6%82%e4%bd%95%e8%8e%b7%e5%8f%96%e4%bf%a1%e6%81%af%e4%b8%8e%e4%bd%bf%e7%94%a8%e6%a8%a1%e5%9e%8b">#</a>
+</h3>
+<ul>
+<li>
+<p>保持信息同步：</p>
+<ul>
+<li><strong>LMSYS Chatbot Arena</strong>：一个通过匿名用户投票对主流模型进行排名的排行榜。</li>
+<li><strong>AI News Newsletter</strong>：一份内容详尽的 AI 领域新闻通讯。</li>
+<li><strong>X (Twitter)</strong>：AI 领域的许多最新进展和讨论都发生在此平台。</li>
+</ul>
+</li>
+<li>
+<p>在哪里使用模型：</p>
+<ul>
+<li><strong>专有模型</strong>：通过其提供商的官方网站访问，如 OpenAI 的 ChatGPT、Google 的 Gemini 等。</li>
+<li><strong>开源权重模型</strong>：可通过第三方推理服务提供商（如 Together.AI）访问，或在本地设备上运行（需要 LM Studio 等工具）。</li>
+<li><strong>基础模型</strong>：较少见，但一些平台（如 Hyperbolic）提供与基础模型直接交互的服务。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-最终结论我们究竟在与什么对话">
+  3. 最终结论：我们究竟在与什么对话？
+  <a class="anchor" href="#3-%e6%9c%80%e7%bb%88%e7%bb%93%e8%ae%ba%e6%88%91%e4%bb%ac%e7%a9%b6%e7%ab%9f%e5%9c%a8%e4%b8%8e%e4%bb%80%e4%b9%88%e5%af%b9%e8%af%9d">#</a>
+</h3>
+<p>当用户与一个大型语言模型交互时，其本质是一个<strong>词元自动补全系统</strong>。</p>
+<ul>
+<li>对于<strong>SFT 模型</strong>（如免费版的 ChatGPT-4o），用户得到的是一个对<strong>人类标注员行为的统计模拟</strong>。其回答的风格、内容和倾向性，都源于其在包含数百万次人类示范的对话数据集上的训练。</li>
+<li>对于<strong>强化学习模型</strong>（或称为“思考模型”，如付费版的 ChatGPT-4o-mini、DeepSeek-V2），用户得到的则更进一步。它不仅模仿人类，还包含了在解决问题的大量实践中<strong>自发涌现的认知策略</strong>。这种能力是其通过试错发现的，而非直接从人类那里复制而来。</li>
+</ul>
+<p>这些模型是极其强大的工具，能够极大地提高生产力。然而，必须清醒地认识到它们的局限性：它们会产生幻觉，能力存在“盲点”，并且缺乏真正的理解。最佳实践是将其用作一个合作的伙伴——用于激发灵感、起草初稿、分析数据和自动化繁琐任务，但用户必须始终扮演最终的监督者和决策者，对结果进行批判性地审查和验证。</p>
+<h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<ol>
+<li>视频地址：<a href="https://link.zhihu.com/?target=https%3A//www.youtube.com/watch%3Fv%3D7xTGNNLPyMI">Deep Dive into LLMs like ChatGPT</a>  from NotebookLLM</li>
+</ol>
+<p>​       <a href="https://www.youtube.com/watch?v=7xTGNNLPyMI">https://www.youtube.com/watch?v=7xTGNNLPyMI</a>  原文  Andrej Karpathy</p>
+<p>1xx. <a href="https://mp.weixin.qq.com/s/GHYsP29wVU9jdPwvJWduLQ">深入浅出大模型：预训练、监督微调、强化学习、RLHF</a></p>
+<p>1xx. <a href="https://zhuanlan.zhihu.com/p/22594597865">Andrej Karpathy：深度解析LLM —— 从预训练到强化学习</a></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#大型语言模型深度解析从预训练到强化学习">大型语言模型深度解析：从预训练到强化学习</a>
+      <ul>
+        <li><a href="#执行摘要">执行摘要</a></li>
+        <li><a href="#第一阶段预训练构建知识基础">第一阶段：预训练——构建知识基础</a>
+          <ul>
+            <li><a href="#1-数据收集与处理">1. 数据收集与处理</a></li>
+            <li><a href="#2-分词-tokenization">2. 分词 (Tokenization)</a></li>
+            <li><a href="#3-神经网络训练">3. 神经网络训练</a></li>
+            <li><a href="#4-神经网络内部结构与推理">4. 神经网络内部结构与推理</a></li>
+          </ul>
+        </li>
+        <li><a href="#第二阶段后训练从模拟器到助手">第二阶段：后训练——从模拟器到助手</a>
+          <ul>
+            <li><a href="#1-监督式微调-supervised-fine-tuning-sft">1. 监督式微调 (Supervised Fine-Tuning, SFT)</a></li>
+            <li><a href="#2-大型语言模型的心理学与局限性">2. 大型语言模型的心理学与局限性</a></li>
+          </ul>
+        </li>
+        <li><a href="#第三阶段强化学习超越模仿学会思考">第三阶段：强化学习——超越模仿，学会思考</a>
+          <ul>
+            <li><a href="#1-可验证领域的强化学习-如数学与编程">1. 可验证领域的强化学习 (如数学与编程)</a></li>
+            <li><a href="#2-不可验证领域的强化学习-如创意写作">2. 不可验证领域的强化学习 (如创意写作)</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结与未来展望">总结与未来展望</a>
+          <ul>
+            <li><a href="#1-未来能力展望">1. 未来能力展望</a></li>
+            <li><a href="#2-如何获取信息与使用模型">2. 如何获取信息与使用模型</a></li>
+            <li><a href="#3-最终结论我们究竟在与什么对话">3. 最终结论：我们究竟在与什么对话？</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
