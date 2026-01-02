@@ -4,37 +4,89 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  CLIP 在训练过程中做了哪些事情？[Elmo][1]
+  论文[1]
   #
 
-在训练过程中，CLIP（Contrastive Language-Image Pre-training）模型主要进行了以下几个步骤：
 
-数据预处理 : CLIP 使用了一个大规模的数据集，包含 4 亿个 “图像 - 文本” 对，这些数据需要进行清洗和预处理，以便于模型学习。
-特征提取 : 通过 Text Encoder 和 Image Encoder 分别对文本和图像进行特征提取。Text Encoder 通常是基于 Transformer 的模型，而 Image Encoder 可以是基于 CNN（卷积神经网络）或者 VIT（Vision Transformer）的模型。
-对比学习 : CLIP 采用对比学习的策略，通过对比正确的图像 - 文本对与错误的图像 - 文本对，使得模型能够学习到正确对的特征表示与其他对的区分。具体来说，CLIP 通过 InfoNCE 损失函数来最大化正确对的相似度，同时最小化错误对的相似度。
-特征空间对齐 : 通过对比学习，CLIP 将图像和文本的特征映射到一个共享的多模态特征空间中，使得图像特征和文本特征可以直接进行相似度比较。
-参数优化 : 通过反向传播和梯度下降等方法，不断调整模型参数，以最小化损失函数，从而优化模型性能。
-Zero-shot 推理能力的培养 : 在训练过程中，CLIP 学习了如何通过文本提示（prompts）来进行 zero-shot 的图像分类，即在没有直接观测到的类别标签下，通过文本描述来识别图像内容。
-模型评估与调整 : 通过在验证集上的评估，调整模型结构和超参数，以提高模型的泛化能力和性能。
 
-通过这些训练步骤，CLIP 能够学习到一个强大的多模态特征表示，使其能够在多种视觉任务上进行 zero-shot 或 few-shot 的推理。">
+论文地址
+Segment Anything Model论文
+
+
+开源地址
+Segment Anything Model模型源码 Git
+
+
+官网
+Segment Anything Model官网
+Segment Anything Model官网demo网页端
+
+
+
+  模型[2]
+  #
+
+
+  image encoder
+  #
+
+
+  prompt encoder
+  #
+
+
+  mask decoder
+  #
+
+
+在prompt embeddings中插入一个可学习的token，用于docoder的输出。
+（1）prompt toekns&#43;output tokens进行self attn,
+（2）用得到的token和image embedding进行 cross attn（token作为Q）
+（3）point-wise MLP 更新token
+（4）用image embedding和（3）的token进行cross atten（image embedding作为Q）
+重复上述步骤2次，再将attn再通过残差进行连接，最终输出masks和iou scores。
+
+  SAM应用[3]
+  #
+
+
+图像分割
+目标检测
+图像修复( image inpainting)
+模型微调
+
+
+  参考
+  #
+
+
+【模型解读】【代码复现】Segment Anything Model(SAM) *
+【论文解读】MetaAi SAM(Segment Anything) 分割一切 ***
+最下面有应用
+Segment Anything(sam)项目整理汇总 ***
+
+1xx. 【Segment Anything 模型深度解构】GPT时代，干翻计算机视觉第一步！">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/Vision/gptMultimodalCLIP/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/Vision/seg/gptMultimodalSAM/">
   <meta property="og:site_name" content="LLM 算法">
-  <meta property="og:title" content="(原理)CLIP">
-  <meta property="og:description" content="CLIP 在训练过程中做了哪些事情？[Elmo][1] # 在训练过程中，CLIP（Contrastive Language-Image Pre-training）模型主要进行了以下几个步骤：
-数据预处理 : CLIP 使用了一个大规模的数据集，包含 4 亿个 “图像 - 文本” 对，这些数据需要进行清洗和预处理，以便于模型学习。 特征提取 : 通过 Text Encoder 和 Image Encoder 分别对文本和图像进行特征提取。Text Encoder 通常是基于 Transformer 的模型，而 Image Encoder 可以是基于 CNN（卷积神经网络）或者 VIT（Vision Transformer）的模型。 对比学习 : CLIP 采用对比学习的策略，通过对比正确的图像 - 文本对与错误的图像 - 文本对，使得模型能够学习到正确对的特征表示与其他对的区分。具体来说，CLIP 通过 InfoNCE 损失函数来最大化正确对的相似度，同时最小化错误对的相似度。 特征空间对齐 : 通过对比学习，CLIP 将图像和文本的特征映射到一个共享的多模态特征空间中，使得图像特征和文本特征可以直接进行相似度比较。 参数优化 : 通过反向传播和梯度下降等方法，不断调整模型参数，以最小化损失函数，从而优化模型性能。 Zero-shot 推理能力的培养 : 在训练过程中，CLIP 学习了如何通过文本提示（prompts）来进行 zero-shot 的图像分类，即在没有直接观测到的类别标签下，通过文本描述来识别图像内容。 模型评估与调整 : 通过在验证集上的评估，调整模型结构和超参数，以提高模型的泛化能力和性能。 通过这些训练步骤，CLIP 能够学习到一个强大的多模态特征表示，使其能够在多种视觉任务上进行 zero-shot 或 few-shot 的推理。">
+  <meta property="og:title" content="(原理|实战) SAM">
+  <meta property="og:description" content="论文[1] # 论文地址 Segment Anything Model论文
+开源地址 Segment Anything Model模型源码 Git
+官网 Segment Anything Model官网
+Segment Anything Model官网demo网页端
+模型[2] # image encoder # prompt encoder # mask decoder # 在prompt embeddings中插入一个可学习的token，用于docoder的输出。 （1）prompt toekns&#43;output tokens进行self attn, （2）用得到的token和image embedding进行 cross attn（token作为Q） （3）point-wise MLP 更新token （4）用image embedding和（3）的token进行cross atten（image embedding作为Q） 重复上述步骤2次，再将attn再通过残差进行连接，最终输出masks和iou scores。
+SAM应用[3] # 图像分割 目标检测 图像修复( image inpainting) 模型微调 参考 # 【模型解读】【代码复现】Segment Anything Model(SAM) * 【论文解读】MetaAi SAM(Segment Anything) 分割一切 *** 最下面有应用 Segment Anything(sam)项目整理汇总 *** 1xx. 【Segment Anything 模型深度解构】GPT时代，干翻计算机视觉第一步！">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
-<title>(原理)CLIP | LLM 算法</title>
+<title>(原理|实战) SAM | LLM 算法</title>
 <link rel="icon" href="/www6vAlgo/favicon.png" >
 <link rel="manifest" href="/www6vAlgo/manifest.json">
-<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/Vision/gptMultimodalCLIP/">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/Vision/seg/gptMultimodalSAM/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.a250ae51e66264b3f059565913aae018aa48e88ed2beddc7541b9cc9f6168b21.js" integrity="sha256-olCuUeZiZLPwWVZZE6rgGKpI6I7Svt3HVBucyfYWiyE=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/Vision/gptMultimodalCLIP/index.xml" title="LLM 算法" />
+  <script defer src="/www6vAlgo/en.search.min.ea12ef67c19b88b5e61887bfa4621533e23e4168c3d8169284162e3fc7caee6f.js" integrity="sha256-6hLvZ8GbiLXmGIe/pGIVM&#43;I&#43;QWjD2BaShBYuP8fK7m8=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/Vision/seg/gptMultimodalSAM/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1251,13 +1303,29 @@ https://github.com/alex-shpak/hugo-book
   <ul>
     
       
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9e1a963dfeb6e817c8f06c525517844e" class="toggle"  />
+    <label for="section-9e1a963dfeb6e817c8f06c525517844e" class="flex justify-between">
+      <a role="button" class="">Vision Encoder</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
         <li>
           
   
   
 
   
-    <a href="/www6vAlgo/docs/Vision/gptMultimodalCLIP/" class="active">(原理)CLIP</a>
+    <a href="/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalVQVAE/" class="">VQ-VAE</a>
   
 
           
@@ -1275,7 +1343,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/Vision/gptMultimodalVit/" class="">(原理|实战)ViT, ViLT</a>
+    <a href="/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalDINO/" class="">DINO</a>
   
 
           
@@ -1293,7 +1361,216 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/www6vAlgo/docs/Vision/gptMultimodalCLIPPractice/" class="">(实战)CLIP</a>
+    <a href="/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalCLIP/" class="">(原理)CLIP</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalVit/" class="">(原理|实战)ViT, ViLT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalCLIPPractice/" class="">(实战)CLIP</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-dd16fd431323663dddc23925585a56f3" class="toggle"  />
+    <label for="section-dd16fd431323663dddc23925585a56f3" class="flex justify-between">
+      <a role="button" class="">Diffusion</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Diffusion/gptDiffusionunCLIP/" class="">(原理)unCLIP</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Diffusion/gptDiffusionGuidance/" class="">(原理)Guidance</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Diffusion/gptDiffusionXL/" class="">(原理)SD XL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Diffusion/gptMultimodalDiffusion/" class="">(原理)Stable Diffusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/Diffusion/gptMultimodalDiffusionPractice/" class="">(实战)Stable Diffusion</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-949324082ef5fcbe8b53145be096f75a" class="toggle" checked />
+    <label for="section-949324082ef5fcbe8b53145be096f75a" class="flex justify-between">
+      <a role="button" class="">Segmentation</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/seg/gptMultimodalSAM/" class="active">(原理|实战) SAM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Vision/MultimodalConnector/" class="">(原理)Connector</a>
   
 
           
@@ -2349,7 +2626,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>(原理)CLIP</h3>
+  <h3>(原理|实战) SAM</h3>
 
   <label for="toc-control">
     
@@ -2365,17 +2642,19 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#clip-在训练过程中做了哪些事情elmo1">CLIP 在训练过程中做了哪些事情？[Elmo][1]</a></li>
-    <li><a href="#clip-zero-shot推理1">CLIP Zero-shot推理[1]</a>
+    <li><a href="#论文1">论文[1]</a></li>
+    <li><a href="#模型2">模型[2]</a>
       <ul>
         <li>
           <ul>
-            <li><a href="#步骤">步骤</a></li>
-            <li><a href="#局限">局限</a></li>
+            <li><a href="#image-encoder">image encoder</a></li>
+            <li><a href="#prompt-encoder">prompt encoder</a></li>
+            <li><a href="#mask-decoder">mask decoder</a></li>
           </ul>
         </li>
       </ul>
     </li>
+    <li><a href="#sam应用3">SAM应用[3]</a></li>
     <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
@@ -2389,52 +2668,69 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h1 id="clip-在训练过程中做了哪些事情elmo1">
-  CLIP 在训练过程中做了哪些事情？[Elmo][1]
-  <a class="anchor" href="#clip-%e5%9c%a8%e8%ae%ad%e7%bb%83%e8%bf%87%e7%a8%8b%e4%b8%ad%e5%81%9a%e4%ba%86%e5%93%aa%e4%ba%9b%e4%ba%8b%e6%83%85elmo1">#</a>
+  <article class="markdown book-article"><h1 id="论文1">
+  论文[1]
+  <a class="anchor" href="#%e8%ae%ba%e6%96%871">#</a>
 </h1>
-<p>在训练过程中，CLIP（Contrastive Language-Image Pre-training）模型主要进行了以下几个步骤：</p>
-<ol>
-<li><strong>数据预处理</strong> : CLIP 使用了一个大规模的数据集，包含 4 亿个 “图像 - 文本” 对，这些数据需要进行清洗和预处理，以便于模型学习。</li>
-<li><strong>特征提取</strong> : 通过 Text Encoder 和 Image Encoder 分别对文本和图像进行特征提取。Text Encoder 通常是基于 Transformer 的模型，而 Image Encoder 可以是基于 CNN（卷积神经网络）或者 VIT（Vision Transformer）的模型。</li>
-<li><strong>对比学习</strong> : CLIP 采用对比学习的策略，通过对比正确的图像 - 文本对与错误的图像 - 文本对，使得模型能够学习到正确对的特征表示与其他对的区分。具体来说，CLIP 通过 InfoNCE 损失函数来最大化正确对的相似度，同时最小化错误对的相似度。</li>
-<li><strong>特征空间对齐</strong> : 通过对比学习，CLIP 将图像和文本的特征映射到一个共享的多模态特征空间中，使得图像特征和文本特征可以直接进行相似度比较。</li>
-<li><strong>参数优化</strong> : 通过反向传播和梯度下降等方法，不断调整模型参数，以最小化损失函数，从而优化模型性能。</li>
-<li><strong>Zero-shot 推理能力的培养</strong> : 在训练过程中，CLIP 学习了如何通过文本提示（prompts）来进行 zero-shot 的图像分类，即在没有直接观测到的类别标签下，通过文本描述来识别图像内容。</li>
-<li><strong>模型评估与调整</strong> : 通过在验证集上的评估，调整模型结构和超参数，以提高模型的泛化能力和性能。</li>
-</ol>
-<p>通过这些训练步骤，CLIP 能够学习到一个强大的多模态特征表示，使其能够在多种视觉任务上进行 zero-shot 或 few-shot 的推理。</p>
-<h1 id="clip-zero-shot推理1">
-  CLIP Zero-shot推理[1]
-  <a class="anchor" href="#clip-zero-shot%e6%8e%a8%e7%90%861">#</a>
-</h1>
-<h3 id="步骤">
-  步骤
-  <a class="anchor" href="#%e6%ad%a5%e9%aa%a4">#</a>
-</h3>
 <ul>
-<li>首先，我们创建一个<strong>标签全集</strong>，如图中（2）所示，并得到每一个<strong>标签的特征向量</strong></li>
-<li>然后，我们取一张图片，如图中（3）所示，过Image Encoder后得到该<strong>图片的特征向量</strong></li>
-<li>最后，计算图片向量和文字向量间的<strong>相似度</strong>，取相似度最高的那条label即可。</li>
+<li>
+<p>论文地址
+<a href="https://arxiv.org/abs/2304.02643">Segment Anything Model论文</a></p>
+</li>
+<li>
+<p>开源地址
+<a href="https://github.com/facebookresearch/segment-anything">Segment Anything Model模型源码</a> Git</p>
+</li>
+<li>
+<p>官网
+<a href="https://segment-anything.com/">Segment Anything Model官网</a><br>
+<a href="https://segment-anything.com/demo">Segment Anything Model官网demo网页端</a></p>
+</li>
 </ul>
-<h3 id="局限">
-  局限
-  <a class="anchor" href="#%e5%b1%80%e9%99%90">#</a>
+<h1 id="模型2">
+  模型[2]
+  <a class="anchor" href="#%e6%a8%a1%e5%9e%8b2">#</a>
+</h1>
+<h3 id="image-encoder">
+  image encoder
+  <a class="anchor" href="#image-encoder">#</a>
 </h3>
-<p>当你喂给CLIP一张图时，不管这张图片它是否有见过，CLIP都不会生成一个全新的标签，而是去全集标签中找一个最相似的给你。</p>
+<h3 id="prompt-encoder">
+  prompt encoder
+  <a class="anchor" href="#prompt-encoder">#</a>
+</h3>
+<h3 id="mask-decoder">
+  mask decoder
+  <a class="anchor" href="#mask-decoder">#</a>
+</h3>
+<p><img src="images/mask-decoder.webp" alt="mask-decoder.webp" /></p>
+<p>在prompt embeddings中插入一个可学习的token，用于docoder的输出。
+（1）prompt toekns+output tokens进行self attn,
+（2）用得到的token和image embedding进行 cross attn（token作为Q）
+（3）point-wise MLP 更新token
+（4）用image embedding和（3）的token进行cross atten（image embedding作为Q）
+重复上述步骤2次，再将attn再通过残差进行连接，最终输出masks和iou scores。</p>
+<h1 id="sam应用3">
+  SAM应用[3]
+  <a class="anchor" href="#sam%e5%ba%94%e7%94%a83">#</a>
+</h1>
+<ul>
+<li>图像分割</li>
+<li>目标检测</li>
+<li>图像修复( image inpainting)</li>
+<li><strong>模型微调</strong></li>
+</ul>
 <h1 id="参考">
   参考
   <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
 </h1>
 <ol>
-<li><a href="https://zhuanlan.zhihu.com/p/660476765">关于多模态经典之作CLIP，还有哪些细节是你不知道的</a> 代码</li>
+<li><a href="https://blog.csdn.net/weixin_44386956/article/details/130262260">【模型解读】【代码复现】Segment Anything Model(SAM)</a> *</li>
+<li><a href="https://zhuanlan.zhihu.com/p/620355474">【论文解读】MetaAi SAM(Segment Anything) 分割一切</a> ***
+最下面有应用</li>
+<li><a href="https://zhuanlan.zhihu.com/p/630529550">Segment Anything(sam)项目整理汇总</a> ***</li>
 </ol>
-<p>1xx. <a href="https://zhuanlan.zhihu.com/p/493489688">神器CLIP：连接文本和图像，打造可迁移的视觉模型</a> ***</p>
-<p>1xx. <a href="https://zhuanlan.zhihu.com/p/486857682">【CLIP系列Paper解读】CLIP: Learning Transferable Visual Models From Natural Language Supervision</a> ***</p>
-<p>1xx. <a href="https://zhuanlan.zhihu.com/p/646790176">CLIP 模型解读</a></p>
-<p>1xx. <a href="https://zhuanlan.zhihu.com/p/521151393">详解CLIP (一) | 打通文本-图像预训练实现ImageNet的zero-shot分类，比肩全监督训练的ResNet50/101</a></p>
-<p>1xx. <a href="https://blog.csdn.net/lsb2002/article/details/132275132">openai多模态大模型：clip详解及实战</a></p>
-<p>1xx. <a href="https://zhuanlan.zhihu.com/p/555314976">CLIP：多模态领域革命者</a></p>
+<p>1xx. <a href="https://www.bilibili.com/video/BV1aV4y1d7gC/">【Segment Anything 模型深度解构】GPT时代，干翻计算机视觉第一步！</a></p>
 </article>
  
       
@@ -2476,17 +2772,19 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#clip-在训练过程中做了哪些事情elmo1">CLIP 在训练过程中做了哪些事情？[Elmo][1]</a></li>
-    <li><a href="#clip-zero-shot推理1">CLIP Zero-shot推理[1]</a>
+    <li><a href="#论文1">论文[1]</a></li>
+    <li><a href="#模型2">模型[2]</a>
       <ul>
         <li>
           <ul>
-            <li><a href="#步骤">步骤</a></li>
-            <li><a href="#局限">局限</a></li>
+            <li><a href="#image-encoder">image encoder</a></li>
+            <li><a href="#prompt-encoder">prompt encoder</a></li>
+            <li><a href="#mask-decoder">mask decoder</a></li>
           </ul>
         </li>
       </ul>
     </li>
+    <li><a href="#sam应用3">SAM应用[3]</a></li>
     <li><a href="#参考">参考</a></li>
   </ul>
 </nav>

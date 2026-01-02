@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Diffusion on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/categories/Diffusion/</link>
+    <description>Recent content in Diffusion on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 27 Aug 2023 10:21:28 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/categories/Diffusion/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(原理)unCLIP</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionunCLIP/</link>
+      <pubDate>Sun, 27 Aug 2023 10:21:28 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionunCLIP/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;unclip&#34;&gt;&#xA;  unCLIP&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#unclip&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/unCLIP-7603f64564a54cb4af08a1cf38c890e1?pvs=4&#34;&gt;(原理)unCLIP&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理)Guidance</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionGuidance/</link>
+      <pubDate>Tue, 01 Aug 2023 19:19:40 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionGuidance/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;guidance&#34;&gt;&#xA;  Guidance&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#guidance&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/Guidance-bcb0b5a85b5f454fa84875eaeb518983?pvs=4&#34;&gt;Guidance&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>(原理)SD XL</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionXL/</link>
+      <pubDate>Tue, 01 Aug 2023 19:12:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionXL/</guid>
+      <description>&lt;p&gt;&lt;/p&gt;&#xA;&lt;!-- more --&gt;&#xA;&lt;h1 id=&#34;sdxl&#34;&gt;&#xA;  SDXL&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#sdxl&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://candied-skunk-1ca.notion.site/SDXL-0446aba46c8e400d8583fde17d8df264?pvs=4&#34;&gt;SDXL&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
