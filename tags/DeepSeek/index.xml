@@ -10,10 +10,31 @@
     <atom:link href="https://www6v.github.io/www6vAlgo/tags/DeepSeek/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>(实战)GRPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPODeepseek/gptDeepseekGRPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/</link>
       <pubDate>Wed, 28 Feb 2024 01:29:48 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPODeepseek/gptDeepseekGRPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/</guid>
       <description>GRPO # (实战)GRPO</description>
+    </item>
+    <item>
+      <title>(实战)Deepseek 蒸馏</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekDistill/</link>
+      <pubDate>Sun, 25 Feb 2024 18:46:57 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekDistill/</guid>
+      <description>(实战)Deepseek 蒸馏</description>
+    </item>
+    <item>
+      <title>(实战)Deepseek R1 SFT</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekSFT/</link>
+      <pubDate>Fri, 23 Feb 2024 17:29:20 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekSFT/</guid>
+      <description>DeepSeek R1 SFT # (实战)DeepSeek R1 SFT</description>
+    </item>
+    <item>
+      <title>(原理) DeepSeek R1</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekR1/</link>
+      <pubDate>Tue, 06 Feb 2024 18:42:00 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekR1/</guid>
+      <description>(原理) DeepSeek R1 # (原理)DeepSeek R1</description>
     </item>
   </channel>
 </rss>

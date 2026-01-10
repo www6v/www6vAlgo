@@ -1,0 +1,2931 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="论文 # https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file
+https://moonshotai.github.io/Kimi-K2/
+https://arxiv.org/pdf/2507.20534
+Kimi K2 # 概述 什么是 Kimi K2？ 模型架构 预训练（Pre-Training） 后训练（Post-Training） 评测结果 MuonClip 优化器 代理型智能（Agentic Intelligence）作为一种新范式 参考文献 概述 # Kimi K2 标志着大语言模型（LLM）从传统静态模型向代理型智能（agentic intelligence） 的根本性转变——模型不再仅依赖预收集的数据集进行模仿学习，而是通过与动态环境主动交互来持续学习。这一范式旨在赋予模型自主感知、规划、推理与行动的能力，使其行为可超越训练分布的边界。
+其深远意义在于：模型不再受限于复现人类撰写语料的被动角色，而是能通过合成数据、探索环境、实时适应，发展出全新能力（novel competencies），为超人推理、工具编排、软件开发及现实世界自主性开辟路径。
+代理型智能也重构了训练挑战本身：
+预训练阶段不仅需高效灌输广泛先验知识，还需在万亿 token 规模下保持训练稳定； 后训练阶段则需生成可执行、可验证的行为——即便真实语料中这类“代理轨迹”极为稀少。 Kimi K2 通过三大核心技术应对上述挑战：
+✅ MuonClip 稳定化训练
+✅ 大规模代理行为数据合成
+✅ 多信号强化学习（RL）
+最终打造出当前最强开源非“思考型”模型之一（即非 CoT-heavy 推理延迟模型，强调 reflexive 快速响应能力）。
+👉 您可在线体验：kimi.com
+下图为 Kimi K2 整体训练流程概览：
+什么是 Kimi K2？ # Kimi K2 是一个混合专家模型（Mixture-of-Experts, MoE），总参数量达 1 万亿（1T），但每次前向传播仅激活其中 320 亿（32B） 参数——在享受超大规模表征能力的同时，显著提升计算效率。">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2/">
+  <meta property="og:site_name" content="LLM 算法">
+  <meta property="og:title" content="(翻译)kimi k2">
+  <meta property="og:description" content="论文 # https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file
+https://moonshotai.github.io/Kimi-K2/
+https://arxiv.org/pdf/2507.20534
+Kimi K2 # 概述 什么是 Kimi K2？ 模型架构 预训练（Pre-Training） 后训练（Post-Training） 评测结果 MuonClip 优化器 代理型智能（Agentic Intelligence）作为一种新范式 参考文献 概述 # Kimi K2 标志着大语言模型（LLM）从传统静态模型向代理型智能（agentic intelligence） 的根本性转变——模型不再仅依赖预收集的数据集进行模仿学习，而是通过与动态环境主动交互来持续学习。这一范式旨在赋予模型自主感知、规划、推理与行动的能力，使其行为可超越训练分布的边界。
+其深远意义在于：模型不再受限于复现人类撰写语料的被动角色，而是能通过合成数据、探索环境、实时适应，发展出全新能力（novel competencies），为超人推理、工具编排、软件开发及现实世界自主性开辟路径。
+代理型智能也重构了训练挑战本身：
+预训练阶段不仅需高效灌输广泛先验知识，还需在万亿 token 规模下保持训练稳定； 后训练阶段则需生成可执行、可验证的行为——即便真实语料中这类“代理轨迹”极为稀少。 Kimi K2 通过三大核心技术应对上述挑战：
+✅ MuonClip 稳定化训练
+✅ 大规模代理行为数据合成
+✅ 多信号强化学习（RL）
+最终打造出当前最强开源非“思考型”模型之一（即非 CoT-heavy 推理延迟模型，强调 reflexive 快速响应能力）。
+👉 您可在线体验：kimi.com
+下图为 Kimi K2 整体训练流程概览：
+什么是 Kimi K2？ # Kimi K2 是一个混合专家模型（Mixture-of-Experts, MoE），总参数量达 1 万亿（1T），但每次前向传播仅激活其中 320 亿（32B） 参数——在享受超大规模表征能力的同时，显著提升计算效率。">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="website">
+<title>(翻译)kimi k2 | LLM 算法</title>
+<link rel="icon" href="/www6vAlgo/favicon.png" >
+<link rel="manifest" href="/www6vAlgo/manifest.json">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2/">
+<link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
+  <script defer src="/www6vAlgo/fuse.min.js"></script>
+  <script defer src="/www6vAlgo/en.search.min.15591a8a697418ce2bc66d16733d5bf89327d3ae832632012500048737c9bc0d.js" integrity="sha256-FVkaiml0GM4rxm0Wcz1b&#43;JMn066DJjIBJQAEhzfJvA0=" crossorigin="anonymous"></script>
+
+  
+
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/kimi/k2/index.xml" title="LLM 算法" />
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/www6vAlgo/"><span>LLM 算法</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ae6cf8fb4396b6cabe10bd52d1086507" class="toggle"  />
+    <label for="section-ae6cf8fb4396b6cabe10bd52d1086507" class="flex justify-between">
+      <a role="button" class="">DeepLearning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ede0dc244542138daf34371e5a990af1" class="toggle"  />
+    <label for="section-ede0dc244542138daf34371e5a990af1" class="flex justify-between">
+      <a role="button" class="">basic</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeepLearning/" class="">Deep Learning</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningForwardBackward/" class="">(原理&amp;实战)前向/反向传播</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/" class="">(原理&amp;实战)交叉熵损失</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/DeeplearningOverfitting/" class="">(原理)过拟合</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/basic/Pytorch/" class="">(实战)PyTorch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-4c6bc9e238b19838a5a04cfc16a40c9c" class="toggle"  />
+    <label for="section-4c6bc9e238b19838a5a04cfc16a40c9c" class="flex justify-between">
+      <a role="button" class="">正则化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/WeightDecay/" class="">(原理&amp;实战)权重衰减</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E6%AD%A3%E5%88%99%E5%8C%96/Dropout/" class="">(原理&amp;实战)Dropout</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fd2a1c9c031b1ae59536410ed3bbe694" class="toggle"  />
+    <label for="section-fd2a1c9c031b1ae59536410ed3bbe694" class="flex justify-between">
+      <a role="button" class="">网络优化</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningLearningRate/" class="">(原理)学习率</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningBatchsize/" class="">(原理)Batchsize</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningNorm/" class="">规范化 Norm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/DeeplearningGradOpt/" class="">(原理)梯度优化</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b1bd254974b9ed9a94d84094ac668488" class="toggle"  />
+    <label for="section-b1bd254974b9ed9a94d84094ac668488" class="flex justify-between">
+      <a role="button" class="">Transformer</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Transformer/" class="">(原理)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/SelfAttention/" class="">(原理)Self-Attention</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/ModelGQA/" class="">(原理)GQA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TransformerCode/" class="">(实战)Transformer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/" class="">Tokenizer</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-77c91470d4921140021e6b977f5c143f" class="toggle"  />
+    <label for="section-77c91470d4921140021e6b977f5c143f" class="flex justify-between">
+      <a role="button" class="">Embedding</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/survey/" class="">(Survey)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/DeepLearning/Transformer/Embedding/Embedding/" class="">(原理)Embedding</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-99d4b6cd54dc7f2366163b390ab1cb21" class="toggle"  />
+    <label for="section-99d4b6cd54dc7f2366163b390ab1cb21" class="flex justify-between">
+      <a role="button" class="">机器学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLData/" class="">机器学习-数据</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLModel/" class="">机器学习-模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0ca190209c094e5f613107f533cc3c3f" class="toggle"  />
+    <label for="section-0ca190209c094e5f613107f533cc3c3f" class="flex justify-between">
+      <a role="button" class="">强化学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-0bda1a01e52473f31850c9cd220d7849" class="toggle"  />
+    <label for="section-0bda1a01e52473f31850c9cd220d7849" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-d6d9cdb97db480e83d4d038cc42b0b0d" class="toggle"  />
+    <label for="section-d6d9cdb97db480e83d4d038cc42b0b0d" class="flex justify-between">
+      <a role="button" class="">PPO family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-571217c2f8a26b0885a7638078e58980" class="toggle"  />
+    <label for="section-571217c2f8a26b0885a7638078e58980" class="flex justify-between">
+      <a role="button" class="">GRPO Family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="">(原理)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/DAPO/" class="">(原理)DAPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/compare/" class="">(原理) 综述</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/unified/" class="">unified paradigm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/RLVR/" class="">RLVR</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-b1706fc6fbce18c467381811d2f73a6e" class="toggle"  />
+    <label for="section-b1706fc6fbce18c467381811d2f73a6e" class="flex justify-between">
+      <a role="button" class="">Framework</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/framework/verl/" class="">HybridFlow[veRL]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/framework/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5c8d33e78af86e5d36be0698ebb28119" class="toggle"  />
+    <label for="section-5c8d33e78af86e5d36be0698ebb28119" class="flex justify-between">
+      <a role="button" class="">Agent</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-6c827de123295985b9c69dfb7b921979" class="toggle"  />
+    <label for="section-6c827de123295985b9c69dfb7b921979" class="flex justify-between">
+      <a role="button" class="">Deep Research</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-56f7f04b878a2e842b960bbd2903ee60" class="toggle"  />
+    <label for="section-56f7f04b878a2e842b960bbd2903ee60" class="flex justify-between">
+      <a role="button" class="">Search</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/Search-R1/" class="">Search-R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/websailer/" class="">WebSailor</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/Kimi-Researcher/" class="">Kimi-Researcher</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Search/websailerNT/" class="">WebSailor</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ea77d8156fce5529cea5abc7ed88a6a2" class="toggle"  />
+    <label for="section-ea77d8156fce5529cea5abc7ed88a6a2" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Survey/Survey/" class="">Survey</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Deep-Research/Survey/TongyiDeepresearchNT/" class="">Tongyi DeepResearch</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-63c275eca68e50ade280d92ff2e00e0f" class="toggle"  />
+    <label for="section-63c275eca68e50ade280d92ff2e00e0f" class="flex justify-between">
+      <a role="button" class="">Agentic RL</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-e029deab9d2dd8621cfaea83cb4db476" class="toggle"  />
+    <label for="section-e029deab9d2dd8621cfaea83cb4db476" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/survey/survey/" class="">(Survey)Agentic RL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-60ad1bccca60cf91c63a89b7ddfabb5c" class="toggle"  />
+    <label for="section-60ad1bccca60cf91c63a89b7ddfabb5c" class="flex justify-between">
+      <a role="button" class="">Tool</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/Tool/OTC/" class="">OTC</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/Tool/ReTool/" class="">ReTool</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/Agentic-RL/Tool/ToolRL/" class="">ToolRL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-7e9d60afb61d66cbeb30d81e3c15527f" class="toggle" checked />
+    <label for="section-7e9d60afb61d66cbeb30d81e3c15527f" class="flex justify-between">
+      <a role="button" class="">LLM</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-f19883d018c7a20fbf7978b5f30aee37" class="toggle"  />
+    <label for="section-f19883d018c7a20fbf7978b5f30aee37" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LargeModelSurvey/" class="">(综述)大模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LargeModel/" class="">大模型</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/" class="">LLM Deep Dive</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LLM-Compare/" class="">LLM架构演进</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Survey/LeaderBoard/" class="">大模型 排行榜</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-725b5781ee4b3f94d5b549ea85ad3ea7" class="toggle"  />
+    <label for="section-725b5781ee4b3f94d5b549ea85ad3ea7" class="flex justify-between">
+      <a role="button" class="">Dense</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Family/" class="">GPT 系列</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Llama/" class="">LLaMA</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/LlamaFamily/" class="">LLaMA 家族</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/Llama3-1/" class="">Llama3.1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Dense/BERT/" class="">(原理)BERT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-18423318d6784e8f0a5a5859e156f016" class="toggle" checked />
+    <label for="section-18423318d6784e8f0a5a5859e156f016" class="flex justify-between">
+      <a role="button" class="">Reasoning</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8f3f92792bb919d39e4a5c566891defd" class="toggle"  />
+    <label for="section-8f3f92792bb919d39e4a5c566891defd" class="flex justify-between">
+      <a role="button" class="">Survey</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/" class="">(Survey) Test-Time Scaling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningPostTraining/" class="">(Survey)Reasoning LLM Post-Training</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-86fd4888a65eb269a788c173b3f8c99a" class="toggle"  />
+    <label for="section-86fd4888a65eb269a788c173b3f8c99a" class="flex justify-between">
+      <a role="button" class="">Qwen</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3/" class="">Qwen3</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/Qwen3-report/" class="">Qwen3 Report</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Qwen/qwen-next/" class="">(原理)Qwen3-Next</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-7f924540913e88853cce2b33c6da79ea" class="toggle"  />
+    <label for="section-7f924540913e88853cce2b33c6da79ea" class="flex justify-between">
+      <a role="button" class="">Deepseek</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-5a592ee570d17257b3c78b239b873a0c" class="toggle"  />
+    <label for="section-5a592ee570d17257b3c78b239b873a0c" class="flex justify-between">
+      <a role="button" class="">Post-training</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekDistill/" class="">(实战)Deepseek 蒸馏</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/post-training/DeepseekSFT/" class="">(实战)Deepseek R1 SFT</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-34000a046423e25f6305f9547e39b139" class="toggle"  />
+    <label for="section-34000a046423e25f6305f9547e39b139" class="flex justify-between">
+      <a role="button" class="">R1</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekExplain2/" class="">解读 DeepSeek[邱锡鹏]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekExplain1/" class="">解读 DeepSeek[刘知远]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/ReasoningLLM/" class="">(原理)Reasoning LLM</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/R1/DeepSeekR1/" class="">(原理) DeepSeek R1</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c6de5ddfb70ff6e95c5f43f2cd5c9627" class="toggle"  />
+    <label for="section-c6de5ddfb70ff6e95c5f43f2cd5c9627" class="flex justify-between">
+      <a role="button" class="">V3</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Deepseek/V3/DeepSeek/" class="">DeepSeek V3</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3a3b1dc7be0fb14484485d00d569cb01" class="toggle" checked />
+    <label for="section-3a3b1dc7be0fb14484485d00d569cb01" class="flex justify-between">
+      <a role="button" class="">kimi</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2/" class="active">(翻译)kimi k2</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/k2-thinking/" class="">Kimi K2 Thinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/kimi/1.5/" class="">Kimi1.5</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c9b175574270b3f93abdca5b1ff627c2" class="toggle"  />
+    <label for="section-c9b175574270b3f93abdca5b1ff627c2" class="flex justify-between">
+      <a role="button" class="">Overthinking</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/Reasoning/Overthinking/survey/" class="">(Survey)Overthinking</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-870d56ac4ca790e179fdf156b717f300" class="toggle"  />
+    <label for="section-870d56ac4ca790e179fdf156b717f300" class="flex justify-between">
+      <a role="button" class="">快慢思考</a>
+    </label>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-ef28b3f9ef96eff42f89c69b32d8437e" class="toggle"  />
+    <label for="section-ef28b3f9ef96eff42f89c69b32d8437e" class="flex justify-between">
+      <a role="button" class="">MOE</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/ModelMOE/" class="">(原理)Visual  MOE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/ModelMOECode/" class="">(代码)MOE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/MOE/MoE/" class="">(原理)MoE</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-99aac9b74969c05b435d7e4a97e53fd8" class="toggle"  />
+    <label for="section-99aac9b74969c05b435d7e4a97e53fd8" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/ScalingLaw/" class="">Scaling Law</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/Emergent/" class="">(原理)涌现现象</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/Eval/" class="">测评 *</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-9bce04311e6d403118e2a87dd06d9545" class="toggle"  />
+    <label for="section-9bce04311e6d403118e2a87dd06d9545" class="flex justify-between">
+      <a role="button" class="">Token Sampling</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/token-sampling/token-sampling/" class="">(翻译)token sampling</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/core/token-sampling/temperature/" class="">Token Sampling Methods</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-c2dda2171ca754d53f6a12389025c708" class="toggle"  />
+    <label for="section-c2dda2171ca754d53f6a12389025c708" class="flex justify-between">
+      <a role="button" class="">Challenge</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/Hallucination/" class="">(原理)幻觉问题</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/" class="">(原理)不可能三角</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>(翻译)kimi k2</h3>
+
+  <label for="toc-control">
+    
+    <img src="/www6vAlgo/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#论文">论文</a></li>
+      </ul>
+    </li>
+    <li><a href="#kimi-k2">Kimi K2</a>
+      <ul>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#什么是-kimi-k2">什么是 Kimi K2？</a></li>
+        <li><a href="#模型架构">模型架构</a></li>
+        <li><a href="#预训练pre-training">预训练（Pre-Training）</a>
+          <ul>
+            <li><a href="#muonclip-优化器">MuonClip 优化器</a></li>
+            <li><a href="#token-利用率与合成改写">Token 利用率与合成改写</a></li>
+            <li><a href="#模型架构细节">模型架构细节</a></li>
+            <li><a href="#训练基础设施">训练基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#后训练post-training">后训练（Post-Training）</a>
+          <ul>
+            <li><a href="#基于代理行为的监督微调sft">基于代理行为的监督微调（SFT）</a></li>
+            <li><a href="#强化学习rl">强化学习（RL）</a></li>
+            <li><a href="#rl-基础设施">RL 基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#评测结果">评测结果</a>
+          <ul>
+            <li><a href="#编程与工程能力">编程与工程能力</a></li>
+            <li><a href="#代理工具使用能力">代理工具使用能力</a></li>
+            <li><a href="#数学与-stem-能力">数学与 STEM 能力</a></li>
+            <li><a href="#通用能力与长上下文">通用能力与长上下文</a></li>
+          </ul>
+        </li>
+        <li><a href="#muonclip-优化器详解">MuonClip 优化器详解</a></li>
+        <li><a href="#代理型智能agentic-intelligence作为一种新范式">代理型智能（Agentic Intelligence）作为一种新范式</a></li>
+        <li><a href="#参考文献">参考文献</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h2 id="论文">
+  论文
+  <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
+</h2>
+<p><a href="https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file">https://github.com/MoonshotAI/Kimi-K2?tab=readme-ov-file</a></p>
+<p><a href="https://moonshotai.github.io/Kimi-K2/">https://moonshotai.github.io/Kimi-K2/</a></p>
+<p><a href="https://arxiv.org/pdf/2507.20534">https://arxiv.org/pdf/2507.20534</a></p>
+<hr>
+<h1 id="kimi-k2">
+  Kimi K2
+  <a class="anchor" href="#kimi-k2">#</a>
+</h1>
+<ul>
+<li>概述</li>
+<li>什么是 Kimi K2？</li>
+<li>模型架构</li>
+<li>预训练（Pre-Training）</li>
+<li>后训练（Post-Training）</li>
+<li>评测结果</li>
+<li>MuonClip 优化器</li>
+<li>代理型智能（Agentic Intelligence）作为一种新范式</li>
+<li>参考文献</li>
+</ul>
+<hr>
+<h2 id="概述">
+  概述
+  <a class="anchor" href="#%e6%a6%82%e8%bf%b0">#</a>
+</h2>
+<ul>
+<li>
+<p>Kimi K2 标志着大语言模型（LLM）从<strong>传统静态模型</strong>向<strong>代理型智能（agentic intelligence）</strong> 的根本性转变——模型不再仅依赖预收集的数据集进行模仿学习，而是通过与动态环境<strong>主动交互</strong>来持续学习。这一范式旨在赋予模型<strong>自主感知、规划、推理与行动</strong>的能力，使其行为可超越训练分布的边界。</p>
+</li>
+<li>
+<p>其深远意义在于：模型不再受限于复现人类撰写语料的被动角色，而是能通过<strong>合成数据、探索环境、实时适应</strong>，发展出<strong>全新能力</strong>（<em>novel competencies</em>），为<strong>超人推理、工具编排、软件开发及现实世界自主性</strong>开辟路径。</p>
+</li>
+<li>
+<p>代理型智能也重构了训练挑战本身：</p>
+<ul>
+<li><strong>预训练</strong>阶段不仅需高效灌输广泛先验知识，还需在<strong>万亿 token 规模</strong>下保持训练稳定；</li>
+<li><strong>后训练</strong>阶段则需生成可执行、可验证的行为——即便真实语料中这类“代理轨迹”极为稀少。</li>
+</ul>
+</li>
+<li>
+<p>Kimi K2 通过三大核心技术应对上述挑战：<br>
+✅ <strong>MuonClip 稳定化训练</strong><br>
+✅ <strong>大规模代理行为数据合成</strong><br>
+✅ <strong>多信号强化学习（RL）</strong><br>
+最终打造出当前<strong>最强开源非“思考型”模型之一</strong>（即非 CoT-heavy 推理延迟模型，强调 reflexive 快速响应能力）。</p>
+</li>
+</ul>
+<p>👉 您可在线体验：<a href="https://kimi.com">kimi.com</a></p>
+<p>下图为 Kimi K2 整体训练流程概览：</p>
+<p><img src="https://aman.ai/primers/ai/assets/kimiK2/3.png" alt="Kimi K2 整体流程" /></p>
+<hr>
+<h2 id="什么是-kimi-k2">
+  什么是 Kimi K2？
+  <a class="anchor" href="#%e4%bb%80%e4%b9%88%e6%98%af-kimi-k2">#</a>
+</h2>
+<ul>
+<li>
+<p>Kimi K2 是一个<strong>混合专家模型（Mixture-of-Experts, MoE）</strong>，总参数量达 <strong>1 万亿（1T）</strong>，但每次前向传播仅激活其中 <strong>320 亿（32B）</strong> 参数——在享受超大规模表征能力的同时，显著提升计算效率。</p>
+</li>
+<li>
+<p>更重要的是：<strong>Kimi K2 不只是聊天模型</strong>。其核心设计目标是实现<strong>代理行为（agentic behavior）</strong>——即具备<strong>规划、推理、调用工具、自主执行多步骤任务</strong>的能力。</p>
+</li>
+<li>
+<p>月之暗面（Moonshot AI）开源了两个版本：</p>
+<ul>
+<li><code>Kimi-K2-Base</code>：原始预训练模型，适用于科研与微调；</li>
+<li><code>Kimi-K2-Instruct</code>：经后训练优化的指令遵循模型，专为<strong>快速响应类任务（reflexive tasks）</strong> 设计。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="模型架构">
+  模型架构
+  <a class="anchor" href="#%e6%a8%a1%e5%9e%8b%e6%9e%b6%e6%9e%84">#</a>
+</h2>
+<ul>
+<li>
+<p>Kimi K2 采用与 DeepSeek-V3 类似的 MoE 架构，但存在关键差异：<br>
+🔹 <strong>更多专家（experts）</strong><br>
+🔹 <strong>更少注意力头（attention heads）</strong><br>
+🔹 <strong>改进的负载均衡机制</strong>——防止“专家坍缩”（仅少数专家被激活）</p>
+</li>
+<li>
+<p>具体结构为 <strong>32-of-1024 MoE</strong>：即每步仅激活 32 位专家（激活率约 3.1%）。尽管稀疏性极高，模型在各类任务上仍保持强劲性能。</p>
+</li>
+<li>
+<p>下图为简化架构对比图（来源：Sebastian Raschka）：</p>
+</li>
+</ul>
+<p><img src="https://aman.ai/primers/ai/assets/kimiK2/1.png" alt="Kimi K2 vs 其他 MoE 架构" /></p>
+<ul>
+<li>此架构使 Kimi K2 能在不显著增加推理成本的前提下，扩展至万亿参数规模；路由机制确保不同模块专业化分工，训练动态则保障专家均衡参与。</li>
+</ul>
+<hr>
+<h2 id="预训练pre-training">
+  预训练（Pre-Training）
+  <a class="anchor" href="#%e9%a2%84%e8%ae%ad%e7%bb%83pre-training">#</a>
+</h2>
+<h3 id="muonclip-优化器">
+  MuonClip 优化器
+  <a class="anchor" href="#muonclip-%e4%bc%98%e5%8c%96%e5%99%a8">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>Token 效率与稳定性融合</strong>：K2 引入 <strong>MuonClip</strong>，将<strong>高 token 效率的 Muon 优化器</strong>与<strong>QK-Clip 机制</strong>相结合。</p>
+<ul>
+<li>Muon 可提升单位 token 的学习信号强度，但在超大规模下易导致<strong>注意力 logits 爆炸</strong>；</li>
+<li>QK-Clip 通过动态缩放查询（Query）与键（Key）权重，抑制 logits 增长（当其超过阈值 τ 时）。</li>
+<li>关键优势：缩放<strong>不改变当前步的前向/反向计算</strong>，从而保持优化动力学不变。</li>
+<li>最终实现：<strong>15.5T token 全程无发散稳定训练</strong>【7†source】。</li>
+</ul>
+</li>
+<li>
+<p><strong>公式化裁剪</strong>：对每个注意力头 $h$，计算最大注意力 logit：<br>
+$$
+S^{h}<em>{\max} = \frac{1}{\sqrt{d}} \max</em>{X \in B} \max_{i,j} Q^{h}<em>i {K^h_j}^\top
+$$
+若 $S^{h}</em>{\max} &gt; \tau$，则对权重缩放：<br>
+$$
+W^h_q \leftarrow W^h_q \cdot \sqrt{\gamma_h}, \quad
+W^h_k \leftarrow W^h_k \cdot \sqrt{\gamma_h}, \quad
+\text{其中}\ \gamma_h = \min(1, \tau / S^{h}_{\max})
+$$
+→ <strong>逐头裁剪</strong>，最小化干预，确保 logits 有界。</p>
+</li>
+</ul>
+<hr>
+<h3 id="token-利用率与合成改写">
+  Token 利用率与合成改写
+  <a class="anchor" href="#token-%e5%88%a9%e7%94%a8%e7%8e%87%e4%b8%8e%e5%90%88%e6%88%90%e6%94%b9%e5%86%99">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>知识改写（Knowledge rephrasing）</strong>：</p>
+<ul>
+<li>替代易导致过拟合的<strong>多轮重复训练</strong>；</li>
+<li>采用<strong>合成改写流水线</strong>：<br>
+✅ 多风格/多视角 prompt 指导，提升语言多样性；<br>
+✅ 分块自回归重写，保障全局连贯性；<br>
+✅ 语义保真度校验，确保内容一致。</li>
+<li>效果：SimpleQA 准确率从 23.8%（多轮训练）→ <strong>28.9%</strong>（10 倍改写）。</li>
+</ul>
+</li>
+<li>
+<p><strong>数学数据增强</strong>：</p>
+<ul>
+<li>将数学语料重写为<strong>分步学习笔记（learning notes）</strong>（灵感源自 SwallowMath），迫使模型内化推理步骤；</li>
+<li>多语言数学资料统一翻译为英文，增强多样性与推理鲁棒性。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="模型架构细节">
+  模型架构细节
+  <a class="anchor" href="#%e6%a8%a1%e5%9e%8b%e6%9e%b6%e6%9e%84%e7%bb%86%e8%8a%82">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>万亿参数 MoE 的稀疏扩展</strong>：</p>
+<ul>
+<li>实际使用 <strong>384 专家，稀疏度 48（每 token 激活 8 专家）</strong>；</li>
+<li>实验表明：更高稀疏度可在同等 FLOPs 下降低验证损失；</li>
+<li>相比稀疏度 8，性能相当时 FLOPs <strong>减少 1.69 倍</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>注意力头数量权衡</strong>：</p>
+<ul>
+<li>未像 DeepSeek-V3 那样将头数设为层数 2 倍，而是减半至 <strong>64 头</strong>；</li>
+<li>原因：增加头数仅带来 0.5–1.2% 损失改善，却导致 128k 上下文推理 FLOPs <strong>增加高达 83%</strong>；</li>
+<li>K2 选择<strong>优先保障长上下文效率</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="训练基础设施">
+  训练基础设施
+  <a class="anchor" href="#%e8%ae%ad%e7%bb%83%e5%9f%ba%e7%a1%80%e8%ae%be%e6%96%bd">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>集群与并行</strong>：</p>
+<ul>
+<li>运行于 <strong>NVIDIA H800 集群</strong>（每节点 2TB RAM）；</li>
+<li>采用 16 路<strong>流水线并行</strong> + 16 路<strong>专家并行</strong> + ZeRO-1 <strong>数据并行</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>显存优化</strong>：</p>
+<ul>
+<li>FP8-E4M3 激活压缩；</li>
+<li>SwiGLU/LayerNorm 层<strong>选择性重计算</strong>；</li>
+<li><strong>CPU 激活卸载</strong>——在有限 GPU 显存下实现万亿级稳定训练。</li>
+</ul>
+</li>
+<li>
+<p><strong>训练方案</strong>：</p>
+<ul>
+<li>总 token 数：15.5T；</li>
+<li>学习率：前 10T token 固定 2e⁻⁴，后 5.5T 采用余弦衰减，末期加温退火；</li>
+<li>上下文长度渐进扩展：4k → 32k → 128k（通过 <strong>YaRN</strong> 实现）；</li>
+<li>全程训练曲线<strong>零震荡</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="后训练post-training">
+  后训练（Post-Training）
+  <a class="anchor" href="#%e5%90%8e%e8%ae%ad%e7%bb%83post-training">#</a>
+</h2>
+<h3 id="基于代理行为的监督微调sft">
+  基于代理行为的监督微调（SFT）
+  <a class="anchor" href="#%e5%9f%ba%e4%ba%8e%e4%bb%a3%e7%90%86%e8%a1%8c%e4%b8%ba%e7%9a%84%e7%9b%91%e7%9d%a3%e5%be%ae%e8%b0%83sft">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>指令多样性</strong>：通过人类标注、prompt 工程改写、判别模型自动过滤构建高质量指令数据。</p>
+</li>
+<li>
+<p><strong>代理行为合成流水线</strong>（受 ACEBench 启发）：<br>
+1️⃣ 生成合成/真实工具规范（&gt;20k 工具，&gt;3k MCP 协议）；<br>
+2️⃣ 构建具不同工具集的多样化代理；<br>
+3️⃣ 生成基于评分标准（rubric）验证的任务；<br>
+4️⃣ 在模拟/真实执行沙盒（如带单元测试的编程环境）中生成多轮轨迹，并按 rubric 评分。<br>
+→ 同时保障<strong>覆盖广度</strong>与<strong>行为真实性</strong>【7†source】。</p>
+</li>
+</ul>
+<hr>
+<h3 id="强化学习rl">
+  强化学习（RL）
+  <a class="anchor" href="#%e5%bc%ba%e5%8c%96%e5%ad%a6%e4%b9%a0rl">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>双奖励信号设计</strong>：<br>
+🔹 <strong>可验证任务奖励</strong>：数学、逻辑、编程（通过可执行判官，如单元测试）；<br>
+🔹 <strong>自评 rubric 奖励</strong>：创意、安全性等主观维度；</p>
+<ul>
+<li><strong>判别模型（critic）持续优化 rubric 权重</strong>，将主观判断锚定于可验证性能之上。</li>
+</ul>
+</li>
+<li>
+<p><strong>训练创新点</strong>：</p>
+<ul>
+<li><strong>预算控制</strong>：惩罚冗长输出；</li>
+<li><strong>PTX-loss 融合</strong>：保留高质量预训练知识；</li>
+<li><strong>温度衰减调度</strong>：平衡探索与收敛；<br>
+→ 不仅提升准确率，更实现<strong>与人类复杂价值观的对齐</strong>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="rl-基础设施">
+  RL 基础设施
+  <a class="anchor" href="#rl-%e5%9f%ba%e7%a1%80%e8%ae%be%e6%96%bd">#</a>
+</h3>
+<ul>
+<li>
+<p><strong>检查点引擎</strong>：</p>
+<ul>
+<li>摒弃传统 NFS 参数重排，改用<strong>分布式全参数广播</strong>；</li>
+<li>实现万亿参数规模下 <strong>&lt;30 秒</strong> 的检查点同步更新。</li>
+</ul>
+</li>
+<li>
+<p><strong>代理 rollout 优化</strong>：</p>
+<ul>
+<li><strong>部分 rollout（partial rollouts）</strong>；</li>
+<li><strong>环境并行化</strong>；</li>
+<li><strong>延迟均摊技术</strong>；</li>
+<li>RL 框架采用 <strong>Gym 式接口</strong>，可无缝集成任意新环境。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="评测结果">
+  评测结果
+  <a class="anchor" href="#%e8%af%84%e6%b5%8b%e7%bb%93%e6%9e%9c">#</a>
+</h2>
+<h3 id="编程与工程能力">
+  编程与工程能力
+  <a class="anchor" href="#%e7%bc%96%e7%a8%8b%e4%b8%8e%e5%b7%a5%e7%a8%8b%e8%83%bd%e5%8a%9b">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th>Kimi K2</th>
+<th>对比模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SWE-bench Verified</strong>（代理单次尝试）</td>
+<td><strong>65.8%</strong></td>
+<td>Claude 4 Opus: 72.5%</td>
+</tr>
+<tr>
+<td><strong>LiveCodeBench v6</strong></td>
+<td><strong>53.7%</strong></td>
+<td>&gt; GPT-4.1, Claude Sonnet</td>
+</tr>
+<tr>
+<td><strong>OJBench</strong></td>
+<td><strong>27.1%</strong></td>
+<td>&gt; Gemini 2.5 Flash (19.5%)</td>
+</tr>
+</tbody>
+</table>
+<p>→ K2 是当前<strong>最强开源模型</strong>，适用于真实工程与竞赛编程场景。</p>
+<hr>
+<h3 id="代理工具使用能力">
+  代理工具使用能力
+  <a class="anchor" href="#%e4%bb%a3%e7%90%86%e5%b7%a5%e5%85%b7%e4%bd%bf%e7%94%a8%e8%83%bd%e5%8a%9b">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th>Kimi K2</th>
+<th>表现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tau2-Bench</strong>（多轮工具编排）</td>
+<td><strong>66.1 Pass@1</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>ACEBench</strong></td>
+<td><strong>76.5% 准确率</strong></td>
+<td>&gt; DeepSeek-V3 &amp; Claude Sonnet</td>
+</tr>
+</tbody>
+</table>
+<p>→ 展现强大<strong>具身化工具推理能力</strong>（grounded tool-use reasoning），为代理智能核心支柱。</p>
+<hr>
+<h3 id="数学与-stem-能力">
+  数学与 STEM 能力
+  <a class="anchor" href="#%e6%95%b0%e5%ad%a6%e4%b8%8e-stem-%e8%83%bd%e5%8a%9b">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th>Kimi K2</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AIME 2025</strong></td>
+<td><strong>49.5%</strong></td>
+<td>&gt; Qwen3 (24.7%)</td>
+</tr>
+<tr>
+<td><strong>GPQA-Diamond</strong></td>
+<td><strong>75.1%</strong></td>
+<td>≈ Claude Opus</td>
+</tr>
+<tr>
+<td><strong>HMMT 2025</strong></td>
+<td><strong>38.8%</strong></td>
+<td>开源最佳</td>
+</tr>
+</tbody>
+</table>
+<p>✅ 验证了<strong>学习笔记改写</strong>与<strong>可验证 RL 任务整合</strong>的有效性。</p>
+<hr>
+<h3 id="通用能力与长上下文">
+  通用能力与长上下文
+  <a class="anchor" href="#%e9%80%9a%e7%94%a8%e8%83%bd%e5%8a%9b%e4%b8%8e%e9%95%bf%e4%b8%8a%e4%b8%8b%e6%96%87">#</a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th>Kimi K2</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MMLU</strong></td>
+<td><strong>89.5%</strong></td>
+<td>≈ 闭源顶尖模型</td>
+</tr>
+<tr>
+<td><strong>MMLU-Redux</strong></td>
+<td><strong>92.7%</strong></td>
+<td>开源最佳</td>
+</tr>
+<tr>
+<td><strong>LongBench v2</strong></td>
+<td><strong>49.1%</strong></td>
+<td>≈ GPT-4.1</td>
+</tr>
+<tr>
+<td><strong>DROP</strong></td>
+<td><strong>93.5%</strong></td>
+<td>事实推理准确率</td>
+</tr>
+</tbody>
+</table>
+<p>→ K2 不仅专精特定领域，更是<strong>全面稳健的通用模型</strong>，覆盖推理、事实性与长上下文理解。</p>
+<p>下图为 Kimi K2 与 DeepSeek-V3、Claude 4 Opus、GPT-4.1、Gemini 2.5、Qwen3 的多任务性能对比：</p>
+<p><img src="https://aman.ai/primers/ai/assets/kimiK2/2.png" alt="Kimi K2 多任务性能对比" /></p>
+<hr>
+<h2 id="muonclip-优化器详解">
+  MuonClip 优化器详解
+  <a class="anchor" href="#muonclip-%e4%bc%98%e5%8c%96%e5%99%a8%e8%af%a6%e8%a7%a3">#</a>
+</h2>
+<ul>
+<li>训练万亿参数模型的最大难点在于<strong>训练不稳定性</strong>，尤其表现为<strong>注意力 logits 爆炸</strong>。</li>
+<li>Kimi K2 提出定制优化器 <strong>MuonClip</strong>——Muon 优化器的增强版，专为大规模 MoE 设计。</li>
+<li><strong>核心创新</strong>：<strong>qk-clip</strong> 机制
+<ul>
+<li>在每步训练中动态重缩放 Q/K 权重，使 logits 始终处于安全范围；</li>
+<li>保障训练过程平滑收敛，为超大模型训练提供基础设施级保障。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="代理型智能agentic-intelligence作为一种新范式">
+  代理型智能（Agentic Intelligence）作为一种新范式
+  <a class="anchor" href="#%e4%bb%a3%e7%90%86%e5%9e%8b%e6%99%ba%e8%83%bdagentic-intelligence%e4%bd%9c%e4%b8%ba%e4%b8%80%e7%a7%8d%e6%96%b0%e8%8c%83%e5%bc%8f">#</a>
+</h2>
+<p>代理型智能从根本上重构了 LLM 的<strong>运作范式</strong>——从<strong>被动文本补全引擎</strong>，进化为<strong>自适应、自主的智能体系统</strong>。</p>
+<p>Kimi K2 通过以下机制实现这一跃迁：<br>
+🔹 <strong>工具自主发现</strong><br>
+🔹 <strong>自我评估（self-evaluation）</strong><br>
+🔹 <strong>基于评分标准（rubric）的价值对齐</strong><br>
+🔹 <strong>混合真实/合成环境训练</strong></p>
+<p>→ 模型由此能持续拓展其<strong>能力边界</strong>（competence frontier）。</p>
+<p>相比在静态预训练数据中遭遇收益递减，代理模型可自主生成：<br>
+✅ <strong>行动轨迹（trajectories of action）</strong><br>
+✅ <strong>错误驱动的改进循环（error-driven improvements）</strong><br>
+→ 本质上成为<strong>自维持学习体（self-sustaining learners）</strong>。</p>
+<p>这一范式不仅为研究突破（当 scaling law 遇到瓶颈时）提供新路径，更对现实部署至关重要——因<strong>自主性、可靠性与具身工具使用</strong>已成为下一代 AI 的刚需。</p>
+<p>Kimi K2 证明：构建此类系统需全栈创新：</p>
+<ul>
+<li><strong>优化层</strong>：MuonClip</li>
+<li><strong>数据层</strong>：合成改写 + 工具流水线</li>
+<li><strong>强化学习层</strong>：RLVR + rubric 奖励</li>
+<li><strong>基础设施层</strong>：检查点引擎 + 代理 rollout</li>
+</ul>
+<p>→ 它不仅是模型，更是一套<strong>通向未来 AI 的框架</strong>，模糊了<strong>静态基座模型</strong>与<strong>交互式演进智能体</strong>之间的界限。</p>
+<hr>
+<h2 id="参考文献">
+  参考文献
+  <a class="anchor" href="#%e5%8f%82%e8%80%83%e6%96%87%e7%8c%ae">#</a>
+</h2>
+<p>（原文未列具体文献，此处保留空节；可依需补充）</p>
+<hr>
+<p>如需将本文导出为 PDF、Markdown 或制作 PPT 汇报版，我可为您进一步整理。</p>
+<h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<p>以下是对 <a href="https://aman.ai/primers/ai/kimi-K2/">https://aman.ai/primers/ai/kimi-K2/</a> 的<strong>完整中文翻译</strong>，严格保留原文结构、技术术语与所有图片（含图注），便于读者对照理解 Kimi-K2 的核心技术突破。</p>
+<ol>
+<li><a href="https://aman.ai/primers/ai/kimi-K2/">Kimi K2</a>  qwen 翻译</li>
+</ol>
+<p><a href="https://mp.weixin.qq.com/s/_PaLe6Wi0jH3FCsEN2m9lw">最新重量级报告，Kimi 开源 K2技术「Make Kimi Great Again」</a>    翻译 最上面的总结</p>
+<p><a href="https://www.alphaxiv.org/zh/overview/2507.20534v1">https://www.alphaxiv.org/zh/overview/2507.20534v1</a></p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#论文">论文</a></li>
+      </ul>
+    </li>
+    <li><a href="#kimi-k2">Kimi K2</a>
+      <ul>
+        <li><a href="#概述">概述</a></li>
+        <li><a href="#什么是-kimi-k2">什么是 Kimi K2？</a></li>
+        <li><a href="#模型架构">模型架构</a></li>
+        <li><a href="#预训练pre-training">预训练（Pre-Training）</a>
+          <ul>
+            <li><a href="#muonclip-优化器">MuonClip 优化器</a></li>
+            <li><a href="#token-利用率与合成改写">Token 利用率与合成改写</a></li>
+            <li><a href="#模型架构细节">模型架构细节</a></li>
+            <li><a href="#训练基础设施">训练基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#后训练post-training">后训练（Post-Training）</a>
+          <ul>
+            <li><a href="#基于代理行为的监督微调sft">基于代理行为的监督微调（SFT）</a></li>
+            <li><a href="#强化学习rl">强化学习（RL）</a></li>
+            <li><a href="#rl-基础设施">RL 基础设施</a></li>
+          </ul>
+        </li>
+        <li><a href="#评测结果">评测结果</a>
+          <ul>
+            <li><a href="#编程与工程能力">编程与工程能力</a></li>
+            <li><a href="#代理工具使用能力">代理工具使用能力</a></li>
+            <li><a href="#数学与-stem-能力">数学与 STEM 能力</a></li>
+            <li><a href="#通用能力与长上下文">通用能力与长上下文</a></li>
+          </ul>
+        </li>
+        <li><a href="#muonclip-优化器详解">MuonClip 优化器详解</a></li>
+        <li><a href="#代理型智能agentic-intelligence作为一种新范式">代理型智能（Agentic Intelligence）作为一种新范式</a></li>
+        <li><a href="#参考文献">参考文献</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

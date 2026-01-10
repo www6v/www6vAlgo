@@ -10,23 +10,23 @@
     <atom:link href="https://www6v.github.io/www6vAlgo/categories/RL/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>(原理)PPO</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/gptRLPPO/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/PPO/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:32 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO/gptRLPPO/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/PPO/</guid>
       <description>PPO # (原理)PPO</description>
     </item>
     <item>
       <title>(原理|实现)PPO-RewardModel</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/</link>
       <pubDate>Sat, 01 Jun 2024 22:12:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/RewardModel/gptRLRewardModel/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/</guid>
       <description>PPO-RewardModel # (原理|实现)PPO-RewardModel</description>
     </item>
     <item>
       <title>(原理&amp;实战)veRL Config</title>
-      <link>https://www6v.github.io/www6vAlgo/docs/RL/core/veRLConfig/</link>
+      <link>https://www6v.github.io/www6vAlgo/docs/RL/framework/veRLConfig/</link>
       <pubDate>Mon, 22 Jul 2024 16:14:51 +0000</pubDate>
-      <guid>https://www6v.github.io/www6vAlgo/docs/RL/core/veRLConfig/</guid>
+      <guid>https://www6v.github.io/www6vAlgo/docs/RL/framework/veRLConfig/</guid>
       <description>veRL Config # (原理&amp;amp;实战)veRL Config</description>
     </item>
   </channel>

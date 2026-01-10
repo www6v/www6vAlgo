@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>TTS on LLM 算法</title>
+    <link>https://www6v.github.io/www6vAlgo/tags/TTS/</link>
+    <description>Recent content in TTS on LLM 算法</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Sun, 21 Jul 2024 12:39:48 +0000</lastBuildDate>
+    <atom:link href="https://www6v.github.io/www6vAlgo/tags/TTS/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>(Survey) Test-Time Scaling</title>
+      <link>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/</link>
+      <pubDate>Sun, 21 Jul 2024 12:39:48 +0000</pubDate>
+      <guid>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/</guid>
+      <description>Test-Time Scaling # (Survey) Test-Time Scaling</description>
+    </item>
+  </channel>
+</rss>
