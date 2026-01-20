@@ -142,9 +142,6 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/</loc>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E4%BA%BA%E5%83%8F%E7%94%9F%E5%9B%BE/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
@@ -153,9 +150,6 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/</loc>
     <lastmod>2024-07-21T12:39:48+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/</loc>
-    <lastmod>2024-07-17T10:51:11+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/Agent/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
@@ -175,17 +169,8 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/</loc>
     <lastmod>2024-06-01T22:12:51+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/</loc>
-    <lastmod>2024-04-16T16:26:40+00:00</lastmod>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/</loc>
     <lastmod>2024-04-04T22:03:52+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Survey/</loc>
-    <lastmod>2024-04-04T09:38:25+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision-Encoder/</loc>
-    <lastmod>2024-03-24T12:06:39+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeeplearningLoss/</loc>
     <lastmod>2024-01-12T19:06:59+00:00</lastmod>
@@ -196,28 +181,11 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/ModelGQA/</loc>
     <lastmod>2023-11-19T14:29:40+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/</loc>
-    <lastmod>2023-08-27T10:21:28+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision/</loc>
-    <lastmod>2023-07-25T13:49:28+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Multimodal-Agent/</loc>
-    <lastmod>2023-06-30T21:12:35+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Data/</loc>
-    <lastmod>2023-04-01T15:09:17+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E7%AB%AF%E5%88%B0%E7%AB%AF%E8%AE%AD%E7%BB%83LLMLMM/</loc>
-    <lastmod>2023-03-15T23:00:59+00:00</lastmod>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Dense/LlamaFamily/</loc>
     <lastmod>2023-02-24T22:14:52+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/challenge/Hallucination/</loc>
     <lastmod>2023-02-06T16:43:35+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/seg/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/MoE/</loc>
     <lastmod>2025-05-03T18:22:23+00:00</lastmod>
@@ -251,9 +219,6 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/Eval/</loc>
     <lastmod>2023-02-07T14:29:38+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/TrainTokenizer/</loc>
     <lastmod>2023-02-26T17:28:01+00:00</lastmod>
@@ -333,27 +298,18 @@
     <lastmod>2025-05-03T18:22:23+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/AIGC/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
+    <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/multimodal/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/multimodal/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E4%BA%BA%E5%83%8F%E7%94%9F%E5%9B%BE/gptMultimodalIDCreate/</loc>
-    <lastmod>2024-08-03T14:22:39+00:00</lastmod>
+    <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/RL/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/tags/RL/</loc>
+    <lastmod>2024-07-22T16:14:51+00:00</lastmod>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/tags/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningTTS/</loc>
@@ -364,24 +320,6 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/tags/TTS/</loc>
     <lastmod>2024-07-21T12:39:48+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionDreamBooth/</loc>
-    <lastmod>2024-07-17T10:51:11+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/Diffusion/</loc>
-    <lastmod>2024-07-17T10:51:11+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/Diffusion/</loc>
-    <lastmod>2024-07-17T10:51:11+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/gptDiffusionEditPix2pix/</loc>
-    <lastmod>2024-04-16T16:26:40+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/gptDiffusionEditInstruct/</loc>
-    <lastmod>2024-04-16T16:25:58+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/gptDiffusionEditPrompt/</loc>
-    <lastmod>2024-04-16T16:25:38+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/Survey/ReasoningPostTraining/</loc>
     <lastmod>2024-04-04T22:33:18+00:00</lastmod>
@@ -407,26 +345,11 @@
     <loc>https://www6v.github.io/www6vAlgo/tags/DeepLearning/</loc>
     <lastmod>2024-04-04T17:28:27+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Survey/gptMultimodalSeries/</loc>
-    <lastmod>2024-04-04T09:38:25+00:00</lastmod>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/Deepresearch/</loc>
     <lastmod>2024-03-26T12:13:50+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/tags/Deepresearch/</loc>
     <lastmod>2024-03-26T12:13:50+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/ViT/</loc>
-    <lastmod>2024-03-24T12:06:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/ViT/</loc>
-    <lastmod>2024-03-24T12:06:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalVQVAE/</loc>
-    <lastmod>2024-03-24T12:06:39+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalDINO/</loc>
-    <lastmod>2024-03-24T11:18:19+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/DeepSeek/</loc>
     <lastmod>2024-02-28T01:29:48+00:00</lastmod>
@@ -470,98 +393,11 @@
     <loc>https://www6v.github.io/www6vAlgo/tags/ML/</loc>
     <lastmod>2023-11-21T22:44:57+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionunCLIP/</loc>
-    <lastmod>2023-08-27T10:21:28+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionReferenceNet/</loc>
-    <lastmod>2023-08-22T18:27:16+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionIPAdapter/</loc>
-    <lastmod>2023-08-22T18:26:51+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionT2IAdapter/</loc>
-    <lastmod>2023-08-22T18:26:35+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionControlNet/</loc>
-    <lastmod>2023-08-22T18:26:17+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionGuidance/</loc>
-    <lastmod>2023-08-01T19:19:40+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptDiffusionXL/</loc>
-    <lastmod>2023-08-01T19:12:57+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/gptDiffusionImageEditWork/</loc>
-    <lastmod>2023-07-27T09:29:58+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision/gptVisionTask/</loc>
-    <lastmod>2023-07-25T13:49:28+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/Vision/</loc>
-    <lastmod>2023-07-25T13:49:28+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/Vision/</loc>
-    <lastmod>2023-07-25T13:49:28+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/gptDiffusionDiT/</loc>
-    <lastmod>2023-07-21T13:59:11+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionFineTuning/</loc>
-    <lastmod>2023-07-06T19:24:20+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/gptDiffusionImageEdit/</loc>
-    <lastmod>2023-07-06T19:10:10+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/Agent/</loc>
-    <lastmod>2023-06-30T21:12:35+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Multimodal-Agent/gptAgentMultimodalApp/</loc>
-    <lastmod>2023-06-30T21:12:35+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/AIGC/</loc>
-    <lastmod>2023-06-30T21:12:35+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptMultimodalDiffusion/</loc>
-    <lastmod>2023-06-29T17:28:21+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Data/gptDatasetMulitmodal/</loc>
-    <lastmod>2023-04-01T15:09:17+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/categories/dataset/</loc>
-    <lastmod>2023-04-01T15:09:17+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/dataset/</loc>
-    <lastmod>2023-04-01T15:09:17+00:00</lastmod>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/Pytorch/</loc>
     <lastmod>2023-03-28T15:47:08+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/tags/Pytorch/</loc>
     <lastmod>2023-03-28T15:47:08+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Survey/gptMultimodalSurvey/</loc>
-    <lastmod>2023-03-16T12:45:30+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E7%AB%AF%E5%88%B0%E7%AB%AF%E8%AE%AD%E7%BB%83LLMLMM/gptMultimodalBlip/</loc>
-    <lastmod>2023-03-15T23:00:59+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E7%AB%AF%E5%88%B0%E7%AB%AF%E8%AE%AD%E7%BB%83LLMLMM/gptMultimodalInstructTuning/</loc>
-    <lastmod>2023-03-15T16:09:00+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E7%AB%AF%E5%88%B0%E7%AB%AF%E8%AE%AD%E7%BB%83LLMLMM/gptMultimodalMinigpt4/</loc>
-    <lastmod>2023-03-15T15:56:48+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E7%AB%AF%E5%88%B0%E7%AB%AF%E8%AE%AD%E7%BB%83LLMLMM/gptMultimodalLlava/</loc>
-    <lastmod>2023-03-14T23:02:17+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Multimodal-Agent/gptAgentWeb/</loc>
-    <lastmod>2023-03-05T10:30:03+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/tags/agent/</loc>
-    <lastmod>2023-03-05T10:30:03+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/%E7%AB%AF%E5%88%B0%E7%AB%AF%E8%AE%AD%E7%BB%83LLMLMM/gptMultimodalPretrain/</loc>
-    <lastmod>2023-03-04T13:23:20+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/Tokenizer/</loc>
     <lastmod>2023-02-26T17:28:01+00:00</lastmod>
@@ -569,37 +405,13 @@
     <loc>https://www6v.github.io/www6vAlgo/tags/Tokenizer/</loc>
     <lastmod>2023-02-26T17:28:01+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Multimodal-Agent/gptAgentMultimodal/</loc>
-    <lastmod>2023-02-21T10:10:51+00:00</lastmod>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/categories/Transformer/</loc>
     <lastmod>2023-02-16T13:57:57+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/tags/Transformer/</loc>
     <lastmod>2023-02-16T13:57:57+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Survey/gptMultimodal/</loc>
-    <lastmod>2023-01-18T09:48:37+00:00</lastmod>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionControllableWork/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalCLIP/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Connector/</loc>
-  </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/GRPO-family/DAPO/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/seg/gptMultimodalSAM/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalVit/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Vision-Encoder/gptMultimodalCLIPPractice/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Diffusion/gptMultimodalDiffusionPractice/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/Controllable/gptDiffusionControllable/</loc>
-  </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Vision/editing/gptDiffusionEditMGIE/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/temperature/</loc>
   </url>
