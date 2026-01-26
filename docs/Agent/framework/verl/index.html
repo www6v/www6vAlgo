@@ -7,28 +7,29 @@
   论文
   #
 
-
+HybridFlow: A Flexible and Efficient RLHF Framework
 
   解读
   #
 
-AREAL">
+HybridFlow[veRL]">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
-<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/RL/framework/AREAL/">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://www6v.github.io/www6vAlgo/docs/Agent/framework/verl/">
   <meta property="og:site_name" content="LLM 算法">
-  <meta property="og:title" content="(原理|实践)AREAL">
-  <meta property="og:description" content="论文 # 解读 # AREAL">
+  <meta property="og:title" content="HybridFlow[veRL]">
+  <meta property="og:description" content="论文 # HybridFlow: A Flexible and Efficient RLHF Framework
+解读 # HybridFlow[veRL]">
   <meta property="og:locale" content="en">
   <meta property="og:type" content="website">
-<title>(原理|实践)AREAL | LLM 算法</title>
+<title>HybridFlow[veRL] | LLM 算法</title>
 <link rel="icon" href="/www6vAlgo/favicon.png" >
 <link rel="manifest" href="/www6vAlgo/manifest.json">
-<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/RL/framework/AREAL/">
+<link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/Agent/framework/verl/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.7abb8c97cdde720d1dd528388a6cb2a10f9bb0adb0db3764e2fdbbb35934c938.js" integrity="sha256-eruMl83ecg0d1Sg4imyyoQ&#43;bsK2w2zdk4v27s1k0yTg=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/RL/framework/AREAL/index.xml" title="LLM 算法" />
+  <script defer src="/www6vAlgo/en.search.min.dbb64bf1842330dcc22f4c3319c82455b59b46fd19b12e55fc11ce588c03d777.js" integrity="sha256-27ZL8YQjMNzCL0wzGcgkVbWbRv0ZsS5V/BHOWIwD13c=" crossorigin="anonymous"></script>
+<link rel="alternate" type="application/rss+xml" href="https://www6v.github.io/www6vAlgo/docs/Agent/framework/verl/index.xml" title="LLM 算法" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -587,364 +588,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle" checked />
-    <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
-      <a role="button" class="">强化学习</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
-    <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
-      <a role="button" class="">Core</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-a4b91a8ec30520aa20445e5046653468" class="toggle"  />
-    <label for="section-a4b91a8ec30520aa20445e5046653468" class="flex justify-between">
-      <a role="button" class="">PPO family</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-792edea28c7fa6c149b193954c187e3e" class="toggle"  />
-    <label for="section-792edea28c7fa6c149b193954c187e3e" class="flex justify-between">
-      <a role="button" class="">GRPO Family</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="">(原理)GRPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/GRPO-family/DAPO/" class="">(原理)DAPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/compare/" class="">(原理) 综述</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/unified/" class="">unified paradigm</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/core/RLVR/" class="">RLVR</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-d720d571cb3e63953708e846bc3c9da9" class="toggle" checked />
-    <label for="section-d720d571cb3e63953708e846bc3c9da9" class="flex justify-between">
-      <a role="button" class="">Framework</a>
-    </label>
-  
-
-          
-  <ul>
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/framework/verl/" class="">HybridFlow[veRL]</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/framework/ROLL/" class="">(原理&amp;实践)ROLL</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/framework/AREAL/" class="active">(原理|实践)AREAL</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li>
-          
-  
-  
-
-  
-    <a href="/www6vAlgo/docs/RL/framework/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
-  
-
-          
-  <ul>
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-  </ul>
-
-        </li>
-      
-    
-      
-        <li class="book-section-flat" >
-          
-  
-  
-
-  
-    <input type="checkbox" id="section-4e4529562f8a7b2d9d29129d5ea9bac5" class="toggle"  />
+    <input type="checkbox" id="section-4e4529562f8a7b2d9d29129d5ea9bac5" class="toggle" checked />
     <label for="section-4e4529562f8a7b2d9d29129d5ea9bac5" class="flex justify-between">
       <a role="button" class="">Agent</a>
     </label>
@@ -1248,6 +892,381 @@ https://github.com/alex-shpak/hugo-book
 
         </li>
       
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-3ae9d8e3d976e8d806f1a622139e5c99" class="toggle" checked />
+    <label for="section-3ae9d8e3d976e8d806f1a622139e5c99" class="flex justify-between">
+      <a role="button" class="">Framework</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/framework/verl/" class="active">HybridFlow[veRL]</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/framework/AREAL-NT/" class="">(NT)AREAL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/framework/ROLL/" class="">(原理&amp;实践)ROLL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/framework/AREAL/" class="">(原理|实践)AREAL</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/Agent/framework/veRLConfig/" class="">(原理&amp;实战)veRL Config</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-8289f046e5a8f2479317b06c48dded09" class="toggle"  />
+    <label for="section-8289f046e5a8f2479317b06c48dded09" class="flex justify-between">
+      <a role="button" class="">强化学习</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-fd4324249788d4f101352645b9815095" class="toggle"  />
+    <label for="section-fd4324249788d4f101352645b9815095" class="flex justify-between">
+      <a role="button" class="">Core</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-a4b91a8ec30520aa20445e5046653468" class="toggle"  />
+    <label for="section-a4b91a8ec30520aa20445e5046653468" class="flex justify-between">
+      <a role="button" class="">PPO family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/PPO1/" class="">(原理)PPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/PPO-family/RewardModel/" class="">(原理|实现)PPO-RewardModel</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <input type="checkbox" id="section-792edea28c7fa6c149b193954c187e3e" class="toggle"  />
+    <label for="section-792edea28c7fa6c149b193954c187e3e" class="flex justify-between">
+      <a role="button" class="">GRPO Family</a>
+    </label>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPODeepseek/" class="">(实战)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/GRPO/" class="">(原理)GRPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/GRPO-family/DAPO/" class="">(原理)DAPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/compare/" class="">(原理) 综述</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/DPO/" class="">(原理|实现)DPO</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/unified/" class="">unified paradigm</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/www6vAlgo/docs/RL/core/RLVR/" class="">RLVR</a>
+  
+
+          
+  <ul>
     
   </ul>
 
@@ -2304,7 +2323,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/www6vAlgo/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>(原理|实践)AREAL</h3>
+  <h3>HybridFlow[veRL]</h3>
 
   <label for="toc-control">
     
@@ -2338,12 +2357,12 @@ https://github.com/alex-shpak/hugo-book
   论文
   <a class="anchor" href="#%e8%ae%ba%e6%96%87">#</a>
 </h1>
-<p><a href=""></a></p>
+<p><a href="http://arxiv.org/abs/2409.19256">HybridFlow: A Flexible and Efficient RLHF Framework</a></p>
 <h1 id="解读">
   解读
   <a class="anchor" href="#%e8%a7%a3%e8%af%bb">#</a>
 </h1>
-<p><a href="https://candied-skunk-1ca.notion.site/AREAL-2eabfe21108480708f3df3c1a094fffd?source=copy_link">AREAL</a></p>
+<p><a href="https://candied-skunk-1ca.notion.site/HybridFlow-verl-275bfe211084806ca788e2d112de0146?source=copy_link">HybridFlow[veRL]</a></p>
 </article>
  
       

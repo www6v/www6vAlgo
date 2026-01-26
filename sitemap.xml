@@ -5,7 +5,7 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/</loc>
     <lastmod>2025-05-03T18:22:23+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/verl/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/framework/verl/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/Agent/Agentic-RL/survey/survey/</loc>
@@ -83,9 +83,11 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/basic/DeepLearning/</loc>
     <lastmod>2022-06-11T15:57:10+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/ROLL/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/framework/AREAL-NT/</loc>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/AREAL/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/framework/ROLL/</loc>
+  </url><url>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/framework/AREAL/</loc>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Core/token-sampling/token-sampling/</loc>
   </url><url>
@@ -145,19 +147,19 @@
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Survey/LLM-Deep-Dive/</loc>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/framework/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/Reasoning/</loc>
     <lastmod>2024-07-21T12:39:48+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/Deep-Research/Search/websailer/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/Deep-Research/Search/websailer/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/RL/</loc>
     <lastmod>2024-07-08T18:49:43+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/RL/core/PPO-family/RewardModel/</loc>
@@ -208,7 +210,7 @@
     <loc>https://www6v.github.io/www6vAlgo/docs/LLM/challenge/ImpossibleTriangle/</loc>
     <lastmod>2023-01-25T10:05:55+00:00</lastmod>
   </url><url>
-    <loc>https://www6v.github.io/www6vAlgo/docs/RL/framework/veRLConfig/</loc>
+    <loc>https://www6v.github.io/www6vAlgo/docs/Agent/framework/veRLConfig/</loc>
     <lastmod>2024-07-22T16:14:51+00:00</lastmod>
   </url><url>
     <loc>https://www6v.github.io/www6vAlgo/docs/DeepLearning/Transformer/Embedding/Embedding/</loc>
