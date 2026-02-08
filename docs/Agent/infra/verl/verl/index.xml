@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HybridFlow[veRL] on LLM 算法</title>
-    <link>https://www6v.github.io/www6vAlgo/docs/Agent/framework/verl/</link>
+    <link>https://www6v.github.io/www6vAlgo/docs/Agent/infra/verl/verl/</link>
     <description>Recent content in HybridFlow[veRL] on LLM 算法</description>
     <generator>Hugo</generator>
     <language>en</language>
     <lastBuildDate></lastBuildDate>
-    <atom:link href="https://www6v.github.io/www6vAlgo/docs/Agent/framework/verl/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://www6v.github.io/www6vAlgo/docs/Agent/infra/verl/verl/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
