@@ -83,7 +83,7 @@ rollout: max_head_offpolicyness: 4 # 允许推理版本最多落后训练版本 
 <link rel="canonical" href="https://www6v.github.io/www6vAlgo/docs/Agent/infra/AREAL/AREAL-partial-rollout/areal_offpolicyness_analysis/">
 <link rel="stylesheet" href="/www6vAlgo/book.min.6c8b9d2a1fc95075ed7da46ca81060b39add8fff6741ac51259f768929281e2c.css" integrity="sha256-bIudKh/JUHXtfaRsqBBgs5rdj/9nQaxRJZ92iSkoHiw=" crossorigin="anonymous">
   <script defer src="/www6vAlgo/fuse.min.js"></script>
-  <script defer src="/www6vAlgo/en.search.min.fb19114d71f1de41b3cc6c910e145980f5e4af8b26aa931f410fa9d46a7c6ece.js" integrity="sha256-&#43;xkRTXHx3kGzzGyRDhRZgPXkr4smqpMfQQ&#43;p1Gp8bs4=" crossorigin="anonymous"></script>
+  <script defer src="/www6vAlgo/en.search.min.54be7b31db83a736596e4170347d7e5e8819adcf99f132088b104811d362b495.js" integrity="sha256-VL57MduDpzZZbkFwNH1&#43;XogZrc&#43;Z8TIIixBIEdNitJU=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -2544,6 +2544,7 @@ https://github.com/alex-shpak/hugo-book
         </li>
       </ul>
     </li>
+    <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
 
@@ -2663,14 +2664,32 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>rollout_stat<span style="color:#f92672">.</span>running <span style="color:#f92672">-=</span> <span style="color:#ae81ff">1</span>
 </span></span><span style="display:flex;"><span>            self<span style="color:#f92672">.</span>rollout_stat<span style="color:#f92672">.</span>rejected <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
 </span></span></code></pre></div><p><strong>状态转换图</strong>：</p>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">stateDiagram-v2
-    [*] --&gt; Enqueued: 任务提交
-    Enqueued --&gt; Running: 开始执行
-    Running --&gt; Accepted: 完成并通过筛选
-    Running --&gt; Rejected: 完成但被拒绝/失败
-    Accepted --&gt; [*]
-    Rejected --&gt; [*]
-</code></pre><hr>
+
+
+<script src="/www6vAlgo/mermaid.min.js"></script>
+
+  <script>mermaid.initialize({
+  "flowchart": {
+    "useMaxWidth":true
+  },
+  "theme": "default"
+}
+)</script>
+
+
+
+
+<pre class="mermaid">
+stateDiagram-v2
+    [*] --> Enqueued: 任务提交
+    Enqueued --> Running: 开始执行
+    Running --> Accepted: 完成并通过筛选
+    Running --> Rejected: 完成但被拒绝/失败
+    Accepted --> [*]
+    Rejected --> [*]
+</pre>
+
+<hr>
 <h2 id="2-partial-rollouts部分轨迹实现">
   2. Partial Rollouts（部分轨迹）实现
   <a class="anchor" href="#2-partial-rollouts%e9%83%a8%e5%88%86%e8%bd%a8%e8%bf%b9%e5%ae%9e%e7%8e%b0">#</a>
@@ -2912,7 +2931,10 @@ https://github.com/alex-shpak/hugo-book
   4.1 Off-policyness 控制流程
   <a class="anchor" href="#41-off-policyness-%e6%8e%a7%e5%88%b6%e6%b5%81%e7%a8%8b">#</a>
 </h3>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">sequenceDiagram
+
+
+<pre class="mermaid"> 
+sequenceDiagram
     participant Main as 主线程
     participant Dispatcher as BatchTaskDispatcher
     participant Producer as 生产者线程
@@ -2921,93 +2943,105 @@ https://github.com/alex-shpak/hugo-book
     participant Consumer as 消费者线程
     participant Workflow as RolloutWorkflow
     
-    Main-&gt;&gt;Dispatcher: submit_task_input(task)
-    Dispatcher-&gt;&gt;SM: on_rollout_enqueued()
+    Main->>Dispatcher: submit_task_input(task)
+    Dispatcher->>SM: on_rollout_enqueued()
     Note over SM: enqueued++
-    Dispatcher-&gt;&gt;Dispatcher: _pending_inputs.append(task)
+    Dispatcher->>Dispatcher: _pending_inputs.append(task)
     
-    Producer-&gt;&gt;SM: get_capacity()
-    SM--&gt;&gt;Producer: capacity = min(concurrency_cap, staleness_cap)
+    Producer->>SM: get_capacity()
+    SM-->>Producer: capacity = min(concurrency_cap, staleness_cap)
     
-    alt capacity &gt; 0
-        Producer-&gt;&gt;Dispatcher: _pending_inputs.popleft()
-        Producer-&gt;&gt;Runner: submit(task_fn)
-        Producer-&gt;&gt;SM: on_rollout_submitted()
+    alt capacity > 0
+        Producer->>Dispatcher: _pending_inputs.popleft()
+        Producer->>Runner: submit(task_fn)
+        Producer->>SM: on_rollout_submitted()
         Note over SM: enqueued--, running++
         
-        Runner-&gt;&gt;Workflow: arun_episode(engine, data)
+        Runner->>Workflow: arun_episode(engine, data)
         
         alt 生成中权重更新
-            Workflow-&gt;&gt;Workflow: 记录版本 v1
+            Workflow->>Workflow: 记录版本 v1
             Note over Workflow: 权重更新中断
-            Workflow-&gt;&gt;Workflow: 等待并继续
-            Workflow-&gt;&gt;Workflow: 记录版本 v2
+            Workflow->>Workflow: 等待并继续
+            Workflow->>Workflow: 记录版本 v2
         end
         
-        Workflow--&gt;&gt;Runner: trajectory (with versions)
-        Runner--&gt;&gt;Consumer: result ready
+        Workflow-->>Runner: trajectory (with versions)
+        Runner-->>Consumer: result ready
         
-        Consumer-&gt;&gt;Dispatcher: _pending_results[task_id] = result
-        Consumer-&gt;&gt;SM: on_rollout_accepted()
+        Consumer->>Dispatcher: _pending_results[task_id] = result
+        Consumer->>SM: on_rollout_accepted()
         Note over SM: running--, accepted++
-    else capacity &lt;= 0
-        Producer-&gt;&gt;Producer: wait for capacity
+    else capacity <= 0
+        Producer->>Producer: wait for capacity
     end
     
-    Main-&gt;&gt;Dispatcher: wait_results(count)
-    Dispatcher-&gt;&gt;Main: [trajectory1, trajectory2, ...]
-</code></pre><h3 id="42-partial-rollouts-处理流程">
+    Main->>Dispatcher: wait_results(count)
+    Dispatcher->>Main: [trajectory1, trajectory2, ...]
+</pre>
+
+<h3 id="42-partial-rollouts-处理流程">
   4.2 Partial Rollouts 处理流程
   <a class="anchor" href="#42-partial-rollouts-%e5%a4%84%e7%90%86%e6%b5%81%e7%a8%8b">#</a>
 </h3>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TB
-    Start([开始生成请求]) --&gt; InitVersion[记录初始版本 v0]
-    InitVersion --&gt; GenLoop{继续生成?}
+
+
+<pre class="mermaid"> 
+graph TB
+    Start([开始生成请求]) --> InitVersion[记录初始版本 v0]
+    InitVersion --> GenLoop{继续生成?}
     
-    GenLoop --&gt;|是| SendReq[发送生成请求到推理服务器]
-    SendReq --&gt; CheckStop{检查 stop_reason}
+    GenLoop -->|是| SendReq[发送生成请求到推理服务器]
+    SendReq --> CheckStop{检查 stop_reason}
     
-    CheckStop --&gt;|中断: weight_update| Wait[等待 0.5s&lt;br/&gt;避免资源竞争]
-    Wait --&gt; UpdateVersion[更新版本到 v1]
-    UpdateVersion --&gt; RecordV1[为新 tokens 记录版本 v1]
-    RecordV1 --&gt; UpdatePayload[更新 payload&lt;br/&gt;继续生成]
-    UpdatePayload --&gt; GenLoop
+    CheckStop -->|中断: weight_update| Wait[等待 0.5s<br/>避免资源竞争]
+    Wait --> UpdateVersion[更新版本到 v1]
+    UpdateVersion --> RecordV1[为新 tokens 记录版本 v1]
+    RecordV1 --> UpdatePayload[更新 payload<br/>继续生成]
+    UpdatePayload --> GenLoop
     
-    CheckStop --&gt;|正常| RecordV0[为新 tokens 记录版本 v0]
-    RecordV0 --&gt; CheckComplete{达到长度限制?}
-    CheckComplete --&gt;|否| UpdatePayload
-    CheckComplete --&gt;|是| BuildResp[构建 ModelResponse]
+    CheckStop -->|正常| RecordV0[为新 tokens 记录版本 v0]
+    RecordV0 --> CheckComplete{达到长度限制?}
+    CheckComplete -->|否| UpdatePayload
+    CheckComplete -->|是| BuildResp[构建 ModelResponse]
     
-    GenLoop --&gt;|否: stop 或达到长度| BuildResp
+    GenLoop -->|否: stop 或达到长度| BuildResp
     
-    BuildResp --&gt; ReturnResp[返回包含:&lt;br/&gt;- output_tokens&lt;br/&gt;- output_logprobs&lt;br/&gt;- output_versions]
-    ReturnResp --&gt; End([结束])
+    BuildResp --> ReturnResp[返回包含:<br/>- output_tokens<br/>- output_logprobs<br/>- output_versions]
+    ReturnResp --> End([结束])
     
     style Wait fill:#ffe6e6
     style UpdateVersion fill:#fff4e6
     style RecordV1 fill:#fff4e6
     style RecordV0 fill:#e6f7ff
-</code></pre><h3 id="43-版本信息在轨迹中的流动">
+</pre>
+
+<h3 id="43-版本信息在轨迹中的流动">
   4.3 版本信息在轨迹中的流动
   <a class="anchor" href="#43-%e7%89%88%e6%9c%ac%e4%bf%a1%e6%81%af%e5%9c%a8%e8%bd%a8%e8%bf%b9%e4%b8%ad%e7%9a%84%e6%b5%81%e5%8a%a8">#</a>
 </h3>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph LR
-    A[推理服务器&lt;br/&gt;版本 v3] --&gt;|agenerate| B[ModelResponse&lt;br/&gt;output_versions: 3,3,3,...]
-    B --&gt;|workflow.arun_episode| C[Trajectory&lt;br/&gt;versions: -1,-1,3,3,3,...]
+
+
+<pre class="mermaid"> 
+graph LR
+    A[推理服务器<br/>版本 v3] -->|agenerate| B[ModelResponse<br/>output_versions: 3,3,3,...]
+    B -->|workflow.arun_episode| C[Trajectory<br/>versions: -1,-1,3,3,3,...]
     
-    D[推理服务器&lt;br/&gt;版本 v4] --&gt;|agenerate&lt;br/&gt;中途更新| E[ModelResponse&lt;br/&gt;output_versions: 4,4,5,5,...]
-    E --&gt;|workflow.arun_episode| F[Trajectory&lt;br/&gt;versions: -1,-1,4,4,5,5,...]
+    D[推理服务器<br/>版本 v4] -->|agenerate<br/>中途更新| E[ModelResponse<br/>output_versions: 4,4,5,5,...]
+    E -->|workflow.arun_episode| F[Trajectory<br/>versions: -1,-1,4,4,5,5,...]
     
-    C --&gt; G[Training Batch&lt;br/&gt;批次聚合]
-    F --&gt; G
+    C --> G[Training Batch<br/>批次聚合]
+    F --> G
     
-    G --&gt;|compute_advantages| H[PPOActor&lt;br/&gt;考虑版本差异]
-    H --&gt;|ppo_update| I[权重更新&lt;br/&gt;新版本 v5]
+    G -->|compute_advantages| H[PPOActor<br/>考虑版本差异]
+    H -->|ppo_update| I[权重更新<br/>新版本 v5]
     
     style A fill:#e1f5ff
     style D fill:#e1f5ff
     style I fill:#ffe6e6
-</code></pre><hr>
+</pre>
+
+<hr>
 <h2 id="5-decoupled-ppo-目标函数">
   5. Decoupled PPO 目标函数
   <a class="anchor" href="#5-decoupled-ppo-%e7%9b%ae%e6%a0%87%e5%87%bd%e6%95%b0">#</a>
@@ -3081,65 +3115,135 @@ https://github.com/alex-shpak/hugo-book
   6. 系统整体流程图
   <a class="anchor" href="#6-%e7%b3%bb%e7%bb%9f%e6%95%b4%e4%bd%93%e6%b5%81%e7%a8%8b%e5%9b%be">#</a>
 </h2>
-<pre tabindex="0"><code class="language-mermaid" data-lang="mermaid">graph TB
-    subgraph &#34;1. 初始化阶段&#34;
+<p>有语法错误
+
+
+<pre class="mermaid">   
+graph TB
+    subgraph "1. 初始化阶段"
         Init[初始化推理引擎和训练引擎]
-        Init --&gt; LaunchServer[启动推理服务器&lt;br/&gt;SGLang/vLLM]
-        LaunchServer --&gt; CreateSM[创建 StalenessManager&lt;br/&gt;max_staleness=4]
-        CreateSM --&gt; CreateDispatcher[创建 BatchTaskDispatcher]
-        CreateDispatcher --&gt; StartThreads[启动生产者/消费者线程]
+        Init --> LaunchServer[启动推理服务器<br/>SGLang/vLLM]
+        LaunchServer --> CreateSM[创建 StalenessManager<br/>max_staleness=4]
+        CreateSM --> CreateDispatcher[创建 BatchTaskDispatcher]
+        CreateDispatcher --> StartThreads[启动生产者/消费者线程]
     end
     
-    subgraph &#34;2. 训练循环&#34;
+    subgraph "2. 训练循环"
         TrainStep[训练步骤 step]
-        TrainStep --&gt; PrepareBatch[actor.prepare_batch&lt;br/&gt;收集 rollout 数据]
+        TrainStep --> PrepareBatch[actor.prepare_batch<br/>收集 rollout 数据]
         
-        PrepareBatch --&gt; CheckCapacity{检查容量}
-        CheckCapacity --&gt;|capacity &gt; 0| SubmitTask[提交 rollout 任务]
-        CheckCapacity --&gt;|capacity &lt;= 0| WaitCapacity[等待容量释放]
-        WaitCapacity --&gt; CheckCapacity
+        PrepareBatch --> CheckCapacity{检查容量}
+        CheckCapacity -->|capacity > 0| SubmitTask[提交 rollout 任务]
+        CheckCapacity -->|capacity <= 0| WaitCapacity[等待容量释放]
+        WaitCapacity --> CheckCapacity
         
-        SubmitTask --&gt; RunWorkflow[执行 workflow.arun_episode]
-        RunWorkflow --&gt; GenTokens[生成 tokens&lt;br/&gt;记录版本信息]
+        SubmitTask --> RunWorkflow[执行 workflow.arun_episode]
+        RunWorkflow --> GenTokens[生成 tokens<br/>记录版本信息]
         
-        GenTokens --&gt; CheckUpdate{权重更新中断?}
-        CheckUpdate --&gt;|是| WaitUpdate[等待更新完成&lt;br/&gt;继续生成]
-        WaitUpdate --&gt; GenTokens
-        CheckUpdate --&gt;|否| CompleteGen[完成生成]
+        GenTokens --> CheckUpdate{权重更新中断?}
+        CheckUpdate -->|是| WaitUpdate[等待更新完成<br/>继续生成]
+        WaitUpdate --> GenTokens
+        CheckUpdate -->|否| CompleteGen[完成生成]
         
-        CompleteGen --&gt; BuildTraj[构建轨迹&lt;br/&gt;包含版本张量]
-        BuildTraj --&gt; AcceptReject{通过筛选?}
-        AcceptReject --&gt;|是| CollectBatch[收集到批次]
-        AcceptReject --&gt;|否| DiscardTraj[丢弃轨迹]
+        CompleteGen --> BuildTraj[构建轨迹<br/>包含版本张量]
+        BuildTraj --> AcceptReject{通过筛选?}
+        AcceptReject -->|是| CollectBatch[收集到批次]
+        AcceptReject -->|否| DiscardTraj[丢弃轨迹]
         
-        CollectBatch --&gt; BatchReady{批次就绪?}
-        BatchReady --&gt;|否| CheckCapacity
-        BatchReady --&gt;|是| ComputeAdv[计算 Advantages]
+        CollectBatch --> BatchReady{批次就绪?}
+        BatchReady -->|否| CheckCapacity
+        BatchReady -->|是| ComputeAdv[计算 Advantages]
         
-        ComputeAdv --&gt; PPOUpdate[PPO 更新&lt;br/&gt;Decoupled Loss]
-        PPOUpdate --&gt; UpdateLR[更新学习率]
-        UpdateLR --&gt; SyncWeights[同步权重到推理服务器]
-        SyncWeights --&gt; IncVersion[增加版本号&lt;br/&gt;version++]
-        IncVersion --&gt; NextStep[下一步]
-        NextStep --&gt; TrainStep
+        ComputeAdv --> PPOUpdate[PPO 更新<br/>Decoupled Loss]
+        PPOUpdate --> UpdateLR[更新学习率]
+        UpdateLR --> SyncWeights[同步权重到推理服务器]
+        SyncWeights --> IncVersion[增加版本号<br/>version++]
+        IncVersion --> NextStep[下一步]
+        NextStep --> TrainStep
     end
     
-    subgraph &#34;3. 并发控制&#34;
+    subgraph "3. 并发控制"
         SM[StalenessManager]
-        SM --&gt; CalcCap[计算容量&lt;br/&gt;min(concurrency, staleness)]
-        CalcCap --&gt; TrackState[跟踪 rollout 状态&lt;br/&gt;enqueued/running/accepted]
+        SM --> CalcCap[计算容量<br/>min(concurrency, staleness)]
+        CalcCap --> TrackState[跟踪 rollout 状态<br/>enqueued/running/accepted]
     end
     
-    StartThreads --&gt; TrainStep
-    PrepareBatch -.调用.-&gt; SM
-    IncVersion -.更新.-&gt; SM
+    StartThreads --> TrainStep
+    PrepareBatch -.调用.-> SM
+    IncVersion -.更新.-> SM
     
     style CheckUpdate fill:#ffe6e6
     style WaitUpdate fill:#ffe6e6
     style GenTokens fill:#e6f7ff
     style SyncWeights fill:#fff4e6
     style IncVersion fill:#fff4e6
-</code></pre><hr>
+</pre>
+</p>
+<p>cursor 修复的
+
+
+<pre class="mermaid"> 
+graph TB
+    subgraph "1. 初始化阶段"
+        Init["初始化推理引擎和训练引擎"]
+        Init --> LaunchServer["启动推理服务器<br/>SGLang/vLLM"]
+        LaunchServer --> CreateSM["创建 StalenessManager<br/>max_staleness=4"]
+        CreateSM --> CreateDispatcher["创建 BatchTaskDispatcher"]
+        CreateDispatcher --> StartThreads["启动生产者/消费者线程"]
+    end
+    
+    subgraph "2. 训练循环"
+        TrainStep["训练步骤 step"]
+        TrainStep --> PrepareBatch["actor.prepare_batch<br/>收集 rollout 数据"]
+        
+        PrepareBatch --> CheckCapacity{"检查容量"}
+        CheckCapacity -->|"capacity > 0"| SubmitTask["提交 rollout 任务"]
+        CheckCapacity -->|"capacity <= 0"| WaitCapacity["等待容量释放"]
+        WaitCapacity --> CheckCapacity
+        
+        SubmitTask --> RunWorkflow["执行 workflow.arun_episode"]
+        RunWorkflow --> GenTokens["生成 tokens<br/>记录版本信息"]
+        
+        GenTokens --> CheckUpdate{"权重更新中断?"}
+        CheckUpdate -->|"是"| WaitUpdate["等待更新完成<br/>继续生成"]
+        WaitUpdate --> GenTokens
+        CheckUpdate -->|"否"| CompleteGen["完成生成"]
+        
+        CompleteGen --> BuildTraj["构建轨迹<br/>包含版本张量"]
+        BuildTraj --> AcceptReject{"通过筛选?"}
+        AcceptReject -->|"是"| CollectBatch["收集到批次"]
+        AcceptReject -->|"否"| DiscardTraj["丢弃轨迹"]
+        
+        CollectBatch --> BatchReady{"批次就绪?"}
+        BatchReady -->|"否"| CheckCapacity
+        BatchReady -->|"是"| ComputeAdv["计算 Advantages"]
+        
+        ComputeAdv --> PPOUpdate["PPO 更新<br/>Decoupled Loss"]
+        PPOUpdate --> UpdateLR["更新学习率"]
+        UpdateLR --> SyncWeights["同步权重到推理服务器"]
+        SyncWeights --> IncVersion["增加版本号<br/>version++"]
+        IncVersion --> NextStep["下一步"]
+        NextStep --> TrainStep
+    end
+    
+    subgraph "3. 并发控制"
+        SM["StalenessManager"]
+        SM --> CalcCap["计算容量<br/>min(concurrency, staleness)"]
+        CalcCap --> TrackState["跟踪 rollout 状态<br/>enqueued/running/accepted"]
+    end
+    
+    StartThreads --> TrainStep
+    PrepareBatch -.调用.-> SM
+    IncVersion -.更新.-> SM
+    
+    style CheckUpdate fill:#ffe6e6
+    style WaitUpdate fill:#ffe6e6
+    style GenTokens fill:#e6f7ff
+    style SyncWeights fill:#fff4e6
+    style IncVersion fill:#fff4e6
+</pre>
+</p>
+<hr>
 <h2 id="7-关键设计要点总结">
   7. 关键设计要点总结
   <a class="anchor" href="#7-%e5%85%b3%e9%94%ae%e8%ae%be%e8%ae%a1%e8%a6%81%e7%82%b9%e6%80%bb%e7%bb%93">#</a>
@@ -3385,7 +3489,12 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;rewards&#34;</span>: torch<span style="color:#f92672">.</span>tensor(reward, dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float32)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>),
 </span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;attention_mask&#34;</span>: torch<span style="color:#f92672">.</span>ones(len(seq), dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>bool)<span style="color:#f92672">.</span>unsqueeze(<span style="color:#ae81ff">0</span>),
 </span></span><span style="display:flex;"><span>        }
-</span></span></code></pre></div></article>
+</span></span></code></pre></div><h1 id="参考">
+  参考
+  <a class="anchor" href="#%e5%8f%82%e8%80%83">#</a>
+</h1>
+<p>AREAL v0.5.3</p>
+</article>
  
       
 
@@ -3486,6 +3595,7 @@ https://github.com/alex-shpak/hugo-book
         </li>
       </ul>
     </li>
+    <li><a href="#参考">参考</a></li>
   </ul>
 </nav>
 
